@@ -11,7 +11,7 @@ class LexerMatcherTest {
 
     @Test
     fun match() {
-        val charReader = CharReader(text)
+        val charReader = CharReader.fromString(text)
         val charStream = CharStream(charReader, 2)
         Grule {
             assertEquals(4, (L + "0123").match(charStream, 0))

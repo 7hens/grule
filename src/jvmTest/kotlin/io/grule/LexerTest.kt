@@ -12,7 +12,7 @@ class LexerTest {
 
     @Test
     fun match() {
-        val charReader = CharReader(text)
+        val charReader = CharReader.fromString(text)
         val charStream = CharStream(charReader, 2)
         Grule {
             val t1 by TokenL + "01"

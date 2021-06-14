@@ -1,14 +1,14 @@
 package io.grule.lexer
 
-interface CharReader {
+fun interface CharReader {
     fun read(buffer: CharArray, offset: Int, length: Int): Int
 
     companion object {
-        operator fun invoke(text: String): CharReader {
+        fun fromString(text: String): CharReader {
             return StringReader(text)
         }
 
-        operator fun invoke(data: CharArray, startIndex: Int = 0, endIndex: Int = data.size): CharReader {
+        fun fromByteArray(data: CharArray, startIndex: Int = 0, endIndex: Int = data.size): CharReader {
             return ByteArrayReader(data, startIndex, endIndex)
         }
     }

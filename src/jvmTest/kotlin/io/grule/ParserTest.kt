@@ -9,7 +9,7 @@ class ParserTest {
     @Test
     fun plus() {
         val input = "abc"
-        val charReader = CharReader(input)
+        val charReader = CharReader.fromString(input)
         val charStream = CharStream(charReader, 2)
 
         Grule {
@@ -32,7 +32,7 @@ class ParserTest {
     @Test
     fun or() {
         val input = "abcd"
-        val charReader = CharReader(input)
+        val charReader = CharReader.fromString(input)
         val charStream = CharStream(charReader, 2)
 
         Grule {
@@ -57,7 +57,7 @@ class ParserTest {
     @Test
     fun repeat() {
         val input = "0123456789"
-        val charReader = CharReader(input)
+        val charReader = CharReader.fromString(input)
         val charStream = CharStream(charReader, 2)
 
         Grule {
@@ -76,7 +76,7 @@ class ParserTest {
     @Test
     fun repeatWith() {
         val input = "017,8,9"
-        val charReader = CharReader(input)
+        val charReader = CharReader.fromString(input)
         val charStream = CharStream(charReader, 2)
 
         Grule {
@@ -97,7 +97,7 @@ class ParserTest {
     @Test
     fun builder() {
         val input = "012345"
-        val charReader = CharReader(input)
+        val charReader = CharReader.fromString(input)
         val charStream = CharStream(charReader, 2)
 
         Grule {
@@ -118,7 +118,7 @@ class ParserTest {
 //        val input = "123"
         val input = """{ "a": [1, 2, 3], "b": "hello" }"""
 //        val input = """{ "b": "hello" }"""
-        val charReader = CharReader(input)
+        val charReader = CharReader.fromString(input)
         val charStream = CharStream(charReader, 2)
 
         Grule {
