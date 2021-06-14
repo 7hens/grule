@@ -11,7 +11,7 @@ open class Token(
     var extra: Any? = null
 
     override fun toString(): String {
-        return "\"$text\" [$line:$column] $lexer"
+        return "'$text' [$line:$column] $lexer"
     }
 
     companion object {

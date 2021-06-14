@@ -1,10 +1,11 @@
 plugins {
     kotlin("multiplatform") version "1.5.10"
+    `maven-publish`
     application
 }
 
-group = "grule"
-version = "1.0-SNAPSHOT"
+group = "com.github.7hens.grule"
+version = "0.1-SNAPSHOT"
 
 repositories {
     maven("https://maven.aliyun.com/repository/public")
@@ -76,5 +77,5 @@ kotlin {
 }
 
 application {
-    mainClassName = "MainKt"
+    mainClass.set("MainKt")
 }

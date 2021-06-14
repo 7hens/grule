@@ -114,24 +114,18 @@ class ParserTest {
 
     @Test
     fun json() {
-//        val input = "\"hello\""
-//        val input = "123"
-        val input = """{ "a": [1, 2, 3], "b": "hello" }"""
-//        val input = """{ "b": "hello" }"""
-        val charReader = CharReader.fromString(input)
-        val charStream = CharStream(charReader, 2)
+        val input = """{ "a": [1, 2.34], "b": "hello" }"""
+        val charStream = CharStream(CharReader.fromString(input))
 
         Grule {
             val string by TokenL + '"' + ANY.until(L + '"')
-            val integer by TokenL + DIGIT.repeat(1)
             val float by TokenL + DIGIT.repeat(1) + "." + DIGIT.repeat(1)
+            val integer by TokenL + DIGIT.repeat(1)
             val bool by TokenL + "true" or L + "false"
             val nil by TokenL + "null"
 
             TokenL + -"{}[]:,"
             SkipL + SPACE or LINE
-
-            println("hello, json")
 
             val jObject by P
             val jString by P + string
@@ -139,13 +133,13 @@ class ParserTest {
             val jFloat by P + float
             val jBool by P + bool
             val jNil by P + nil
-            val jArray by P + "[" + jObject.repeatWith(",").optional() + "]"
+            val jArray by P + "[" + jObject.repeatWith(P + ",").optional() + "]"
             val jPair by P + jString + ":" + jObject
-            val jDict by P + "{" + jPair.repeatWith(",").optional() + "}"
+            val jDict by P + "{" + jPair.repeatWith(P + ",").optional() + "}"
             jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
-            val node = jObject.parse(charStream)
-            println(node)
+            val astNode = jObject.parse(charStream)
+            println(astNode)
         }
     }
 }
