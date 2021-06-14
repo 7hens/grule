@@ -1,5 +1,7 @@
 # Grule
 
+[![](https://jitpack.io/v/7hens/grule.svg)](https://jitpack.io/#7hens/grule)
+
 Grule is Kotlin multiplatform library as a general-purpose parser.
 
 NOTE: grule is experimental yet. Any api is a subject to change.
