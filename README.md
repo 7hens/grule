@@ -11,7 +11,8 @@ NOTE: grule is experimental yet.
 
 ```kotlin
 val input = """{ "a": [1, 2.34], "b": "hello" }"""
-val charStream = CharStream(CharReader.fromString(input))
+println(input)
+println("-----------------")
 
 Grule {
     val string by TokenL + '"' + ANY.until(L + '"')
@@ -34,6 +35,7 @@ Grule {
     val jDict by P + "{" + jPair.repeatWith(P + ",").optional() + "}"
     jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
+    val charStream = CharReader.fromString(input).toStream()
     val astNode = jObject.parse(charStream)
     println(astNode.toStringTree())
 }
@@ -42,6 +44,8 @@ Grule {
 Output
 
 ```plain
+{ "a": [1, 2.34], "b": "hello" }
+-----------------
 jObject
 └── jDict
     ├── {
@@ -88,4 +92,3 @@ dependencies {
     implementation("com.github.7hens.grule:grule:0.1-SNAPSHOT")
 }
 ```
-

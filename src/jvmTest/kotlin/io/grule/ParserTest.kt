@@ -110,7 +110,8 @@ class ParserTest {
     @Test
     fun json() {
         val input = """{ "a": [1, 2.34], "b": "hello" }"""
-        val charStream = CharReader.fromString(input).toStream()
+        println(input)
+        println("-----------------")
 
         Grule {
             val string by TokenL + '"' + ANY.until(L + '"')
@@ -133,6 +134,7 @@ class ParserTest {
             val jDict by P + "{" + jPair.repeatWith(P + ",").optional() + "}"
             jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
+            val charStream = CharReader.fromString(input).toStream()
             val astNode = jObject.parse(charStream)
             println(astNode.toStringTree())
         }
