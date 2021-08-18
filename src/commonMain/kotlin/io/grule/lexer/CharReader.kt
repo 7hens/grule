@@ -3,7 +3,13 @@ package io.grule.lexer
 fun interface CharReader {
     fun read(buffer: CharArray, offset: Int, length: Int): Int
 
+    fun toStream(chunkSize: Int = DEFAULT_CHUNK_SIZE): CharStream {
+        return CharStreamImpl(this, chunkSize)
+    }
+
     companion object {
+        const val DEFAULT_CHUNK_SIZE = 8 * 1024
+
         fun fromString(text: String): CharReader {
             return StringReader(text)
         }

@@ -21,7 +21,7 @@ internal class ScannerRules : Scanner {
                 return
             }
             throw LexerException("Unmatched character (${input.peek(0).toChar()}) " +
-                    "at #${input.line()}:${input.column()}")
+                    "at #${input.line}:${input.column}")
         }
     }
 

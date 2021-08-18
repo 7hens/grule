@@ -9,8 +9,7 @@ class ParserTest {
     @Test
     fun plus() {
         val input = "abc"
-        val charReader = CharReader.fromString(input)
-        val charStream = CharStream(charReader, 2)
+        val charStream = CharReader.fromString(input).toStream(2)
 
         Grule {
             val A by TokenL + "a"
@@ -32,8 +31,7 @@ class ParserTest {
     @Test
     fun or() {
         val input = "abcd"
-        val charReader = CharReader.fromString(input)
-        val charStream = CharStream(charReader, 2)
+        val charStream = CharReader.fromString(input).toStream(2)
 
         Grule {
             val A by TokenL + "a"
@@ -57,8 +55,7 @@ class ParserTest {
     @Test
     fun repeat() {
         val input = "0123456789"
-        val charReader = CharReader.fromString(input)
-        val charStream = CharStream(charReader, 2)
+        val charStream = CharReader.fromString(input).toStream(2)
 
         Grule {
             val t1 by TokenL + "01"
@@ -76,8 +73,7 @@ class ParserTest {
     @Test
     fun repeatWith() {
         val input = "017,8,9"
-        val charReader = CharReader.fromString(input)
-        val charStream = CharStream(charReader, 2)
+        val charStream = CharReader.fromString(input).toStream(2)
 
         Grule {
             val t1 by TokenL + "01"
@@ -97,8 +93,7 @@ class ParserTest {
     @Test
     fun builder() {
         val input = "012345"
-        val charReader = CharReader.fromString(input)
-        val charStream = CharStream(charReader, 2)
+        val charStream = CharReader.fromString(input).toStream(2)
 
         Grule {
             TokenL + "0123"
@@ -115,7 +110,7 @@ class ParserTest {
     @Test
     fun json() {
         val input = """{ "a": [1, 2.34], "b": "hello" }"""
-        val charStream = CharStream(CharReader.fromString(input))
+        val charStream = CharReader.fromString(input).toStream()
 
         Grule {
             val string by TokenL + '"' + ANY.until(L + '"')

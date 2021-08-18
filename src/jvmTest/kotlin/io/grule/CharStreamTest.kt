@@ -12,8 +12,7 @@ internal class CharStreamTest {
 
     @Test
     fun peek() {
-        val charReader = CharReader.fromString(text)
-        val charStream = CharStream(charReader)
+        val charStream = CharReader.fromString(text).toStream()
         assertEquals('0', charStream.peek(0).toChar())
         assertEquals('8', charStream.peek(8).toChar())
         assertEquals('F', charStream.peek(15).toChar())
@@ -23,19 +22,17 @@ internal class CharStreamTest {
 
     @Test
     fun getText() {
-        val charReader = CharReader.fromString(text)
-        val charStream = CharStream(charReader, 2)
+        val charStream = CharReader.fromString(text).toStream(2)
         charStream.peek(14)
         assertEquals("ABCDE", charStream.getText(10, 15))
     }
 
     @Test
     fun seekTo() {
-        val charReader = CharReader.fromString(text)
-        val charStream = CharStream(charReader, 1)
+        val charStream = CharReader.fromString(text).toStream(1)
         charStream.peek(14)
         assertEquals('8', charStream.peek(8).toChar())
         charStream.moveNext(14)
-        assertEquals(14, charStream.index())
+        assertEquals(14, charStream.charIndex)
     }
 }

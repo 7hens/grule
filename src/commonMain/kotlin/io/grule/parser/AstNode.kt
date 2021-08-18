@@ -54,12 +54,20 @@ open class AstNode(val rule: Any) {
     }
 
     fun transverse(listener: Listener) {
-        if (!listener.onEnterNode(this)) {
-            for (child in children) {
-                child.transverse(listener)
+        transverseInternal(listener)
+        listener.onExitNode(this)
+    }
+
+    private fun transverseInternal(listener: Listener) {
+        if (listener.onEnterNode(this)) {
+            return
+        }
+        for (child in children) {
+            child.transverseInternal(listener)
+            if (listener.onExitNode(child)) {
+                return
             }
         }
-        listener.onExitNode(this)
     }
 
     override fun toString(): String {
@@ -95,7 +103,7 @@ open class AstNode(val rule: Any) {
     }
 
     interface Listener {
-        fun onEnterNode(astNode: AstNode): Boolean
-        fun onExitNode(astNode: AstNode)
+        fun onEnterNode(node: AstNode): Boolean
+        fun onExitNode(node: AstNode): Boolean
     }
 }
