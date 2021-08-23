@@ -3,9 +3,9 @@ package io.grule.lexer
 internal open class LexerBuilder : Lexer() {
     private var myLexer: Lexer = LexerPlus(mutableListOf())
 
-    override fun match(input: CharStream, offset: Int): Int {
+    override fun match(charStream: CharStream, offset: Int): Int {
         myLexer.name = name
-        return myLexer.match(input, offset)
+        return myLexer.match(charStream, offset)
     }
 
     override fun plus(lexer: Lexer): Lexer {

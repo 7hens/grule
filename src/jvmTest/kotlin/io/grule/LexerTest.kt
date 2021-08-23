@@ -1,9 +1,8 @@
 package io.grule
 
 import io.grule.lexer.CharReader
-import io.grule.lexer.CharStream
 import io.grule.lexer.Lexer
-import io.grule.lexer.TokenChannel
+import io.grule.lexer.TokenStream
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -21,7 +20,7 @@ class LexerTest {
             println(t2.name)
             println(t3.name)
 
-            val scanner = TokenChannel(charStream, this)
+            val scanner = tokenStream(charStream)
             assertEquals(t1, scanner.peek(0).lexer)
             assertEquals(t2, scanner.peek(1).lexer)
             assertEquals(t3, scanner.peek(2).lexer)

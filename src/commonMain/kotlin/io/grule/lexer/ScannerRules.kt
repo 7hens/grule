@@ -3,25 +3,25 @@ package io.grule.lexer
 internal class ScannerRules : Scanner {
     private val rules = mutableListOf<Lexer>()
 
-    override fun scan(channel: TokenChannel) {
-        val input = channel.input
+    override fun scan(tokenStream: TokenStream) {
+        val charStream = tokenStream.charStream
         var matches = false
         for (rule in rules) {
             try {
-                val matchNum = rule.match(input, 0)
-                rule.onMatch(channel, matchNum)
+                val matchNum = rule.match(charStream, 0)
+                rule.onMatch(tokenStream, matchNum)
                 matches = true
                 break
             } catch (_: Throwable) {
             }
         }
         if (!matches) {
-            if (input.peek(0) == CharStream.EOF) {
-                channel.emitEOF()
+            if (charStream.peek(0) == CharStream.EOF) {
+                tokenStream.emitEOF()
                 return
             }
-            throw LexerException("Unmatched character (${input.peek(0).toChar()}) " +
-                    "at #${input.line}:${input.column}")
+            throw LexerException("Unmatched character (${charStream.peek(0).toChar()}) " +
+                    "at #${charStream.line}:${charStream.column}")
         }
     }
 
@@ -31,7 +31,7 @@ internal class ScannerRules : Scanner {
 
     fun addIndentRules(newLine: Lexer, indent: Lexer, dedent: Lexer) {
         var prevTabCount = 0
-        val indentAction: TokenChannel.(Int) -> Unit = { num ->
+        val indentAction: TokenStream.(Int) -> Unit = { num ->
             val tabCount = (num - 1) / 4
 //            println(">> tab: $prevTabCount -> $tabCount")
             if (tabCount > prevTabCount) {
@@ -45,7 +45,7 @@ internal class ScannerRules : Scanner {
                 emit(newLine, "\\n")
             }
             prevTabCount = tabCount
-            input.moveNext(num)
+            charStream.moveNext(num)
         }
         add(LexerBuilder() + "\n" + (LexerBuilder() + "    ").repeat() - indentAction)
         add(Lexer.EOF - {

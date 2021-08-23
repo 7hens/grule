@@ -1,11 +1,11 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenChannel
+import io.grule.lexer.TokenStream
 
 internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes: Int) : Parser() {
     override val isFlatten get() = true
 
-    override fun parse(channel: TokenChannel, offset: Int, parentNode: AstNode): Int {
+    override fun parse(channel: TokenStream, offset: Int, parentNode: AstNode): Int {
         var repeatTimes = 0
         var result = 0
         val node = AstNode(this)

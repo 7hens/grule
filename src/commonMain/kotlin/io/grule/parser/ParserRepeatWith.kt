@@ -1,11 +1,11 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenChannel
+import io.grule.lexer.TokenStream
 
 internal class ParserRepeatWith(val parser: Parser, val separator: Parser) : Parser() {
     override val isFlatten = true
 
-    override fun parse(channel: TokenChannel, offset: Int, parentNode: AstNode): Int {
+    override fun parse(channel: TokenStream, offset: Int, parentNode: AstNode): Int {
         val node = AstNode(this)
         var result = parser.tryParse(channel, offset, node)
         while (true) {

@@ -5,12 +5,12 @@ internal class LexerUntil(
     private val minTimes: Int,
     private val terminal: Lexer) : Lexer() {
 
-    override fun match(input: CharStream, offset: Int): Int {
+    override fun match(charStream: CharStream, offset: Int): Int {
         var repeatTimes = 0
         var result = 0
         while (true) {
             try {
-                result += lexer.match(input, offset + result)
+                result += lexer.match(charStream, offset + result)
                 repeatTimes++
             } catch (e: Throwable) {
                 if (repeatTimes < minTimes) {
@@ -18,7 +18,7 @@ internal class LexerUntil(
                 }
             }
             try {
-                return result + terminal.match(input, offset + result)
+                return result + terminal.match(charStream, offset + result)
             } catch (_: Throwable) {
             }
         }

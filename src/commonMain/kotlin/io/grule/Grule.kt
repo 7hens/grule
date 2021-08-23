@@ -32,10 +32,10 @@ open class Grule : Scanner {
 
     private var scanners = mutableListOf<Scanner>(rules)
 
-    override fun scan(channel: TokenChannel) {
+    override fun scan(tokenStream: TokenStream) {
         lazyParsers.forEach { it() }
         lazyParsers.clear()
-        scanners.last().scan(channel)
+        scanners.last().scan(tokenStream)
     }
 
     fun push(scanner: Scanner) {

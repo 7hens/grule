@@ -1,11 +1,11 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenChannel
+import io.grule.lexer.TokenStream
 
 internal open class ParserBuilder : Parser() {
     private var myParser: Parser = Shadow
 
-    override fun parse(channel: TokenChannel, offset: Int, parentNode: AstNode): Int {
+    override fun parse(channel: TokenStream, offset: Int, parentNode: AstNode): Int {
         myParser.name = name
         return myParser.parse(channel, offset, parentNode)
     }
@@ -21,7 +21,7 @@ internal open class ParserBuilder : Parser() {
     }
 
     object Shadow : Parser() {
-        override fun parse(channel: TokenChannel, offset: Int, parentNode: AstNode): Int {
+        override fun parse(channel: TokenStream, offset: Int, parentNode: AstNode): Int {
             return 0
         }
 

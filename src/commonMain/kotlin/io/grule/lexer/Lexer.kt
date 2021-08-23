@@ -4,10 +4,10 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 abstract class Lexer : ReadOnlyProperty<Any?, Lexer> {
-    abstract fun match(input: CharStream, offset: Int): Int
+    abstract fun match(charStream: CharStream, offset: Int): Int
 
-    open fun onMatch(channel: TokenChannel, matchNum: Int) {
-        channel.input.moveNext(matchNum)
+    open fun onMatch(channel: TokenStream, matchNum: Int) {
+        channel.charStream.moveNext(matchNum)
     }
 
     var name = "$" + this::class.simpleName
@@ -66,19 +66,19 @@ abstract class Lexer : ReadOnlyProperty<Any?, Lexer> {
         return until(0, last)
     }
 
-    operator fun minus(fn: TokenChannel.(Int) -> Unit): Lexer {
+    operator fun minus(fn: TokenStream.(Int) -> Unit): Lexer {
         return LexerAction(this, fn)
     }
 
     fun token(): Lexer {
         return minus { num ->
-            emit(this@Lexer, input.getText(0, num))
-            input.moveNext(num)
+            emit(this@Lexer, charStream.getText(0, num))
+            charStream.moveNext(num)
         }
     }
 
     fun skip(): Lexer {
-        return minus { input.moveNext(it) }
+        return minus { charStream.moveNext(it) }
     }
 
     companion object {

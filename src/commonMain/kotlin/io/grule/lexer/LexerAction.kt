@@ -1,11 +1,11 @@
 package io.grule.lexer
 
-internal class LexerAction(val lexer: Lexer, val fn: (TokenChannel, Int) -> Unit) : Lexer() {
-    override fun match(input: CharStream, offset: Int): Int {
-        return lexer.match(input, offset)
+internal class LexerAction(val lexer: Lexer, val fn: (TokenStream, Int) -> Unit) : Lexer() {
+    override fun match(charStream: CharStream, offset: Int): Int {
+        return lexer.match(charStream, offset)
     }
 
-    override fun onMatch(channel: TokenChannel, matchNum: Int) {
+    override fun onMatch(channel: TokenStream, matchNum: Int) {
         fn(channel, matchNum)
     }
 }

@@ -1,9 +1,9 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenChannel
+import io.grule.lexer.TokenStream
 
 internal class ParserPlus(val parsers: MutableList<Parser>) : Parser() {
-    override fun parse(channel: TokenChannel, offset: Int, parentNode: AstNode): Int {
+    override fun parse(channel: TokenStream, offset: Int, parentNode: AstNode): Int {
         val node = AstNode(this)
         var result = 0
         for (parser in parsers) {

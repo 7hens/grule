@@ -1,8 +1,8 @@
 package io.grule.lexer
 
 internal object LexerEOF : Lexer() {
-    override fun match(input: CharStream, offset: Int): Int {
-        val c = input.peek(0)
+    override fun match(charStream: CharStream, offset: Int): Int {
+        val c = charStream.peek(0)
         if (c == CharStream.EOF) {
             return 0
         }

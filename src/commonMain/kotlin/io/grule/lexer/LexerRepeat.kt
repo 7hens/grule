@@ -5,12 +5,12 @@ internal class LexerRepeat(
     private val minTimes: Int,
     private val maxTimes: Int) : Lexer() {
 
-    override fun match(input: CharStream, offset: Int): Int {
+    override fun match(charStream: CharStream, offset: Int): Int {
         var repeatTimes = 0
         var result = 0
         while (true) {
             try {
-                result += lexer.match(input, offset + result)
+                result += lexer.match(charStream, offset + result)
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
                     return result

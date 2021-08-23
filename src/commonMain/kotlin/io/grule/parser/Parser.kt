@@ -1,14 +1,14 @@
 package io.grule.parser
 
 import io.grule.lexer.Lexer
-import io.grule.lexer.TokenChannel
+import io.grule.lexer.TokenStream
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 abstract class Parser : ReadOnlyProperty<Any?, Parser> {
-    abstract fun parse(channel: TokenChannel, offset: Int, parentNode: AstNode): Int
+    abstract fun parse(channel: TokenStream, offset: Int, parentNode: AstNode): Int
 
-    fun tryParse(channel: TokenChannel, offset: Int, parentNode: AstNode): Int {
+    fun tryParse(channel: TokenStream, offset: Int, parentNode: AstNode): Int {
         if (isFlatten) {
             return parse(channel, offset, parentNode)
         }
@@ -18,7 +18,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return result
     }
 
-    fun parse(channel: TokenChannel): AstNode {
+    fun parse(channel: TokenStream): AstNode {
         val mainParser = ParserBuilder() + this + Lexer.EOF
         val node = AstNode(this)
         mainParser.parse(channel, 0, node)

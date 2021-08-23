@@ -3,10 +3,10 @@ package io.grule.lexer
 internal class LexerOr(
     private val lexers: MutableList<Lexer>) : Lexer() {
 
-    override fun match(input: CharStream, offset: Int): Int {
+    override fun match(charStream: CharStream, offset: Int): Int {
         for (lexer in lexers) {
             try {
-                return lexer.match(input, offset)
+                return lexer.match(charStream, offset)
             } catch (e: Throwable){
                 continue
             }

@@ -1,8 +1,8 @@
 package io.grule.lexer
 
 internal class LexerCharSet(val set: Iterable<Char>) : Lexer() {
-    override fun match(input: CharStream, offset: Int): Int {
-        val c = input.peek(offset)
+    override fun match(charStream: CharStream, offset: Int): Int {
+        val c = charStream.peek(offset)
         if (c == CharStream.EOF) {
             throw LexerException("expected ${this}, actual is <EOF>")
         }

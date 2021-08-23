@@ -1,10 +1,10 @@
 package io.grule.parser
 
 import io.grule.CompositeException
-import io.grule.lexer.TokenChannel
+import io.grule.lexer.TokenStream
 
 internal class ParserOr(val parsers: MutableList<Parser>) : Parser() {
-    override fun parse(channel: TokenChannel, offset: Int, parentNode: AstNode): Int {
+    override fun parse(channel: TokenStream, offset: Int, parentNode: AstNode): Int {
         val compositeException = CompositeException()
         for (parser in parsers) {
             try {
