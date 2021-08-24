@@ -6,8 +6,8 @@ import kotlin.reflect.KProperty
 abstract class Lexer : ReadOnlyProperty<Any?, Lexer> {
     abstract fun match(charStream: CharStream, offset: Int): Int
 
-    open fun onMatch(channel: TokenStream, matchNum: Int) {
-        channel.charStream.moveNext(matchNum)
+    open fun onMatch(tokenStream: TokenStream, matchNum: Int) {
+        tokenStream.charStream.moveNext(matchNum)
     }
 
     var name = "$" + this::class.simpleName

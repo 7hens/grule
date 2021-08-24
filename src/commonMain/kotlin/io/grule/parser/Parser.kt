@@ -6,22 +6,22 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 abstract class Parser : ReadOnlyProperty<Any?, Parser> {
-    abstract fun parse(channel: TokenStream, offset: Int, parentNode: AstNode): Int
+    abstract fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int
 
-    fun tryParse(channel: TokenStream, offset: Int, parentNode: AstNode): Int {
+    fun tryParse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         if (isFlatten) {
-            return parse(channel, offset, parentNode)
+            return parse(tokenStream, offset, parentNode)
         }
         val node = AstNode(this)
-        val result = parse(channel, offset, node)
+        val result = parse(tokenStream, offset, node)
         parentNode.add(node)
         return result
     }
 
-    fun parse(channel: TokenStream): AstNode {
+    fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = ParserBuilder() + this + Lexer.EOF
         val node = AstNode(this)
-        mainParser.parse(channel, 0, node)
+        mainParser.parse(tokenStream, 0, node)
         return node.all(this).first()
     }
 

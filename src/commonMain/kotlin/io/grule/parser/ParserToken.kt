@@ -5,8 +5,8 @@ import io.grule.lexer.TokenStream
 internal class ParserToken(private val matcher: TokenMatcher) : Parser() {
     override val isFlatten = true
 
-    override fun parse(channel: TokenStream, offset: Int, parentNode: AstNode): Int {
-        val token = channel.peek(offset)
+    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+        val token = tokenStream.peek(offset)
         if (matcher.matches(token)) {
             parentNode.add(matcher.node(token))
             return 1

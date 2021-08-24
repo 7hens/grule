@@ -8,8 +8,8 @@ import kotlin.test.assertEquals
 class ParserTest {
     @Test
     fun plus() {
-        val input = "abc"
-        val charStream = CharReader.fromString(input).toStream(2)
+        val source = "abc"
+        val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
             val A by TokenL + "a"
@@ -30,8 +30,8 @@ class ParserTest {
 
     @Test
     fun or() {
-        val input = "abcd"
-        val charStream = CharReader.fromString(input).toStream(2)
+        val source = "abcd"
+        val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
             val A by TokenL + "a"
@@ -54,8 +54,8 @@ class ParserTest {
 
     @Test
     fun repeat() {
-        val input = "0123456789"
-        val charStream = CharReader.fromString(input).toStream(2)
+        val source = "0123456789"
+        val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
             val t1 by TokenL + "01"
@@ -72,8 +72,8 @@ class ParserTest {
 
     @Test
     fun repeatWith() {
-        val input = "017,8,9"
-        val charStream = CharReader.fromString(input).toStream(2)
+        val source = "017,8,9"
+        val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
             val t1 by TokenL + "01"
@@ -92,8 +92,8 @@ class ParserTest {
 
     @Test
     fun builder() {
-        val input = "012345"
-        val charStream = CharReader.fromString(input).toStream(2)
+        val source = "012345"
+        val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
             TokenL + "0123"
@@ -109,8 +109,8 @@ class ParserTest {
 
     @Test
     fun json() {
-        val input = """{ "a": [1, 2.34], "b": "hello" }"""
-        println(input)
+        val source = """{ "a": [1, 2.34], "b": "hello" }"""
+        println(source)
         println("-----------------")
 
         Grule {
@@ -134,7 +134,7 @@ class ParserTest {
             val jDict by P + "{" + jPair.repeatWith(P + ",").optional() + "}"
             jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
-            val charStream = CharReader.fromString(input).toStream()
+            val charStream = CharReader.fromString(source).toStream()
             val astNode = jObject.parse(charStream)
             println(astNode.toStringTree())
         }

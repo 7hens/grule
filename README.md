@@ -10,8 +10,8 @@ NOTE: grule is experimental yet.
 ## Sample - Json parser
 
 ```kotlin
-val input = """{ "a": [1, 2.34], "b": "hello" }"""
-println(input)
+val source = """{ "a": [1, 2.34], "b": "hello" }"""
+println(source)
 println("-----------------")
 
 Grule {
@@ -35,7 +35,7 @@ Grule {
     val jDict by P + "{" + jPair.repeatWith(P + ",").optional() + "}"
     jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
-    val charStream = CharReader.fromString(input).toStream()
+    val charStream = CharReader.fromString(source).toStream()
     val astNode = jObject.parse(charStream)
     println(astNode.toStringTree())
 }

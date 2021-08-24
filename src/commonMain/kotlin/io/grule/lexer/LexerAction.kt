@@ -5,7 +5,7 @@ internal class LexerAction(val lexer: Lexer, val fn: (TokenStream, Int) -> Unit)
         return lexer.match(charStream, offset)
     }
 
-    override fun onMatch(channel: TokenStream, matchNum: Int) {
-        fn(channel, matchNum)
+    override fun onMatch(tokenStream: TokenStream, matchNum: Int) {
+        fn(tokenStream, matchNum)
     }
 }
