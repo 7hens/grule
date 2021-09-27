@@ -21,7 +21,9 @@ open class Grule : Scanner {
 
     val ANY get() = L + LexerCharSet.ANY
     val DIGIT get() = L + ('0'..'9')
-    val LETTER get() = L + ('A'..'Z') or L + ('a'..'z')
+    val UPPER_CASE = L + ('A'..'Z')
+    val LOWER_CASE = L + ('a'..'z')
+    val LETTER get() = L + UPPER_CASE or LOWER_CASE
     val WORD get() = L + LETTER or DIGIT or L + '_'
     val SPACE get() = L + -" \t"
     val LINE get() = L + -"\r\n"

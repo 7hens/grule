@@ -69,13 +69,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
 //        return ParserRepeatWith(this, separator)
     }
 
-    @Deprecated("", ReplaceWith("this.repeatWith(P + separator)"))
-    fun repeatWith(separator: String): Parser {
-        return repeatWith(ParserToken(TokenMatcher(separator)))
-    }
-
-    @Deprecated("", ReplaceWith("this.repeatWith(P + separator)"))
-    fun repeatWith(separator: Lexer): Parser {
-        return repeatWith(ParserToken(TokenMatcher(separator)))
+    fun interlace(separator: Parser): Parser {
+        return ParserBuilder() + separator.optional() + repeatWith(separator).optional() + separator.optional()
     }
 }
