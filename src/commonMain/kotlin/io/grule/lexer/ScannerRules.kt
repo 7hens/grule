@@ -8,8 +8,7 @@ internal class ScannerRules : Scanner {
         var matches = false
         for (rule in rules) {
             try {
-                val matchNum = rule.match(charStream, 0)
-                rule.onMatch(tokenStream, matchNum)
+                rule.parse(tokenStream, 0)
                 matches = true
                 break
             } catch (_: Throwable) {

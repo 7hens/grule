@@ -26,7 +26,7 @@ internal class TokenStreamImpl(override val charStream: CharStream, val scanner:
 
     private fun prepare(expectedNum: Int) {
         var bufferSize = buffer.size
-        while (eof == null && expectedNum > bufferSize) {
+        while (eof == null && bufferSize < expectedNum) {
             scanner.scan(this)
             bufferSize = buffer.size
         }
