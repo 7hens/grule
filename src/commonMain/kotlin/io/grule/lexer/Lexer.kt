@@ -6,7 +6,7 @@ import kotlin.reflect.KProperty
 abstract class Lexer : ReadOnlyProperty<Any?, Lexer> {
     abstract fun match(charStream: CharStream, offset: Int): Int
     
-    open fun parse(tokenStream: TokenStream, offset: Int): Int {
+    open fun parse(tokenStream: TokenStream, offset: Int = 0): Int {
         return match(tokenStream.charStream, offset)
     }
 

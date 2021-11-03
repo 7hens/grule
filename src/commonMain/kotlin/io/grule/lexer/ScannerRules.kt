@@ -8,7 +8,7 @@ internal class ScannerRules : Scanner {
         var matches = false
         for (rule in rules) {
             try {
-                rule.parse(tokenStream, 0)
+                rule.parse(tokenStream)
                 matches = true
                 break
             } catch (_: Throwable) {

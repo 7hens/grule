@@ -6,6 +6,11 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 abstract class Parser : ReadOnlyProperty<Any?, Parser> {
+    var name = "$" + this::class.simpleName
+    private var isNamed = false
+
+    open val isFlatten get() = !isNamed
+    
     abstract fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int
 
     fun tryParse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
@@ -18,16 +23,13 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return result
     }
 
-    fun parse(tokenStream: TokenStream): AstNode {
+    fun parse(tokenStream: TokenStream, offset: Int = 0): AstNode {
         val mainParser = ParserBuilder() + this + Lexer.EOF
         val node = AstNode(this)
-        mainParser.parse(tokenStream, 0, node)
+        mainParser.parse(tokenStream, offset, node)
         return node.all(this).first()
     }
-
-    var name = "$" + this::class.simpleName
-    private var isNamed = false
-
+    
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         isNamed = true
         name = property.name
@@ -37,8 +39,6 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     override fun toString(): String {
         return name
     }
-
-    open val isFlatten get() = !isNamed
 
     open operator fun plus(parser: Parser): Parser {
         return ParserPlus(mutableListOf(this, parser))
