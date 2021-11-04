@@ -11,15 +11,15 @@ abstract class Scanner : ReadOnlyProperty<Any?, Scanner> {
     val L: Lexer get() = LexerBuilder()
     val P: Parser get() = ParserBuilder()
 
-    val ANY get() = L + LexerCharSet.ANY
-    val DIGIT get() = L - ('0'..'9')
-    val UPPER_CASE get() = L - ('A'..'Z')
-    val LOWER_CASE get() = L - ('a'..'z')
-    val LETTER get() = L + UPPER_CASE or LOWER_CASE
-    val WORD get() = L + LETTER or DIGIT or L + '_'
-    val SPACE get() = L - "\t "
-    val LINE get() = L + "\r\n" or L - "\r\n"
-    val EOF get() = Lexer.EOF
+    val L_any get() = L + LexerCharSet.ANY
+    val L_digit get() = L - ('0'..'9')
+    val L_upper get() = L - ('A'..'Z')
+    val L_lower get() = L - ('a'..'z')
+    val L_letter get() = L + L_upper or L_lower
+    val L_word get() = L + L_letter or L_digit or L + '_'
+    val L_space get() = L - "\t "
+    val L_wrap get() = L + "\r\n" or L - "\r\n"
+    val L_eof get() = Lexer.EOF
 
     abstract fun scan(charStream: CharStream, tokenStream: TokenStream)
 

@@ -13,9 +13,9 @@ class LexerMatcherTest {
         val charStream = CharReader.fromString(text).toStream(2)
         Grule {
             assertEquals(4, (L + "0123").match(charStream, 0))
-            assertEquals(10, (L + DIGIT).repeat().match(charStream, 0))
-            assertEquals(1, (L + WORD).match(charStream, 0))
-            assertEquals(10, (L + "01" + ANY.until(L + "89")).match(charStream, 0))
+            assertEquals(10, (L + L_digit).repeat().match(charStream, 0))
+            assertEquals(1, (L + L_word).match(charStream, 0))
+            assertEquals(10, (L + "01" + L_any.until(L + "89")).match(charStream, 0))
         }
     }
 }

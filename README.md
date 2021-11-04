@@ -15,14 +15,14 @@ println(source)
 println("-----------------")
 
 Grule {
-    val string by token(L + '"' + ANY.until(L + '"'))
-    val float by token(L + DIGIT.repeat(1) + "." + DIGIT.repeat(1))
-    val integer by token(L + DIGIT.repeat(1))
+    val string by token(L + '"' + L_any.until(L + '"'))
+    val float by token(L + L_digit.repeat(1) + "." + L_digit.repeat(1))
+    val integer by token(L + L_digit.repeat(1))
     val bool by token(L + "true" or L + "false")
     val nil by token(L + "null")
 
-    token(L + -"{}[]:,")
-    skip(L + SPACE or LINE)
+    token(L - "{}[]:,")
+    skip(L + L_space or L_wrap)
 
     val jObject by P
     val jString by P + string

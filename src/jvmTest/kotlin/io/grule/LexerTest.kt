@@ -13,8 +13,8 @@ class LexerTest {
         val charStream = CharReader.fromString(text).toStream(2)
         Grule {
             val t1 by token(L + "01")
-            val t2 by token(L + DIGIT.repeat(1))
-            val t3 by token(L + ANY)
+            val t2 by token(L + L_digit.repeat(1))
+            val t3 by token(L + L_any)
             println(t1.name)
             println(t2.name)
             println(t3.name)

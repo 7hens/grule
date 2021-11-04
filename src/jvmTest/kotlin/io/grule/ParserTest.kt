@@ -12,7 +12,7 @@ class ParserTest {
 
         Grule {
             val A by token(L + "a")
-            token(L + WORD)
+            token(L + L_word)
 
             val a by P + A
             val b by P + "b"
@@ -58,7 +58,7 @@ class ParserTest {
 
         Grule {
             val t1 by token(L + "01")
-            val t2 by token(L + DIGIT)
+            val t2 by token(L + L_digit)
 
             val digit by P + t2
             val parser by P + t1 + digit.repeat()
@@ -76,7 +76,7 @@ class ParserTest {
 
         Grule {
             val t1 by token(L + "01")
-            val t2 by token(L + DIGIT)
+            val t2 by token(L + L_digit)
             token(L + ",")
 
             val digit by P + t2
@@ -113,14 +113,14 @@ class ParserTest {
         println("-----------------")
 
         Grule {
-            val string by token(L + '"' + ANY.until(L + '"'))
-            val float by token(L + DIGIT.repeat(1) + "." + DIGIT.repeat(1))
-            val integer by token(L + DIGIT.repeat(1))
+            val string by token(L + '"' + L_any.until(L + '"'))
+            val float by token(L + L_digit.repeat(1) + "." + L_digit.repeat(1))
+            val integer by token(L + L_digit.repeat(1))
             val bool by token(L + "true" or L + "false")
             val nil by token(L + "null")
 
             token(L - "{}[]:,")
-            skip(L + SPACE or LINE)
+            skip(L + L_space or L_wrap)
 
             val jObject by P
             val jString by P + string

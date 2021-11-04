@@ -6,11 +6,11 @@ import io.grule.parser.Parser
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
 open class Grule : Scanner() {
     private val rules = ScannerRules()
-    private val lazyParsers = mutableListOf<() -> Unit>()
+    private val lazyParsers = mutableListOf<() -> Parser>()
 
-    fun P(fn: (Parser) -> Unit): Parser {
+    fun p(fn: () -> Parser): Parser {
         val parser = P
-        lazyParsers.add { fn(parser) }
+        lazyParsers.add { parser + fn() }
         return parser
     }
     
