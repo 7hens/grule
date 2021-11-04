@@ -12,6 +12,6 @@ internal class ParserToken(private val matcher: TokenMatcher) : Parser() {
             return 1
         }
         throw ParserException("Unmatched token matcher (${matcher.rule}), " +
-                "actual is (${token.lexer}) \"${token.text}\" #${token.line}:${token.column}")
+                "actual is (${token.scanner}) \"${token.text}\" #${token.line}:${token.column}")
     }
 }

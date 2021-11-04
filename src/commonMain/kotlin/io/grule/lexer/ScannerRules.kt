@@ -1,14 +1,14 @@
 package io.grule.lexer
 
-internal class ScannerRules : Scanner {
-    private val rules = mutableListOf<Lexer>()
+internal class ScannerRules : Scanner() {
+    private val rules = mutableListOf<Scanner>()
 
     override fun scan(tokenStream: TokenStream) {
         val charStream = tokenStream.charStream
         var matches = false
         for (rule in rules) {
             try {
-                rule.parse(tokenStream)
+                rule.scan(tokenStream)
                 matches = true
                 break
             } catch (_: Throwable) {
@@ -24,11 +24,11 @@ internal class ScannerRules : Scanner {
         }
     }
 
-    fun add(lexer: Lexer) {
-        rules.add(lexer)
+    fun add(scanner: Scanner) {
+        rules.add(scanner)
     }
 
-    fun addIndentRules(newLine: Lexer, indent: Lexer, dedent: Lexer) {
+    fun addIndentRules(newLine: Scanner, indent: Scanner, dedent: Scanner) {
         var prevTabCount = 0
         val indentAction: TokenStream.(Int) -> Unit = { num ->
             val tabCount = (num - 1) / 4
@@ -46,8 +46,8 @@ internal class ScannerRules : Scanner {
             prevTabCount = tabCount
             charStream.moveNext(num)
         }
-        add(LexerBuilder() + "\n" + (LexerBuilder() + "    ").repeat() - indentAction)
-        add(Lexer.EOF - {
+        add(create(LexerBuilder() + "\n" + (LexerBuilder() + "    ").repeat(), indentAction))
+        add(create(Lexer.EOF) {
             indentAction(0)
             emitEOF()
         })

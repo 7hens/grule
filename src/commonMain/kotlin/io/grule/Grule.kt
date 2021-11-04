@@ -5,7 +5,7 @@ import io.grule.parser.Parser
 import io.grule.parser.ParserBuilder
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
-open class Grule : Scanner {
+open class Grule : Scanner() {
     private val rules = ScannerRules()
     private val lazyParsers = mutableListOf<() -> Unit>()
 
@@ -29,9 +29,6 @@ open class Grule : Scanner {
     val LINE get() = L + -"\r\n"
     val EOF get() = Lexer.EOF
 
-    val TokenL: Lexer get() = L.also { addRule(it.token()) }
-    val SkipL: Lexer get() = L.also { addRule(it.skip()) }
-
     private var scanners = mutableListOf<Scanner>(rules)
 
     override fun scan(tokenStream: TokenStream) {
@@ -41,24 +38,27 @@ open class Grule : Scanner {
     }
 
     fun push(scanner: Scanner) {
-        if (scanner is Grule) {
-            scanner.scanners = scanners
-            scanners.add(scanner.rules)
-        } else {
-            scanners.add(scanner)
-        }
+        scanners.add(scanner)
     }
 
     fun pop() {
         scanners.removeLast()
     }
 
-    fun addRule(lexer: Lexer) {
-        rules.add(lexer)
+    fun addRule(scanner: Scanner) {
+        rules.add(scanner)
     }
 
-    fun addIndentRules(newLine: Lexer, indent: Lexer, dedent: Lexer) {
+    fun addIndentRules(newLine: Scanner, indent: Scanner, dedent: Scanner) {
         rules.addIndentRules(newLine, indent, dedent)
+    }
+
+    fun token(lexer: Lexer): Scanner {
+        return Scanner.token(lexer).also { addRule(it) }
+    }
+
+    fun skip(lexer: Lexer): Scanner {
+        return Scanner.skip(lexer).also { addRule(it) }
     }
 
     companion object {

@@ -2,6 +2,8 @@ package io.grule
 
 import io.grule.lexer.CharReader
 import io.grule.lexer.CharStream
+import io.grule.lexer.Scanner.Companion.skip
+import io.grule.lexer.Scanner.Companion.token
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -12,14 +14,14 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            val A by TokenL + "a"
-            TokenL + WORD
+            val A by token(L + "a")
+            token(L + WORD)
 
             val a by P + A
             val b by P + "b"
             val b2 by P + b
             val abc by P + a + b2 + "c"
-            val node = abc.parse(charStream)
+            val node = parse(abc, charStream)
 
             print(node)
             assertEquals(1, node.all(a).size)
@@ -34,9 +36,9 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            val A by TokenL + "a"
-            val Bc by TokenL + "bc"
-            val D by TokenL + "d"
+            val A by token(L + "a")
+            val Bc by token(L + "bc")
+            val D by token(L + "d")
 
             val e by P + "e"
             val bc by P + Bc
@@ -44,7 +46,7 @@ class ParserTest {
             val d by P + D
             val abcd by P + A + eOrBc + d
 
-            val node = abcd.parse(charStream)
+            val node = parse(abcd, charStream)
             println(node.toStringTree())
             assertEquals(1, node.all(A).size)
             assertEquals(1, node.all(eOrBc).size)
@@ -58,12 +60,12 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            val t1 by TokenL + "01"
-            val t2 by TokenL + DIGIT
+            val t1 by token(L + "01")
+            val t2 by token(L + DIGIT)
 
             val digit by P + t2
             val parser by P + t1 + digit.repeat()
-            val node = parser.parse(charStream)
+            val node = parse(parser, charStream)
             println(node.toStringTree())
             assertEquals(1, node.all(t1).size)
             assertEquals(8, node.all(digit).size)
@@ -76,13 +78,13 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            val t1 by TokenL + "01"
-            val t2 by TokenL + DIGIT
-            TokenL + ","
+            val t1 by token(L + "01")
+            val t2 by token(L + DIGIT)
+            token(L + ",")
 
             val digit by P + t2
             val parser by P + t1 + digit.repeatWith(P + ",")
-            val node = parser.parse(charStream)
+            val node = parse(parser, charStream)
             println(node.toStringTree())
             assertEquals(1, node.all(t1).size)
             assertEquals(3, node.all(digit).size)
@@ -96,11 +98,11 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            TokenL + "0123"
-            TokenL + "45"
+            token(L + "0123")
+            token(L + "45")
 
             val parser by P + "0123" + (P + "45")
-            val node = parser.parse(charStream)
+            val node = parse(parser, charStream)
             println(node.toStringTree())
             assertEquals(1, node.all("0123").size)
             assertEquals(1, node.all("45").size)
@@ -114,14 +116,14 @@ class ParserTest {
         println("-----------------")
 
         Grule {
-            val string by TokenL + '"' + ANY.until(L + '"')
-            val float by TokenL + DIGIT.repeat(1) + "." + DIGIT.repeat(1)
-            val integer by TokenL + DIGIT.repeat(1)
-            val bool by TokenL + "true" or L + "false"
-            val nil by TokenL + "null"
+            val string by token(L + '"' + ANY.until(L + '"'))
+            val float by token(L + DIGIT.repeat(1) + "." + DIGIT.repeat(1))
+            val integer by token(L + DIGIT.repeat(1))
+            val bool by token(L + "true" or L + "false")
+            val nil by token(L + "null")
 
-            TokenL + -"{}[]:,"
-            SkipL + SPACE or LINE
+            token(L + -"{}[]:,")
+            skip(L + SPACE or LINE)
 
             val jObject by P
             val jString by P + string
@@ -135,7 +137,7 @@ class ParserTest {
             jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
             val charStream = CharReader.fromString(source).toStream()
-            val astNode = jObject.parse(charStream)
+            val astNode = parse(jObject, charStream)
             println(astNode.toStringTree())
         }
     }

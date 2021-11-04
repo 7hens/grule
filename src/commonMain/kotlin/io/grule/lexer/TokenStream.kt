@@ -9,9 +9,9 @@ interface TokenStream {
 
     fun emit(token: Token)
 
-    fun emit(lexer: Lexer, text: String)
+    fun emit(scanner: Scanner, text: String)
 
     fun emitEOF() {
-        emit(Lexer.EOF, "<EOF>")
+        emit(Scanner.EOF, "<EOF>")
     }
 }

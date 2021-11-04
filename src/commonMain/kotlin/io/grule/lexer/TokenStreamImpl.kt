@@ -35,13 +35,13 @@ internal class TokenStreamImpl(override val charStream: CharStream, val scanner:
     override fun emit(token: Token) {
         require(eof == null)
         buffer.add(token)
-        if (token.lexer == Lexer.EOF) {
+        if (token.scanner == Lexer.EOF) {
             eof = token
         }
     }
 
-    override fun emit(lexer: Lexer, text: String) {
-        emit(Token(lexer, text, charStream))
+    override fun emit(scanner: Scanner, text: String) {
+        emit(Token(scanner, text, charStream))
     }
 
     override fun toString(): String {
@@ -50,7 +50,7 @@ internal class TokenStreamImpl(override val charStream: CharStream, val scanner:
         while (true) {
             val token = peek(i)
             builder.append(token).append("\n")
-            if (token.lexer == Lexer.EOF) {
+            if (token.scanner == Lexer.EOF) {
                 break
             }
             i++

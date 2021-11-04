@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.lexer.Lexer
+import io.grule.lexer.Scanner
 import io.grule.lexer.TokenStream
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -10,7 +10,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     private var isNamed = false
 
     open val isFlatten get() = !isNamed
-    
+
     abstract fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int
 
     fun tryParse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
@@ -23,13 +23,13 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return result
     }
 
-    fun parse(tokenStream: TokenStream, offset: Int = 0): AstNode {
-        val mainParser = ParserBuilder() + this + Lexer.EOF
+    fun parse(tokenStream: TokenStream): AstNode {
+        val mainParser = ParserBuilder() + this + Scanner.EOF
         val node = AstNode(this)
-        mainParser.parse(tokenStream, offset, node)
+        mainParser.parse(tokenStream, 0, node)
         return node.all(this).first()
     }
-    
+
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         isNamed = true
         name = property.name
@@ -44,8 +44,8 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return ParserPlus(mutableListOf(this, parser))
     }
 
-    operator fun plus(lexer: Lexer): Parser {
-        return plus(ParserToken(TokenMatcher(lexer)))
+    operator fun plus(scanner: Scanner): Parser {
+        return plus(ParserToken(TokenMatcher(scanner)))
     }
 
     operator fun plus(text: String): Parser {

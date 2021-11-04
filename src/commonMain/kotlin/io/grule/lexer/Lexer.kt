@@ -1,25 +1,7 @@
 package io.grule.lexer
 
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
-
-abstract class Lexer : ReadOnlyProperty<Any?, Lexer> {
-    abstract fun match(charStream: CharStream, offset: Int): Int
-    
-    open fun parse(tokenStream: TokenStream, offset: Int = 0): Int {
-        return match(tokenStream.charStream, offset)
-    }
-
-    var name = "$" + this::class.simpleName
-
-    override fun getValue(thisRef: Any?, property: KProperty<*>): Lexer {
-        name = property.name
-        return this
-    }
-
-    override fun toString(): String {
-        return name
-    }
+abstract class Lexer {
+    abstract fun match(charStream: CharStream, offset: Int = 0): Int
 
     open operator fun plus(lexer: Lexer): Lexer {
         return LexerPlus(mutableListOf(this, lexer))
@@ -64,21 +46,6 @@ abstract class Lexer : ReadOnlyProperty<Any?, Lexer> {
 
     fun until(last: Lexer): Lexer {
         return until(0, last)
-    }
-
-    operator fun minus(fn: TokenStream.(Int) -> Unit): Lexer {
-        return LexerAction(this, fn)
-    }
-
-    fun token(): Lexer {
-        return minus { num ->
-            emit(this@Lexer, charStream.getText(0, num))
-            charStream.moveNext(num)
-        }
-    }
-
-    fun skip(): Lexer {
-        return minus { charStream.moveNext(it) }
     }
 
     companion object {

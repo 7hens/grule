@@ -4,7 +4,6 @@ internal open class LexerBuilder : Lexer() {
     private var myLexer: Lexer = LexerPlus(mutableListOf())
 
     override fun match(charStream: CharStream, offset: Int): Int {
-        myLexer.name = name
         return myLexer.match(charStream, offset)
     }
 
