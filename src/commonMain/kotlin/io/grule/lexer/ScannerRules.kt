@@ -3,12 +3,11 @@ package io.grule.lexer
 internal class ScannerRules : Scanner() {
     private val rules = mutableListOf<Scanner>()
 
-    override fun scan(tokenStream: TokenStream) {
-        val charStream = tokenStream.charStream
+    override fun scan(charStream: CharStream, tokenStream: TokenStream) {
         var matches = false
         for (rule in rules) {
             try {
-                rule.scan(tokenStream)
+                rule.scan(charStream, tokenStream)
                 matches = true
                 break
             } catch (_: Throwable) {
@@ -32,26 +31,35 @@ internal class ScannerRules : Scanner() {
 
     fun addIndentRules(newLine: Scanner, indent: Scanner, dedent: Scanner) {
         var prevTabCount = 0
-        val indentAction: TokenStream.(Int) -> Unit = { num ->
-            val tabCount = (num - 1) / 4
+        val indentAction = { charStream: CharStream, tokenStream: TokenStream, matchNum: Int ->
+            val tabCount = (matchNum - 1) / 4
 //            println(">> tab: $prevTabCount -> $tabCount")
             if (tabCount > prevTabCount) {
                 for (i in prevTabCount until tabCount) {
-                    emit(indent, "::{")
+                    tokenStream.emit(indent, "::{")
                 }
             } else {
                 for (i in tabCount until prevTabCount) {
-                    emit(dedent, "}::")
+                    tokenStream.emit(dedent, "}::")
                 }
-                emit(newLine, "\\n")
+                tokenStream.emit(newLine, "\\n")
             }
             prevTabCount = tabCount
-            charStream.moveNext(num)
+            charStream.moveNext(matchNum)
         }
-        add(Scanners.create(L + "\n" + (L + "    ").repeat(), indentAction))
-        add(Scanners.create(Lexer.EOF) {
-            indentAction(0)
-            emitEOF()
+        add(object : Scanner() {
+            override fun scan(charStream: CharStream, tokenStream: TokenStream) {
+                val lexer = L + "\n" + (L + "    ").repeat()
+                val matchNum = lexer.match(charStream)
+                indentAction(charStream, tokenStream, matchNum)
+            }
+        })
+        add(object : Scanner() {
+            override fun scan(charStream: CharStream, tokenStream: TokenStream) {
+                Lexer.EOF.match(charStream)
+                indentAction(charStream, tokenStream, 1)
+                tokenStream.emitEOF()
+            }
         })
     }
 }

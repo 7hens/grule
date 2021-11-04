@@ -2,7 +2,6 @@ package io.grule
 
 import io.grule.lexer.*
 import io.grule.parser.Parser
-import io.grule.parser.ParserBuilder
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
 open class Grule : Scanner() {
@@ -17,10 +16,10 @@ open class Grule : Scanner() {
     
     private var scanners = mutableListOf<Scanner>(rules)
 
-    override fun scan(tokenStream: TokenStream) {
+    override fun scan(charStream: CharStream, tokenStream: TokenStream) {
         lazyParsers.forEach { it() }
         lazyParsers.clear()
-        scanners.last().scan(tokenStream)
+        scanners.last().scan(charStream, tokenStream)
     }
 
     fun push(scanner: Scanner) {

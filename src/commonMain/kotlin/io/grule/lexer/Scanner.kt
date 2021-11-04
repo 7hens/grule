@@ -21,7 +21,7 @@ abstract class Scanner : ReadOnlyProperty<Any?, Scanner> {
     val LINE get() = L + "\r\n" or L - "\r\n"
     val EOF get() = Lexer.EOF
 
-    abstract fun scan(tokenStream: TokenStream)
+    abstract fun scan(charStream: CharStream, tokenStream: TokenStream)
 
     var name = "$" + this::class.simpleName
 
