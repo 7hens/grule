@@ -1,6 +1,7 @@
 package io.grule.parser
 
 import io.grule.lexer.Scanner
+import io.grule.lexer.Scanners
 import io.grule.lexer.TokenStream
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -24,7 +25,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     }
 
     fun parse(tokenStream: TokenStream): AstNode {
-        val mainParser = ParserBuilder() + this + Scanner.EOF
+        val mainParser = ParserBuilder() + this + Scanners.EOF
         val node = AstNode(this)
         mainParser.parse(tokenStream, 0, node)
         return node.all(this).first()

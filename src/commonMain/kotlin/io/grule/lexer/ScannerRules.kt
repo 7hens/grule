@@ -19,8 +19,10 @@ internal class ScannerRules : Scanner() {
                 tokenStream.emitEOF()
                 return
             }
-            throw LexerException("Unmatched character (${charStream.peek(0).toChar()}) " +
-                    "at #${charStream.line}:${charStream.column}")
+            throw LexerException(
+                "Unmatched character (${charStream.peek(0).toChar()}) " +
+                        "at #${charStream.line}:${charStream.column}"
+            )
         }
     }
 
@@ -46,8 +48,8 @@ internal class ScannerRules : Scanner() {
             prevTabCount = tabCount
             charStream.moveNext(num)
         }
-        add(create(LexerBuilder() + "\n" + (LexerBuilder() + "    ").repeat(), indentAction))
-        add(create(Lexer.EOF) {
+        add(Scanners.create(L + "\n" + (L + "    ").repeat(), indentAction))
+        add(Scanners.create(Lexer.EOF) {
             indentAction(0)
             emitEOF()
         })

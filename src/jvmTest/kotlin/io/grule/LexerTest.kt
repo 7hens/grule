@@ -2,7 +2,6 @@ package io.grule
 
 import io.grule.lexer.CharReader
 import io.grule.lexer.Lexer
-import io.grule.lexer.Scanner.Companion.token
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

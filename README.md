@@ -15,14 +15,14 @@ println(source)
 println("-----------------")
 
 Grule {
-    val string by TokenL + '"' + ANY.until(L + '"')
-    val float by TokenL + DIGIT.repeat(1) + "." + DIGIT.repeat(1)
-    val integer by TokenL + DIGIT.repeat(1)
-    val bool by TokenL + "true" or L + "false"
-    val nil by TokenL + "null"
+    val string by token(L + '"' + ANY.until(L + '"'))
+    val float by token(L + DIGIT.repeat(1) + "." + DIGIT.repeat(1))
+    val integer by token(L + DIGIT.repeat(1))
+    val bool by token(L + "true" or L + "false")
+    val nil by token(L + "null")
 
-    TokenL + -"{}[]:,"
-    SkipL + SPACE or LINE
+    token(L + -"{}[]:,")
+    skip(L + SPACE or LINE)
 
     val jObject by P
     val jString by P + string
@@ -36,7 +36,7 @@ Grule {
     jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
     val charStream = CharReader.fromString(source).toStream()
-    val astNode = jObject.parse(charStream)
+    val astNode = parse(jObject, charStream)
     println(astNode.toStringTree())
 }
 ```

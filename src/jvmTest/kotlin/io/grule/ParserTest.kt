@@ -1,9 +1,6 @@
 package io.grule
 
 import io.grule.lexer.CharReader
-import io.grule.lexer.CharStream
-import io.grule.lexer.Scanner.Companion.skip
-import io.grule.lexer.Scanner.Companion.token
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -122,7 +119,7 @@ class ParserTest {
             val bool by token(L + "true" or L + "false")
             val nil by token(L + "null")
 
-            token(L + -"{}[]:,")
+            token(L - "{}[]:,")
             skip(L + SPACE or LINE)
 
             val jObject by P

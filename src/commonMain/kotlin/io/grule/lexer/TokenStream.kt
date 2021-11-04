@@ -12,6 +12,6 @@ interface TokenStream {
     fun emit(scanner: Scanner, text: String)
 
     fun emitEOF() {
-        emit(Scanner.EOF, "<EOF>")
+        emit(Scanners.EOF, "<EOF>")
     }
 }

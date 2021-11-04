@@ -11,16 +11,20 @@ abstract class Lexer {
         return plus(LexerString(text))
     }
 
-    operator fun plus(charSet: Iterable<Char>): Lexer {
+    operator fun plus(char: Char): Lexer {
+        return minus(listOf(char))
+    }
+
+    operator fun minus(charSet: Iterable<Char>): Lexer {
         return plus(LexerCharSet(charSet))
     }
 
-    operator fun plus(char: Char): Lexer {
-        return plus(listOf(char))
+    operator fun minus(charArray: CharArray): Lexer {
+        return minus(charArray.toList())
     }
-
-    operator fun plus(charArray: CharArray): Lexer {
-        return plus(charArray.toList())
+    
+    operator fun minus(text: String): Lexer {
+        return minus(text.toList())
     }
 
     open infix fun or(lexer: Lexer): Lexer {

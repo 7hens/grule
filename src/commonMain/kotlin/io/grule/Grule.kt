@@ -9,26 +9,12 @@ open class Grule : Scanner() {
     private val rules = ScannerRules()
     private val lazyParsers = mutableListOf<() -> Unit>()
 
-    val L: Lexer get() = LexerBuilder()
-
-    val P: Parser get() = ParserBuilder()
-
     fun P(fn: (Parser) -> Unit): Parser {
         val parser = P
         lazyParsers.add { fn(parser) }
         return parser
     }
-
-    val ANY get() = L + LexerCharSet.ANY
-    val DIGIT get() = L + ('0'..'9')
-    val UPPER_CASE = L + ('A'..'Z')
-    val LOWER_CASE = L + ('a'..'z')
-    val LETTER get() = L + UPPER_CASE or LOWER_CASE
-    val WORD get() = L + LETTER or DIGIT or L + '_'
-    val SPACE get() = L + -" \t"
-    val LINE get() = L + -"\r\n"
-    val EOF get() = Lexer.EOF
-
+    
     private var scanners = mutableListOf<Scanner>(rules)
 
     override fun scan(tokenStream: TokenStream) {
@@ -54,11 +40,11 @@ open class Grule : Scanner() {
     }
 
     fun token(lexer: Lexer): Scanner {
-        return Scanner.token(lexer).also { addRule(it) }
+        return Scanners.token(lexer).also { addRule(it) }
     }
 
     fun skip(lexer: Lexer): Scanner {
-        return Scanner.skip(lexer).also { addRule(it) }
+        return Scanners.skip(lexer).also { addRule(it) }
     }
 
     companion object {
@@ -67,3 +53,4 @@ open class Grule : Scanner() {
         }
     }
 }
+
