@@ -85,11 +85,11 @@ open class AstNode(val rule: Any) {
         val childSize = children.size
         for ((index, child) in children.withIndex()) {
             if (childSize == index + 1) {
-                result.append("\n└─ ")
-                result.append(child.toStringTree().replace("\n", "\n   "))
+                result.append("\n  └ ")
+                result.append(child.toStringTree().replace("\n", "\n    "))
             } else {
-                result.append("\n├─ ")
-                result.append(child.toStringTree().replace("\n", "\n│  "))
+                result.append("\n  ├ ")
+                result.append(child.toStringTree().replace("\n", "\n  │ "))
             }
         }
         return result.toString()
