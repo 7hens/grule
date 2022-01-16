@@ -16,4 +16,8 @@ internal open class LexerBuilder : Lexer() {
         myLexer = myLexer.or(lexer)
         return this
     }
+
+    override fun toString(): String {
+        return myLexer.toString()
+    }
 }

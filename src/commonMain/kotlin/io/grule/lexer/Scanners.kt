@@ -6,6 +6,10 @@ object Scanners {
             Lexer.EOF.match(charStream)
             tokenStream.emit(this, "<EOF>")
         }
+
+        override fun toString(): String {
+            return Lexer.EOF.toString()
+        }
     }
 
     val EMPTY = object : Scanner() {
@@ -19,6 +23,10 @@ object Scanners {
                 val matchNum = lexer.match(charStream)
                 charStream.moveNext(matchNum)
             }
+
+            override fun toString(): String {
+                return lexer.toString()
+            }
         }
     }
 
@@ -28,6 +36,10 @@ object Scanners {
                 val matchNum = lexer.match(charStream)
                 tokenStream.emit(this, charStream.getText(0, matchNum))
                 charStream.moveNext(matchNum)
+            }
+
+            override fun toString(): String {
+                return lexer.toString()
             }
         }
     }

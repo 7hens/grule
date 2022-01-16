@@ -53,12 +53,20 @@ internal class ScannerRules : Scanner() {
                 val matchNum = lexer.match(charStream)
                 indentAction(charStream, tokenStream, matchNum)
             }
+
+            override fun toString(): String {
+                return "<INDENT>"
+            }
         })
         add(object : Scanner() {
             override fun scan(charStream: CharStream, tokenStream: TokenStream) {
                 Lexer.EOF.match(charStream)
                 indentAction(charStream, tokenStream, 1)
                 tokenStream.emitEOF()
+            }
+
+            override fun toString(): String {
+                return "<INDENT_EOF>"
             }
         })
     }

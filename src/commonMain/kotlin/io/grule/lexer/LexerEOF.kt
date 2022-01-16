@@ -10,6 +10,6 @@ internal object LexerEOF : Lexer() {
     }
 
     override fun toString(): String {
-        return "EOF"
+        return "<EOF>"
     }
 }

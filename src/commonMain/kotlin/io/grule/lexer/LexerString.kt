@@ -12,4 +12,8 @@ internal class LexerString(private val text: String) : Lexer() {
         }
         throw LexerException("Unmatched text \"$text\", current char is '${charStream.peek(offset).toChar()}'")
     }
+
+    override fun toString(): String {
+        return text
+    }
 }
