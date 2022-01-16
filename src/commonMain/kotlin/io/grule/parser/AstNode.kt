@@ -53,23 +53,6 @@ open class AstNode(val rule: Any) {
         }
     }
 
-    fun transverse(listener: Listener) {
-        transverseInternal(listener)
-        listener.onExitNode(this)
-    }
-
-    private fun transverseInternal(listener: Listener) {
-        if (listener.onEnterNode(this)) {
-            return
-        }
-        for (child in children) {
-            child.transverseInternal(listener)
-            if (listener.onExitNode(child)) {
-                return
-            }
-        }
-    }
-
     override fun toString(): String {
         if (rule is String) {
             return rule
@@ -102,8 +85,11 @@ open class AstNode(val rule: Any) {
         override val text: String get() = firstToken.text
     }
 
-    interface Listener {
-        fun onEnterNode(node: AstNode): Boolean
-        fun onExitNode(node: AstNode): Boolean
+    open class Visitor {
+        open fun visit(node: AstNode) {
+            for (child in node.all()) {
+                visit(child)
+            }
+        }
     }
 }
