@@ -55,7 +55,7 @@ open class AstNode(val rule: Any) {
 
     override fun toString(): String {
         if (rule is String) {
-            return rule
+            return "($rule)"
         }
         return "$rule ($text)"
     }
