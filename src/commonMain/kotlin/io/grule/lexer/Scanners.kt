@@ -23,11 +23,7 @@ object Scanners {
                 val matchNum = lexer.match(charStream)
                 charStream.moveNext(matchNum)
             }
-
-            override fun toString(): String {
-                return lexer.toString()
-            }
-        }
+        }.apply { name = lexer.toString() }
     }
 
     fun token(lexer: Lexer): Scanner {
@@ -37,10 +33,6 @@ object Scanners {
                 tokenStream.emit(this, charStream.getText(0, matchNum))
                 charStream.moveNext(matchNum)
             }
-
-            override fun toString(): String {
-                return lexer.toString()
-            }
-        }
+        }.apply { name = lexer.toString() }
     }
 }

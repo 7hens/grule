@@ -1,5 +1,7 @@
 package io.grule.lexer
 
+import kotlin.math.min
+
 internal class LexerRepeat(
     private val lexer: Lexer,
     private val minTimes: Int,
@@ -22,5 +24,9 @@ internal class LexerRepeat(
                 return result
             }
         }
+    }
+
+    override fun toString(): String {
+        return "$lexer *"
     }
 }

@@ -18,4 +18,8 @@ internal class LexerNot(private val lexer: Lexer) : Lexer() {
     override fun not(): Lexer {
         return lexer
     }
+
+    override fun toString(): String {
+        return "! $lexer"
+    }
 }

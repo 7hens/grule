@@ -18,4 +18,8 @@ internal class LexerPlus(private val lexers: MutableList<Lexer>) : Lexer() {
         lexers.add(lexer)
         return this
     }
+
+    override fun toString(): String {
+        return lexers.joinToString("  ")
+    }
 }

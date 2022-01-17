@@ -23,4 +23,8 @@ internal class LexerUntil(
             }
         }
     }
+
+    override fun toString(): String {
+        return "$lexer *> $terminal"
+    }
 }

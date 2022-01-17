@@ -18,4 +18,8 @@ internal class LexerOr(
         lexers.add(lexer)
         return this
     }
+
+    override fun toString(): String {
+        return lexers.joinToString(" | ")
+    }
 }
