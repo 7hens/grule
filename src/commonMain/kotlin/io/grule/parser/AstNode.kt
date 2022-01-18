@@ -2,7 +2,7 @@ package io.grule.parser
 
 import io.grule.lexer.Token
 
-open class AstNode(val rule: Any) {
+open class AstNode(val key: Any) {
     private val groups = mutableMapOf<Any, MutableList<AstNode>>()
     private val children = mutableListOf<AstNode>()
 
@@ -27,6 +27,10 @@ open class AstNode(val rule: Any) {
     fun first(rule: Any): AstNode {
         return all(rule).first()
     }
+    
+    fun last(rule: Any): AstNode {
+        return all(rule).last()
+    }
 
     operator fun get(index: Int): AstNode {
         return children[index]
@@ -39,7 +43,7 @@ open class AstNode(val rule: Any) {
     fun add(child: AstNode) {
         require(!isTerminal)
         children.add(child)
-        groups.getOrPut(child.rule) { mutableListOf() }
+        groups.getOrPut(child.key) { mutableListOf() }
             .add(child)
     }
 
@@ -54,17 +58,17 @@ open class AstNode(val rule: Any) {
     }
 
     override fun toString(): String {
-        if (rule is String) {
-            return "($rule)"
+        if (key is String) {
+            return "($key)"
         }
-        return "$rule ($text)"
+        return "$key ($text)"
     }
 
     fun toStringTree(): String {
         if (children.isEmpty()) {
             return toString()
         }
-        val result = StringBuilder(rule.toString())
+        val result = StringBuilder(key.toString())
         val childSize = children.size
         for ((index, child) in children.withIndex()) {
             if (childSize == index + 1) {
