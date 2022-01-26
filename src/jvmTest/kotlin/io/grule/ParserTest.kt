@@ -107,6 +107,25 @@ class ParserTest {
     }
 
     @Test
+    fun binary() {
+        val source = "0 * 1 + 2 * 3 - 4 / 5"
+        Grule {
+            val Num by token(L_digit.repeat(1))
+            val Op by token(L - "+-*/%><=!")
+
+            skip(L + L_space or L_wrap)
+
+            val num by P + Num
+            val op by P + Op
+            val exp by num.binary(op)
+
+            val charStream = CharReader.fromString(source).toStream()
+            val astNode = parse(exp, charStream)
+            println(astNode.toStringTree())
+        }
+    }
+
+    @Test
     fun json() {
         val source = """{ "a": [1, 2.34], "b": "hello" }"""
         println(source)

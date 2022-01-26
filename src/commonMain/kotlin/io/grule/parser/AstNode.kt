@@ -27,7 +27,7 @@ open class AstNode(val key: Any) {
     fun first(rule: Any): AstNode {
         return all(rule).first()
     }
-    
+
     fun last(rule: Any): AstNode {
         return all(rule).last()
     }
@@ -45,6 +45,15 @@ open class AstNode(val key: Any) {
         children.add(child)
         groups.getOrPut(child.key) { mutableListOf() }
             .add(child)
+    }
+
+    fun remove(child: AstNode) {
+        require(!isTerminal)
+        if (!groups.containsKey(child.key)) {
+            return
+        }
+        children.remove(child)
+        groups.getValue(child.key).remove(child)
     }
 
     fun merge(node: AstNode) {
@@ -93,6 +102,36 @@ open class AstNode(val key: Any) {
         open fun visit(node: AstNode) {
             for (child in node.all()) {
                 visit(child)
+            }
+        }
+    }
+
+    object DefaultComparator : Comparator<AstNode> {
+        override fun compare(a: AstNode, b: AstNode): Int {
+            val firstPriority = OperatorPriority.of(a.firstToken.text)
+            val secondPriority = OperatorPriority.of(b.firstToken.text)
+            return firstPriority.ordinal - secondPriority.ordinal
+        }
+    }
+
+    private enum class OperatorPriority {
+        MIN, QUERY, OR, XOR, AND, EQ, REL, PLUS, TIMES, MAX;
+
+        companion object {
+            private val priorities = mapOf(
+                "?" to QUERY, ";" to QUERY,
+                "|" to OR,
+                "^" to XOR,
+                "&" to AND,
+                "=" to EQ, "!" to EQ,
+                ">" to REL, "<" to REL,
+                "+" to PLUS, "-" to PLUS,
+                "*" to TIMES, "/" to TIMES, "%" to TIMES,
+            )
+
+            fun of(operator: String): OperatorPriority {
+                val first = operator.substring(0, 1)
+                return priorities[first] ?: MIN
             }
         }
     }

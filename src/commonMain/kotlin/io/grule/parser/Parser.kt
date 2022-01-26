@@ -67,10 +67,13 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
 
     fun repeatWith(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
         return ParserBuilder() + this + (ParserBuilder() + separator + this).repeat(minTimes, maxTimes)
-//        return ParserRepeatWith(this, separator)
     }
 
     fun interlace(separator: Parser): Parser {
         return ParserBuilder() + separator.optional() + repeatWith(separator).optional() + separator.optional()
+    }
+
+    fun binary(operator: Parser, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
+        return ParserBinary(this, operator, comparator)
     }
 }
