@@ -117,7 +117,7 @@ class ParserTest {
 
             val num by P + Num
             val op by P + Op
-            val exp by num.binary(op)
+            val exp by P + num.binary(op)
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)

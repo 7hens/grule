@@ -3,8 +3,6 @@ package io.grule.parser
 import io.grule.lexer.TokenStream
 
 internal class ParserToken(private val matcher: TokenMatcher) : Parser() {
-    override val isFlatten = true
-
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         val token = tokenStream.peek(offset)
         if (matcher.matches(token)) {

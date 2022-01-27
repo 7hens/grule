@@ -6,9 +6,12 @@ import io.grule.lexer.TokenStream
 internal class ParserOr(val parsers: MutableList<Parser>) : Parser() {
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         val compositeException = CompositeException()
+        val node = AstNode(this)
         for (parser in parsers) {
             try {
-                return parser.tryParse(tokenStream, offset, parentNode)
+                val result = parser.tryParse(tokenStream, offset, node)
+                parentNode.merge(node)
+                return result
             } catch (e: Throwable) {
                 compositeException.add(e)
             }

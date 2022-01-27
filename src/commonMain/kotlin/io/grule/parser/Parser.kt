@@ -7,32 +7,36 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 abstract class Parser : ReadOnlyProperty<Any?, Parser> {
-    var name = "$" + this::class.simpleName
-    private var isNamed = false
+    var name: String = "$" + this::class.simpleName
+       set(value) {
+           field = value
+           isNamed = true
+       }
 
-    open val isFlatten get() = !isNamed
+    var isNamed = false
+        private set
 
     abstract fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int
 
     fun tryParse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
-        if (isFlatten) {
-            return parse(tokenStream, offset, parentNode)
-        }
         val node = AstNode(this)
         val result = parse(tokenStream, offset, node)
-        parentNode.add(node)
+        if (isNamed) {
+            parentNode.add(node)
+        } else {
+            parentNode.merge(node)
+        }
         return result
     }
 
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = ParserBuilder() + this + Scanners.EOF
-        val node = AstNode(this)
+        val node = AstNode("<ROOT>")
         mainParser.parse(tokenStream, 0, node)
         return node.all(this).first()
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
-        isNamed = true
         name = property.name
         return this
     }
