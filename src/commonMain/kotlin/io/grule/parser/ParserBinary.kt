@@ -3,11 +3,6 @@ package io.grule.parser
 import io.grule.lexer.TokenStream
 
 internal class ParserBinary(val item: Parser, val operator: Parser, val comparator: Comparator<AstNode>): Parser() {
-    init {
-        require(item.isNamed) { "item should be a named parser" }
-        require(operator.isNamed) { "operator should be a named parser" }
-    }
-
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         //  item
         //  |-- item
@@ -15,12 +10,12 @@ internal class ParserBinary(val item: Parser, val operator: Parser, val comparat
         //  '-- item
         val key = parentNode.key
         var prevNode = AstNode(key)
-        var result = item.tryParse(tokenStream, offset, prevNode)
+        var result = item.parse(tokenStream, offset, prevNode)
         while (true) {
             val nextNode = AstNode(key)
             try {
-                result += operator.tryParse(tokenStream, offset + result, nextNode)
-                result += item.tryParse(tokenStream, offset + result, nextNode)
+                result += operator.parse(tokenStream, offset + result, nextNode)
+                result += item.parse(tokenStream, offset + result, nextNode)
             } catch (e: Throwable) {
                 break
             }

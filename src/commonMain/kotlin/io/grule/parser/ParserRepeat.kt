@@ -9,7 +9,7 @@ internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes:
         val node = AstNode(this)
         while (true) {
             try {
-                result += parser.tryParse(tokenStream, offset + result, node)
+                result += parser.parse(tokenStream, offset + result, node)
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
                     break
