@@ -20,6 +20,10 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return this
     }
 
+    override fun toString(): String {
+        return "__" + this::class.simpleName
+    }
+
     open operator fun plus(parser: Parser): Parser {
         return ParserPlus(mutableListOf(this, parser))
     }

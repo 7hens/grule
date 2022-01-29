@@ -5,17 +5,12 @@ import kotlin.reflect.KProperty
 
 internal open class ParserBuilder : Parser() {
     private var myParser: Parser = Shadow
-    private var name: String = "$" + this::class.simpleName
-        set(value) {
-            field = value
-            isNamed = true
-        }
-    private var isNamed = false
+    private var name: String? = null
 
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         val node = AstNode(this)
         val result = myParser.parse(tokenStream, offset, node)
-        if (isNamed) {
+        if (name != null) {
             parentNode.add(node)
         } else {
             parentNode.merge(node)
@@ -39,7 +34,7 @@ internal open class ParserBuilder : Parser() {
     }
 
     override fun toString(): String {
-        return name
+        return name ?: super.toString()
     }
 
     object Shadow : Parser() {
