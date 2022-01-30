@@ -1,57 +1,33 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenStream
+internal abstract class ParserBinary(
+    val opParser: Parser,
+    val leftParser: Parser,
+    val rightParser: Parser,
+    private val comparator: Comparator<AstNode>
+) : Parser() {
 
-internal class ParserBinary(val item: Parser, val operator: Parser, val comparator: Comparator<AstNode>): Parser() {
-    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
-        //  item
-        //  |-- item
-        //  |-- operator
-        //  '-- item
-        val key = parentNode.key
-        var prevNode = AstNode(key)
-        var result = item.parse(tokenStream, offset, prevNode)
-        while (true) {
-            val nextNode = AstNode(key)
-            try {
-                result += operator.parse(tokenStream, offset + result, nextNode)
-                result += item.parse(tokenStream, offset + result, nextNode)
-            } catch (e: Throwable) {
-                break
-            }
-            prevNode = mergeNode(prevNode, nextNode, key)
-        }
-        parentNode.merge(prevNode)
-        return result
-    }
-
-    private fun mergeNode(prev: AstNode, next: AstNode, key: Any): AstNode {
-        val nextOperator = next.first(operator)
-        if (operator !in prev) {
+    fun mergeNode(opNode: AstNode, leftNode: AstNode, rightNode: AstNode): AstNode {
+        val key = opNode.key
+        if (key !in leftNode) {
             val parentNode = AstNode(key)
-            parentNode.add(prev)
-            parentNode.add(nextOperator)
-            parentNode.add(wrap(next, key))
+            parentNode.add(leftNode)
+            parentNode.add(opNode)
+            parentNode.add(rightNode)
             return parentNode
         }
-        val prevOperator = prev.first(operator)
-        if (comparator.compare(prevOperator, nextOperator) >= 0) {
+        val prevOpNode = leftNode.all(key)[1]
+        if (comparator.compare(prevOpNode, opNode) >= 0) {
             val node = AstNode(key)
-            node.add(prev)
-            node.add(nextOperator)
-            node.add(wrap(next, key))
+            node.add(leftNode)
+            node.add(opNode)
+            node.add(rightNode)
             return node
         }
 
-        val prevLastItem = prev.last(key)
-        prev.remove(prevLastItem)
-        prev.add(mergeNode(prevLastItem, next, key))
-        return prev
-    }
-
-    private fun wrap(node: AstNode, key: Any): AstNode {
-        val wrapper = AstNode(key)
-        wrapper.add(node.first(item))
-        return wrapper
+        val prevRightNode = leftNode.last(key)
+        leftNode.remove(prevRightNode)
+        leftNode.add(mergeNode(opNode, prevRightNode, rightNode))
+        return leftNode
     }
 }

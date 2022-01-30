@@ -56,7 +56,22 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return ParserBuilder() + separator.optional() + repeatWith(separator).optional() + separator.optional()
     }
 
-    fun binary(operator: Parser, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
-        return ParserBinary(this, operator, comparator)
+    fun binary(
+        left: Parser,
+        right: Parser,
+        mode: BinaryMode = BinaryMode.GREEDY_RIGHT,
+        comparator: Comparator<AstNode> = AstNode.DefaultComparator
+    ): Parser {
+        return when (mode) {
+            BinaryMode.GREEDY_LEFT -> ParserBinaryGreedyLeft(this, left, right, comparator)
+            BinaryMode.GREEDY_RIGHT -> ParserBinaryGreedyRight(this, left, right, comparator)
+            BinaryMode.RELUCTANT_LEFT -> ParserBinaryReluctantLeft(this, left, right, comparator)
+        }
     }
+
+    fun binary(item: Parser, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
+        return binary(item, item, BinaryMode.GREEDY_RIGHT, comparator)
+    }
+
+    enum class BinaryMode { GREEDY_LEFT, RELUCTANT_LEFT, GREEDY_RIGHT }
 }
