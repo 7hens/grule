@@ -1,6 +1,7 @@
 package io.grule
 
 import io.grule.lexer.CharReader
+import io.grule.lexer.Lexer
 import io.grule.parser.Parser
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -162,13 +163,49 @@ class ParserTest {
     }
 
     @Test
+    fun untilGreedy() {
+        val source = "0 * 1 + 2 * 3 - 4 / x"
+        Grule {
+            val Num by token(L_digit.repeat(1))
+            val Op by token(L - "+-*/%><=!")
+
+            skip(L + L_space or L_wrap)
+            token(L + "x")
+
+            val exp by P + (P + Num + Op).until(P + "x", Parser.UntilMode.GREEDY)
+
+            val charStream = CharReader.fromString(source).toStream()
+            val astNode = parse(exp, charStream)
+            println(astNode.toStringTree())
+        }
+    }
+
+    @Test
+    fun untilReluctant() {
+        val source = "0 * 1 + 2 * 3 - 4 / x"
+        Grule {
+            val Num by token(L_digit.repeat(1))
+            val Op by token(L - "+-*/%><=!")
+
+            skip(L + L_space or L_wrap)
+            token(L + "x")
+
+            val exp by P + (P + Num + Op).until(P + "x", Parser.UntilMode.RELUCTANT)
+
+            val charStream = CharReader.fromString(source).toStream()
+            val astNode = parse(exp, charStream)
+            println(astNode.toStringTree())
+        }
+    }
+
+    @Test
     fun json() {
         val source = """{ "a": [1, 2.34], "b": "hello" }"""
         println(source)
         println("-----------------")
 
         Grule {
-            val string by token(L + '"' + L_any.until(L + '"'))
+            val string by token(L + '"' + L_any.until(L + '"', Lexer.UntilMode.RELUCTANT))
             val float by token(L + L_digit.repeat(1) + "." + L_digit.repeat(1))
             val integer by token(L + L_digit.repeat(1))
             val bool by token(L + "true" or L + "false")
@@ -183,9 +220,9 @@ class ParserTest {
             val jFloat by P + float
             val jBool by P + bool
             val jNil by P + nil
-            val jArray by P + "[" + jObject.repeatWith(P + ",").optional() + "]"
+            val jArray by P + "[" + jObject.repeatWith(P + ",") + "]"
             val jPair by P + jString + ":" + jObject
-            val jDict by P + "{" + jPair.repeatWith(P + ",").optional() + "}"
+            val jDict by P + "{" + jPair.repeatWith(P + ",") + "}"
             jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
             val charStream = CharReader.fromString(source).toStream()

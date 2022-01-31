@@ -24,6 +24,10 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return "__" + this::class.simpleName
     }
 
+    open fun not(): Parser {
+        return ParserNot(this)
+    }
+
     open operator fun plus(parser: Parser): Parser {
         return ParserPlus(mutableListOf(this, parser))
     }
@@ -41,6 +45,8 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     }
 
     open fun repeat(minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
+        require(minTimes >= 0)
+        require(minTimes <= maxTimes)
         return ParserRepeat(this, minTimes, maxTimes)
     }
 
@@ -49,11 +55,20 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     }
 
     fun repeatWith(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
-        return ParserBuilder() + this + (ParserBuilder() + separator + this).repeat(minTimes, maxTimes)
+        val suffix = ParserBuilder() + separator + this
+        val parser = ParserBuilder() + this + suffix.repeat(maxOf(minTimes, 0), maxOf(maxTimes, 0))
+        return if (minTimes == 0) parser.optional() else parser
     }
 
     fun interlace(separator: Parser): Parser {
-        return ParserBuilder() + separator.optional() + repeatWith(separator).optional() + separator.optional()
+        return ParserBuilder() + separator.optional() + this.repeatWith(separator) + separator.optional()
+    }
+
+    fun until(terminal: Parser, mode: UntilMode = UntilMode.GREEDY): Parser {
+        return when (mode) {
+            UntilMode.GREEDY -> ParserUntilGreedy(this, terminal)
+            UntilMode.RELUCTANT -> ParserUntilReluctant(this, terminal)
+        }
     }
 
     fun binary(
@@ -72,6 +87,8 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     fun binary(item: Parser, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
         return binary(item, item, BinaryMode.GREEDY_RIGHT, comparator)
     }
+
+    enum class UntilMode { GREEDY, RELUCTANT }
 
     enum class BinaryMode { GREEDY_LEFT, RELUCTANT_LEFT, GREEDY_RIGHT }
 }

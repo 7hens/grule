@@ -22,7 +22,7 @@ abstract class Lexer {
     operator fun minus(charArray: CharArray): Lexer {
         return minus(charArray.toList())
     }
-    
+
     operator fun minus(text: String): Lexer {
         return minus(text.toList())
     }
@@ -44,15 +44,16 @@ abstract class Lexer {
         return repeat(0, 1)
     }
 
-    open fun until(min: Int, last: Lexer): Lexer {
-        return LexerUntil(this, min, last)
-    }
-
-    fun until(last: Lexer): Lexer {
-        return until(0, last)
+    fun until(terminal: Lexer, mode: UntilMode = UntilMode.GREEDY): Lexer {
+        return when (mode) {
+            UntilMode.GREEDY -> LexerUntilGreedy(this, terminal)
+            UntilMode.RELUCTANT -> LexerUntilReluctant(this, terminal)
+        }
     }
 
     companion object {
         val EOF: Lexer = LexerEOF
     }
+
+    enum class UntilMode { GREEDY, RELUCTANT }
 }
