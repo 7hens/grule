@@ -1,5 +1,6 @@
 package io.grule.parser
 
+import io.grule.UntilMode
 import io.grule.lexer.Scanner
 import io.grule.lexer.Scanners
 import io.grule.lexer.TokenStream
@@ -71,24 +72,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         }
     }
 
-    fun binary(
-        left: Parser,
-        right: Parser,
-        mode: BinaryMode = BinaryMode.GREEDY_RIGHT,
-        comparator: Comparator<AstNode> = AstNode.DefaultComparator
-    ): Parser {
-        return when (mode) {
-            BinaryMode.GREEDY_LEFT -> ParserBinaryGreedyLeft(this, left, right, comparator)
-            BinaryMode.GREEDY_RIGHT -> ParserBinaryGreedyRight(this, left, right, comparator)
-            BinaryMode.RELUCTANT_LEFT -> ParserBinaryReluctantLeft(this, left, right, comparator)
-        }
+    fun binary(operator: Any, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
+        return ParserBinary(this, operator, comparator)
     }
-
-    fun binary(item: Parser, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
-        return binary(item, item, BinaryMode.GREEDY_RIGHT, comparator)
-    }
-
-    enum class UntilMode { GREEDY, RELUCTANT }
-
-    enum class BinaryMode { GREEDY_LEFT, RELUCTANT_LEFT, GREEDY_RIGHT }
 }

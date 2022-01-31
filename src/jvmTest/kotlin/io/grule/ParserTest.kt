@@ -2,7 +2,6 @@ package io.grule
 
 import io.grule.lexer.CharReader
 import io.grule.lexer.Lexer
-import io.grule.parser.Parser
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -109,60 +108,6 @@ class ParserTest {
     }
 
     @Test
-    fun binaryGreedyRight() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
-        Grule {
-            val Num by token(L_digit.repeat(1))
-            val Op by token(L - "+-*/%><=!")
-
-            skip(L + L_space or L_wrap)
-            token(L + "x")
-
-            val exp by P + (P + Op).binary(P + Num) + "/" + "x"
-
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(exp, charStream)
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
-    fun binaryGreedyLeft() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
-        Grule {
-            val Num by token(L_digit.repeat(1))
-            val Op by token(L - "+-*/%><=!")
-
-            skip(L + L_space or L_wrap)
-            token(L + "x")
-
-            val exp by P + (P + Op).binary(P + Num, P + "x", Parser.BinaryMode.GREEDY_LEFT)
-
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(exp, charStream)
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
-    fun binaryReluctantLeft() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
-        Grule {
-            val Num by token(L_digit.repeat(1))
-            val Op by token(L - "+-*/%><=!")
-
-            skip(L + L_space or L_wrap)
-            token(L + "x")
-
-            val exp by P + (P + Op).binary(P + Num, P + "x", Parser.BinaryMode.RELUCTANT_LEFT)
-
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(exp, charStream)
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
     fun untilGreedy() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
         Grule {
@@ -172,7 +117,7 @@ class ParserTest {
             skip(L + L_space or L_wrap)
             token(L + "x")
 
-            val exp by P + (P + Num + Op).until(P + "x", Parser.UntilMode.GREEDY)
+            val exp by P + (P + Num + Op).until(P + "x", UntilMode.GREEDY)
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -190,7 +135,25 @@ class ParserTest {
             skip(L + L_space or L_wrap)
             token(L + "x")
 
-            val exp by P + (P + Num + Op).until(P + "x", Parser.UntilMode.RELUCTANT)
+            val exp by P + (P + Num + Op).until(P + "x", UntilMode.RELUCTANT)
+
+            val charStream = CharReader.fromString(source).toStream()
+            val astNode = parse(exp, charStream)
+            println(astNode.toStringTree())
+        }
+    }
+
+    @Test
+    fun binary() {
+        val source = "0 * 1 + 2 * 3 - 4 / x"
+        Grule {
+            val Num by token(L_digit.repeat(1))
+            val Op by token(L - "+-*/%><=!")
+
+            skip(L + L_space or L_wrap)
+            token(L + "x")
+
+            val exp by P + (P + Num + Op).until(P + "x", UntilMode.RELUCTANT).binary(Op)
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -205,7 +168,7 @@ class ParserTest {
         println("-----------------")
 
         Grule {
-            val string by token(L + '"' + L_any.until(L + '"', Lexer.UntilMode.RELUCTANT))
+            val string by token(L + '"' + L_any.until(L + '"', UntilMode.RELUCTANT))
             val float by token(L + L_digit.repeat(1) + "." + L_digit.repeat(1))
             val integer by token(L + L_digit.repeat(1))
             val bool by token(L + "true" or L + "false")

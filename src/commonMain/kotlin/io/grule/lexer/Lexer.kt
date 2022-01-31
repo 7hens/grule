@@ -1,5 +1,7 @@
 package io.grule.lexer
 
+import io.grule.UntilMode
+
 abstract class Lexer {
     abstract fun match(charStream: CharStream, offset: Int = 0): Int
 
@@ -54,6 +56,4 @@ abstract class Lexer {
     companion object {
         val EOF: Lexer = LexerEOF
     }
-
-    enum class UntilMode { GREEDY, RELUCTANT }
 }
