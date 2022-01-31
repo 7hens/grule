@@ -1,7 +1,6 @@
 package io.grule
 
 import io.grule.lexer.CharReader
-import io.grule.lexer.Lexer
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -81,7 +80,7 @@ class ParserTest {
             token(L + ",")
 
             val digit by P + t2
-            val parser by P + t1 + digit.repeatWith(P + ",")
+            val parser by P + t1 + digit.repeat(P + ",")
             val node = parse(parser, charStream)
             println(node.toStringTree())
             assertEquals(1, node.all(t1).size)
@@ -117,7 +116,7 @@ class ParserTest {
             skip(L + L_space or L_wrap)
             token(L + "x")
 
-            val exp by P + (P + Num + Op).until(P + "x", UntilMode.GREEDY)
+            val exp by P + (P + Num + Op).unless(P + "x")
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -135,7 +134,7 @@ class ParserTest {
             skip(L + L_space or L_wrap)
             token(L + "x")
 
-            val exp by P + (P + Num + Op).until(P + "x", UntilMode.RELUCTANT)
+            val exp by P + (P + Num + Op).until(P + "x")
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -153,7 +152,7 @@ class ParserTest {
             skip(L + L_space or L_wrap)
             token(L + "x")
 
-            val exp by P + (P + Num + Op).until(P + "x", UntilMode.RELUCTANT).binary(Op)
+            val exp by P + (P + Num + Op).until(P + "x").binary(Op)
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -168,7 +167,7 @@ class ParserTest {
         println("-----------------")
 
         Grule {
-            val string by token(L + '"' + L_any.until(L + '"', UntilMode.RELUCTANT))
+            val string by token(L + '"' + L_any.until(L + '"'))
             val float by token(L + L_digit.repeat(1) + "." + L_digit.repeat(1))
             val integer by token(L + L_digit.repeat(1))
             val bool by token(L + "true" or L + "false")
@@ -183,9 +182,9 @@ class ParserTest {
             val jFloat by P + float
             val jBool by P + bool
             val jNil by P + nil
-            val jArray by P + "[" + jObject.repeatWith(P + ",") + "]"
+            val jArray by P + "[" + jObject.repeat(P + ",") + "]"
             val jPair by P + jString + ":" + jObject
-            val jDict by P + "{" + jPair.repeatWith(P + ",") + "}"
+            val jDict by P + "{" + jPair.repeat(P + ",") + "}"
             jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
             val charStream = CharReader.fromString(source).toStream()

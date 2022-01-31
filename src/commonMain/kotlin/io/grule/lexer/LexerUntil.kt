@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-internal class LexerUntilReluctant(val lexer: Lexer, val terminal: Lexer) : Lexer() {
+internal class LexerUntil(val lexer: Lexer, val terminal: Lexer) : Lexer() {
     override fun match(charStream: CharStream, offset: Int): Int {
         var result = 0
         try {

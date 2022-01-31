@@ -1,6 +1,5 @@
 package io.grule.parser
 
-import io.grule.UntilMode
 import io.grule.lexer.Scanner
 import io.grule.lexer.Scanners
 import io.grule.lexer.TokenStream
@@ -55,21 +54,22 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return repeat(0, 1)
     }
 
-    fun repeatWith(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
+    fun repeat(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
         val suffix = ParserBuilder() + separator + this
         val parser = ParserBuilder() + this + suffix.repeat(maxOf(minTimes, 0), maxOf(maxTimes, 0))
         return if (minTimes == 0) parser.optional() else parser
     }
 
     fun interlace(separator: Parser): Parser {
-        return ParserBuilder() + separator.optional() + this.repeatWith(separator) + separator.optional()
+        return ParserBuilder() + separator.optional() + this.repeat(separator) + separator.optional()
     }
 
-    fun until(terminal: Parser, mode: UntilMode = UntilMode.GREEDY): Parser {
-        return when (mode) {
-            UntilMode.GREEDY -> ParserUntilGreedy(this, terminal)
-            UntilMode.RELUCTANT -> ParserUntilReluctant(this, terminal)
-        }
+    fun unless(terminal: Parser): Parser {
+        return ParserUnless(this, terminal)
+    }
+
+    fun until(terminal: Parser): Parser {
+        return ParserUntil(this, terminal)
     }
 
     fun binary(operator: Any, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {

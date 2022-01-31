@@ -1,7 +1,5 @@
 package io.grule.lexer
 
-import io.grule.UntilMode
-
 abstract class Lexer {
     abstract fun match(charStream: CharStream, offset: Int = 0): Int
 
@@ -46,11 +44,12 @@ abstract class Lexer {
         return repeat(0, 1)
     }
 
-    fun until(terminal: Lexer, mode: UntilMode = UntilMode.GREEDY): Lexer {
-        return when (mode) {
-            UntilMode.GREEDY -> LexerUntilGreedy(this, terminal)
-            UntilMode.RELUCTANT -> LexerUntilReluctant(this, terminal)
-        }
+    fun unless(terminal: Lexer): Lexer {
+        return LexerUnless(this, terminal)
+    }
+
+    fun until(terminal: Lexer): Lexer {
+        return LexerUntil(this, terminal)
     }
 
     companion object {
