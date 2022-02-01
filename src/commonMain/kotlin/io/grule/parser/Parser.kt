@@ -50,14 +50,16 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return ParserRepeat(this, minTimes, maxTimes)
     }
 
-    fun optional(): Parser {
-        return repeat(0, 1)
+    fun repeat(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
+        val min = maxOf(minTimes - 1, 0)
+        val max = maxOf(maxTimes - 1, 0)
+        val item = ParserBuilder() + this + separator
+        val parser = ParserBuilder() + item.repeat(min, max) + this
+        return if (minTimes == 0) parser.optional() else parser
     }
 
-    fun repeat(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
-        val suffix = ParserBuilder() + separator + this
-        val parser = ParserBuilder() + this + suffix.repeat(maxOf(minTimes, 0), maxOf(maxTimes, 0))
-        return if (minTimes == 0) parser.optional() else parser
+    fun optional(): Parser {
+        return repeat(0, 1)
     }
 
     fun interlace(separator: Parser): Parser {

@@ -1,11 +1,6 @@
 package io.grule.lexer
 
-import kotlin.math.min
-
-internal class LexerRepeat(
-    private val lexer: Lexer,
-    private val minTimes: Int,
-    private val maxTimes: Int) : Lexer() {
+internal class LexerRepeat(val lexer: Lexer, val minTimes: Int, val maxTimes: Int) : Lexer() {
 
     override fun match(charStream: CharStream, offset: Int): Int {
         var repeatTimes = 0
