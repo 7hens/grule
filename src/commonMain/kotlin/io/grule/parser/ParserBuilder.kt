@@ -18,6 +18,10 @@ internal open class ParserBuilder : Parser() {
         return result
     }
 
+    override fun toString(): String {
+        return name ?: myParser.toString()
+    }
+
     override fun plus(parser: Parser): Parser {
         myParser = myParser.plus(parser)
         return this
@@ -31,10 +35,6 @@ internal open class ParserBuilder : Parser() {
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         name = property.name
         return this
-    }
-
-    override fun toString(): String {
-        return name ?: super.toString()
     }
 
     object Shadow : Parser() {

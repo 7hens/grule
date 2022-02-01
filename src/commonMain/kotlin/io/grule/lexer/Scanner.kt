@@ -23,7 +23,7 @@ abstract class Scanner : ReadOnlyProperty<Any?, Scanner> {
 
     abstract fun scan(charStream: CharStream, tokenStream: TokenStream)
 
-    var name = "$" + this::class.simpleName
+    var name = "__" + this::class.simpleName
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Scanner {
         name = property.name
