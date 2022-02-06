@@ -4,7 +4,7 @@ import io.grule.lexer.TokenStream
 
 internal class ParserNot(val parser: Parser) : Parser() {
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
-        val node = AstNode(this)
+        val node = AstNode(parentNode.key)
         try {
             parser.parse(tokenStream, offset, node)
         } catch (_: Throwable) {

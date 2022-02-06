@@ -13,7 +13,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         val mainParser = ParserBuilder() + this + Scanners.EOF
         val node = AstNode("<ROOT>")
         mainParser.parse(tokenStream, 0, node)
-        return node.all(this).first()
+        return node.first(this)
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {

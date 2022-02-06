@@ -12,6 +12,6 @@ open class Token(
             : this(scanner, text, stream.line, stream.column, stream.charIndex)
 
     override fun toString(): String {
-        return "'$text' [$line:$column] $scanner"
+        return "'$text' [$line:$column] <$scanner>"
     }
 }
