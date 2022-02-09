@@ -65,4 +65,8 @@ internal class ParserBinary(
         leftNode.add(mergeNode(prevRightNode, opNode, rightNode))
         return leftNode
     }
+
+    override fun contains(parser: Parser): Boolean {
+        return this === parser || this.parser.contains(parser)
+    }
 }

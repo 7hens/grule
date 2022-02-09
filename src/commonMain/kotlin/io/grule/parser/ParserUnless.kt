@@ -15,4 +15,8 @@ internal class ParserUnless(val parser: Parser, val terminal: Parser) : Parser()
         parentNode.merge(node)
         return result
     }
+
+    override fun contains(parser: Parser): Boolean {
+        return this === parser || this.parser.contains(parser) || this.terminal.contains(parser)
+    }
 }

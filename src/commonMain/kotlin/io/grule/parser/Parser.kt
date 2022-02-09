@@ -24,6 +24,10 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return "__" + this::class.simpleName
     }
 
+    open operator fun contains(parser: Parser): Boolean {
+        return this === parser
+    }
+
     open fun not(): Parser {
         return ParserNot(this)
     }

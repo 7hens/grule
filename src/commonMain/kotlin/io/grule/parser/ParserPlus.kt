@@ -17,4 +17,8 @@ internal class ParserPlus(val parsers: MutableList<Parser>) : Parser() {
         parsers.add(parser)
         return this
     }
+
+    override fun contains(parser: Parser): Boolean {
+        return this === parser || parsers.any { it.contains(parser) }
+    }
 }

@@ -37,6 +37,10 @@ internal open class ParserBuilder : Parser() {
         return this
     }
 
+    override fun contains(parser: Parser): Boolean {
+        return this === parser || this.myParser.contains(parser)
+    }
+
     object Shadow : Parser() {
         override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
             return 0
