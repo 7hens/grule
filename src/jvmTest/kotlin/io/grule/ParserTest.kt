@@ -161,7 +161,45 @@ class ParserTest {
     }
 
     @Test
-    fun recurse() {
+    fun recursiveLeft() {
+        val source = "0 * 1 + 2 * 3 - 4 / x"
+        Grule {
+            val Num by token(L_digit.repeat(1))
+            val Op by token(L - "+-*/%><=!")
+
+            skip(L + L_space or L_wrap)
+            token(L + "x")
+
+            val exp by p { P + Num or it + "x" or it + Num or it + Op }
+
+            val charStream = CharReader.fromString(source).toStream()
+            val astNode = parse(exp, charStream)
+            println("================")
+            println(astNode.toStringTree())
+        }
+    }
+    
+    @Test
+    fun recursiveRight() {
+        val source = "0 * 1 + 2 * 3 - 4 / x"
+        Grule {
+            val Num by token(L_digit.repeat(1))
+            val Op by token(L - "+-*/%><=!")
+
+            skip(L + L_space or L_wrap)
+            token(L + "x")
+
+            val exp by p { P + Num + Op + it or P + "x" or P + Num }
+
+            val charStream = CharReader.fromString(source).toStream()
+            val astNode = parse(exp, charStream)
+            println("================")
+            println(astNode.toStringTree())
+        }
+    }
+    
+    @Test
+    fun recursiveBinary() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
         Grule {
             val Num by token(L_digit.repeat(1))

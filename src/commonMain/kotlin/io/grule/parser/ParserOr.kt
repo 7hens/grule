@@ -4,10 +4,10 @@ import io.grule.lexer.TokenStream
 
 internal class ParserOr(val parsers: MutableList<Parser>) : Parser() {
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
-        val node = AstNode(parentNode.key)
         var error: Throwable? = null
         for (parser in parsers) {
             try {
+                val node = AstNode(parentNode.key)
                 val result = parser.parse(tokenStream, offset, node)
                 parentNode.merge(node)
                 return result
