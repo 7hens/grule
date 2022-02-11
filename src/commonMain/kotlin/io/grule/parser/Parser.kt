@@ -7,21 +7,26 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 abstract class Parser : ReadOnlyProperty<Any?, Parser> {
+    var name: String? = null
+        private set
+
     abstract fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int
 
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = ParserBuilder() + this + Scanners.EOF
         val node = AstNode("<ROOT>")
         mainParser.parse(tokenStream, 0, node)
+//        println(node.toStringTree())
         return node.first(this)
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
+        name = property.name
         return this
     }
 
     override fun toString(): String {
-        return "__" + this::class.simpleName
+        return name ?: ("__" + this::class.simpleName)
     }
 
     open operator fun contains(parser: Parser): Boolean {

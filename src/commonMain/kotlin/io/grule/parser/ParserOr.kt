@@ -5,7 +5,7 @@ import io.grule.lexer.TokenStream
 internal class ParserOr(val parsers: MutableList<Parser>) : Parser() {
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         val node = AstNode(parentNode.key)
-        var error: Throwable = ParserException()
+        var error: Throwable? = null
         for (parser in parsers) {
             try {
                 val result = parser.parse(tokenStream, offset, node)
@@ -15,7 +15,7 @@ internal class ParserOr(val parsers: MutableList<Parser>) : Parser() {
                 error = e
             }
         }
-        throw error
+        throw error ?: ParserException()
     }
 
     override infix fun or(parser: Parser): Parser {

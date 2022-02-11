@@ -5,7 +5,7 @@ import io.grule.lexer.TokenStream
 internal class ParserBinary(
     val parser: Parser,
     val operator: Any,
-    val comparator: Comparator<AstNode>
+    val comparator: Comparator<AstNode>,
 ) : Parser() {
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         val key = parentNode.key

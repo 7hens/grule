@@ -4,8 +4,7 @@ import io.grule.lexer.TokenStream
 import kotlin.reflect.KProperty
 
 internal open class ParserBuilder : Parser() {
-    private var myParser: Parser = Shadow
-    private var name: String? = null
+    var myParser: Parser = Shadow
 
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         val node = AstNode(this)
@@ -31,12 +30,7 @@ internal open class ParserBuilder : Parser() {
         myParser = myParser.or(parser)
         return this
     }
-
-    override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
-        name = property.name
-        return this
-    }
-
+    
     override fun contains(parser: Parser): Boolean {
         return this === parser || this.myParser.contains(parser)
     }

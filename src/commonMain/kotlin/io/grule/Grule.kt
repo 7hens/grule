@@ -2,18 +2,19 @@ package io.grule
 
 import io.grule.lexer.*
 import io.grule.parser.Parser
+import io.grule.parser.ParserRecurse
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
 open class Grule : Scanner() {
     private val rules = ScannerRules()
     private val lazyParsers = mutableListOf<() -> Parser>()
 
-    fun p(fn: () -> Parser): Parser {
-        val parser = P
-        lazyParsers.add { parser + fn() }
-        return parser
+    fun p(fn: (Parser) -> Parser): Parser {
+//        val parser = P
+//        lazyParsers.add { parser + fn() }
+        return ParserRecurse(fn)
     }
-    
+
     private var scanners = mutableListOf<Scanner>(rules)
 
     override fun scan(charStream: CharStream, tokenStream: TokenStream) {

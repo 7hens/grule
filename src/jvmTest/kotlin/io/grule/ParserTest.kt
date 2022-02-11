@@ -161,6 +161,25 @@ class ParserTest {
     }
 
     @Test
+    fun recurse() {
+        val source = "0 * 1 + 2 * 3 - 4 / x"
+        Grule {
+            val Num by token(L_digit.repeat(1))
+            val Op by token(L - "+-*/%><=!")
+
+            skip(L + L_space or L_wrap)
+            token(L + "x")
+
+            val exp by p { P + Num or P + "x" or it + Op + it }
+
+            val charStream = CharReader.fromString(source).toStream()
+            val astNode = parse(exp, charStream)
+            println("================")
+            println(astNode.toStringTree())
+        }
+    }
+
+    @Test
     fun json() {
         val source = """{ "a": [1, 2.34], "b": "hello" }"""
         println(source)

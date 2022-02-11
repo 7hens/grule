@@ -7,7 +7,6 @@ open class AstNode(val key: Any) {
     private val children = mutableListOf<AstNode>()
 
     open val isTerminal: Boolean = false
-
     open val firstToken: Token get() = children.first().firstToken
     open val lastToken: Token get() = children.last().lastToken
 
@@ -16,6 +15,10 @@ open class AstNode(val key: Any) {
             return children.joinToString(" ") { it.text }
         }
 
+    fun isEmpty(): Boolean = children.isEmpty()
+
+    fun isNotEmpty(): Boolean = !isEmpty()
+    
     fun all(): List<AstNode> {
         return children
     }
@@ -54,6 +57,11 @@ open class AstNode(val key: Any) {
         }
         children.remove(child)
         groups.getValue(child.key).remove(child)
+    }
+
+    fun clear() {
+        children.clear()
+        groups.clear()
     }
 
     fun merge(node: AstNode) {
