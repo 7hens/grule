@@ -9,7 +9,7 @@ internal class LexerNot(private val lexer: Lexer) : Lexer() {
         }
         try {
             lexer.match(charStream, offset)
-        } catch (e: Throwable) {
+        } catch (e: LexerException) {
             return 1
         }
         throw LexerException()

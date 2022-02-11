@@ -5,7 +5,7 @@ internal class LexerUntil(val lexer: Lexer, val terminal: Lexer) : Lexer() {
         var result = 0
         try {
             result += terminal.match(charStream, offset + result)
-        } catch (_: Throwable) {
+        } catch (_: LexerException) {
             result += lexer.match(charStream, offset + result)
             result += match(charStream, offset + result)
         }

@@ -80,7 +80,7 @@ class ParserTest {
             token(L + ",")
 
             val digit by P + t2
-            val parser by P + t1 + digit.repeat(P + ",")
+            val parser by P + t1 + digit.join(P + ",")
             val node = parse(parser, charStream)
             println(node.toStringTree())
             assertEquals(1, node.all(t1).size)
@@ -239,9 +239,9 @@ class ParserTest {
             val jFloat by P + float
             val jBool by P + bool
             val jNil by P + nil
-            val jArray by P + "[" + jObject.repeat(P + ",") + "]"
+            val jArray by P + "[" + jObject.join(P + ",") + "]"
             val jPair by P + jString + ":" + jObject
-            val jDict by P + "{" + jPair.repeat(P + ",") + "}"
+            val jDict by P + "{" + jPair.join(P + ",") + "}"
             jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
 
             val charStream = CharReader.fromString(source).toStream()

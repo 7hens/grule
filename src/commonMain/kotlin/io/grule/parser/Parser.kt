@@ -9,6 +9,8 @@ import kotlin.reflect.KProperty
 abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     var name: String? = null
         private set
+    
+    val isNamed: Boolean get() = name != null
 
     abstract fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int
 
@@ -59,7 +61,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return ParserRepeat(this, minTimes, maxTimes)
     }
 
-    fun repeat(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
+    fun join(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
         val min = maxOf(minTimes - 1, 0)
         val max = maxOf(maxTimes - 1, 0)
         val item = ParserBuilder() + this + separator
@@ -72,7 +74,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     }
 
     fun interlace(separator: Parser): Parser {
-        return ParserBuilder() + separator.optional() + this.repeat(separator) + separator.optional()
+        return ParserBuilder() + separator.optional() + join(separator) + separator.optional()
     }
 
     fun unless(terminal: Parser): Parser {

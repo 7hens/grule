@@ -10,7 +10,7 @@ internal class ScannerRules : Scanner() {
                 rule.scan(charStream, tokenStream)
                 matches = true
                 break
-            } catch (_: Throwable) {
+            } catch (_: LexerException) {
             }
         }
         if (!matches) {

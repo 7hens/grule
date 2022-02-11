@@ -1,20 +1,22 @@
 package io.grule.parser
 
 import io.grule.lexer.TokenStream
-import kotlin.reflect.KProperty
 
 internal open class ParserBuilder : Parser() {
     var myParser: Parser = Shadow
 
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
-        val node = AstNode(this)
-        val result = myParser.parse(tokenStream, offset, node)
-        if (name != null) {
+        return if (isNamed) {
+            val node = AstNode(this)
+            val result = myParser.parse(tokenStream, offset, node)
             parentNode.add(node)
+            result
         } else {
+            val node = AstNode(parentNode.key)
+            val result = myParser.parse(tokenStream, offset, node)
             parentNode.merge(node)
+            result
         }
-        return result
     }
 
     override fun toString(): String {
@@ -30,9 +32,9 @@ internal open class ParserBuilder : Parser() {
         myParser = myParser.or(parser)
         return this
     }
-    
+
     override fun contains(parser: Parser): Boolean {
-        return this === parser || this.myParser.contains(parser)
+        return this === parser || (!isNamed && myParser.contains(parser))
     }
 
     object Shadow : Parser() {

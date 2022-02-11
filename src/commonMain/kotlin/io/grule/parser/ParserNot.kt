@@ -7,7 +7,7 @@ internal class ParserNot(val parser: Parser) : Parser() {
         val node = AstNode(parentNode.key)
         try {
             parser.parse(tokenStream, offset, node)
-        } catch (_: Throwable) {
+        } catch (_: ParserException) {
             return 0
         }
         throw ParserException()

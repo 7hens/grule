@@ -7,7 +7,7 @@ internal class LexerOr(
         for (lexer in lexers) {
             try {
                 return lexer.match(charStream, offset)
-            } catch (e: Throwable){
+            } catch (_: LexerException){
                 continue
             }
         }

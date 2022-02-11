@@ -41,7 +41,7 @@ abstract class Lexer {
         return LexerRepeat(this, minTimes, maxTimes)
     }
 
-    fun repeat(separator: Lexer, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Lexer {
+    fun join(separator: Lexer, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Lexer {
         val min = maxOf(minTimes - 1, 0)
         val max = maxOf(maxTimes - 1, 0)
         val item = LexerBuilder() + this + separator
@@ -54,7 +54,7 @@ abstract class Lexer {
     }
 
     fun interlace(separator: Lexer): Lexer {
-        return LexerBuilder() + separator.optional() + this.repeat(separator) + separator.optional()
+        return LexerBuilder() + separator.optional() + join(separator) + separator.optional()
     }
 
     fun unless(terminal: Lexer): Lexer {

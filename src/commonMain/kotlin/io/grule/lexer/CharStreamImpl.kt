@@ -27,10 +27,10 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
     }
 
     override fun moveNext(count: Int) {
+        require(count >= 0)
         if (count == 0) {
             return
         }
-        require(count > 0)
         val newDataStartOffset = dataStartPos + count
         require(newDataStartOffset <= dataEndPos)
         for(i in dataStartPos until newDataStartOffset) {
@@ -48,9 +48,9 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
     override fun getText(startOffset: Int, endOffset: Int): String {
         require(startOffset >= 0)
         require(endOffset >= startOffset)
-        require(endOffset <= dataEndPos - dataStartPos)
         val offset = dataStartPos + startOffset
-        return buffer.concatToString(offset, offset + (endOffset - startOffset))
+        val length = minOf(endOffset - startOffset, dataEndPos - offset)
+        return buffer.concatToString(offset, offset + length)
     }
 
     private var isReadOver = false

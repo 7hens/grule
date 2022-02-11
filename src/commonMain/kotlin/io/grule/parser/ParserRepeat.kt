@@ -14,7 +14,7 @@ internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes:
                 if (repeatTimes == maxTimes) {
                     break
                 }
-            } catch (e: Throwable) {
+            } catch (e: ParserException) {
                 if (repeatTimes < minTimes) {
                     throw e
                 }

@@ -10,7 +10,7 @@ internal class ParserToken(private val matcher: TokenMatcher) : Parser() {
             parentNode.add(matcher.node(token))
             return 1
         }
-        throw ParserException("Unmatched token matcher (${matcher.rule}), " +
+        throw ParserException("Unmatched token matcher ${matcher.rule} in ${parentNode.key}, " +
                 "actual is $token")
     }
 }

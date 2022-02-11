@@ -12,7 +12,7 @@ internal class LexerRepeat(val lexer: Lexer, val minTimes: Int, val maxTimes: In
                 if (repeatTimes == maxTimes) {
                     return result
                 }
-            } catch (e: Throwable) {
+            } catch (e: LexerException) {
                 if (repeatTimes < minTimes) {
                     throw e
                 }

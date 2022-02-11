@@ -16,9 +16,8 @@ internal class ScannerIndent(val newLine: Scanner, val indent: Scanner, val dede
         return try {
             Lexer.EOF.match(charStream)
             onIndent(tokenStream, -1)
-            charStream.moveNext(1)
             true
-        } catch (e: Throwable) {
+        } catch (e: LexerException) {
             false
         }
     }

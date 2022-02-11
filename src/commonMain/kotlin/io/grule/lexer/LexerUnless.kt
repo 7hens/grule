@@ -6,7 +6,7 @@ internal class LexerUnless(val lexer: Lexer, val terminal: Lexer) : Lexer() {
         try {
             result += lexer.match(charStream, offset + result)
             result += match(charStream, offset + result)
-        } catch (_: Throwable) {
+        } catch (_: LexerException) {
             result += terminal.match(charStream, offset + result)
         }
         return result

@@ -18,7 +18,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
             }
         }
         if (parsers.all { this in it }) {
-            throw ParserException("Must have one dependent parser at least")
+            throw IllegalArgumentException("Must have one dependent parser at least")
         }
     }
 
@@ -58,7 +58,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
                 parentNode.add(node)
                 result += parseRecursive(tokenStream, offset + result, parentNode)
                 return result
-            } catch (e: Throwable) {
+            } catch (e: ParserException) {
                 error = e
             }
         }
@@ -84,7 +84,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
                 parentNode.add(node)
                 result += parseRecursive(tokenStream, offset + result, parentNode)
                 return result
-            } catch (_: Throwable) {
+            } catch (_: ParserException) {
             }
         }
         return result

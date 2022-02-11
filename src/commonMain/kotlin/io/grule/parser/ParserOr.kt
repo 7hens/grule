@@ -11,7 +11,7 @@ internal class ParserOr(val parsers: MutableList<Parser>) : Parser() {
                 val result = parser.parse(tokenStream, offset, node)
                 parentNode.merge(node)
                 return result
-            } catch (e: Throwable) {
+            } catch (e: ParserException) {
                 error = e
             }
         }
