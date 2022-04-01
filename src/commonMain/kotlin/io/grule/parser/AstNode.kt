@@ -18,7 +18,7 @@ open class AstNode(val key: Any) {
     fun isEmpty(): Boolean = children.isEmpty()
 
     fun isNotEmpty(): Boolean = !isEmpty()
-    
+
     fun all(): List<AstNode> {
         return children
     }
@@ -81,20 +81,14 @@ open class AstNode(val key: Any) {
         return "$key ($text)"
     }
 
-    fun toStringTree(): String {
+    fun toStringTree(style: TreeStyle = TreeStyle.SOLID): String {
         if (children.isEmpty()) {
             return toString()
         }
         val result = StringBuilder(key.toString())
         val childSize = children.size
         for ((index, child) in children.withIndex()) {
-            if (childSize == index + 1) {
-                result.append("\n └─ ")
-                result.append(child.toStringTree().replace("\n", "\n    "))
-            } else {
-                result.append("\n ├─ ")
-                result.append(child.toStringTree().replace("\n", "\n │  "))
-            }
+            style.applyTo(result, child.toStringTree(style), childSize == index + 1)
         }
         return result.toString()
     }
