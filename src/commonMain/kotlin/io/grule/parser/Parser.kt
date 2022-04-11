@@ -31,7 +31,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return name ?: ("__" + this::class.simpleName)
     }
 
-    open operator fun contains(parser: Parser): Boolean {
+    open fun isRecursive(parser: Parser): Boolean {
         return this === parser
     }
 

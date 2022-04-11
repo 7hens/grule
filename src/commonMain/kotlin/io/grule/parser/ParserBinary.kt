@@ -66,7 +66,7 @@ internal class ParserBinary(
         return leftNode
     }
 
-    override fun contains(parser: Parser): Boolean {
-        return this === parser || this.parser.contains(parser)
+    override fun isRecursive(parser: Parser): Boolean {
+        return this === parser || this.parser.isRecursive(parser)
     }
 }

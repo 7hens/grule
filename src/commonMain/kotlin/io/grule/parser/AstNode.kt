@@ -34,6 +34,14 @@ open class AstNode(val key: Any) {
     fun last(rule: Any): AstNode {
         return all(rule).last()
     }
+    
+    fun firstOrNull(rule: Any): AstNode? {
+        return all(rule).firstOrNull()
+    }
+    
+    fun lastOrNull(rule: Any): AstNode? {
+        return all(rule).lastOrNull()
+    }
 
     operator fun get(index: Int): AstNode {
         return children[index]

@@ -17,7 +17,7 @@ internal class ParserNot(val parser: Parser) : Parser() {
         return parser
     }
 
-    override fun contains(parser: Parser): Boolean {
-        return this === parser || this.parser.contains(parser)
+    override fun isRecursive(parser: Parser): Boolean {
+        return this === parser || this.parser.isRecursive(parser)
     }
 }

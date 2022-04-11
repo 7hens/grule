@@ -25,7 +25,7 @@ internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes:
         return result
     }
 
-    override fun contains(parser: Parser): Boolean {
-        return this === parser || parser.contains(parser)
+    override fun isRecursive(parser: Parser): Boolean {
+        return this === parser || parser.isRecursive(parser)
     }
 }

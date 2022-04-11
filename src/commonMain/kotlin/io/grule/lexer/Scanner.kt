@@ -45,4 +45,8 @@ abstract class Scanner : ReadOnlyProperty<Any?, Scanner> {
     fun parse(parser: Parser, charStream: CharStream): AstNode {
         return parser.parse(tokenStream(charStream))
     }
+    
+    fun parse(parser: Parser, text: String): AstNode {
+        return parse(parser, CharStream.fromString(text))
+    }
 }

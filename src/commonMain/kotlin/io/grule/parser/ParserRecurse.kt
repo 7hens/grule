@@ -7,6 +7,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
     private val primitiveParsers = mutableListOf<Parser>()
     private val recursiveParsers = mutableListOf<Parser>()
     private val lazyInit by lazy { init() }
+    private val recursiveException = IllegalArgumentException("Must have one independent parser at least")
 
     private fun init() {
         val parsers = getSubParsers()
@@ -17,8 +18,8 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
                 primitiveParsers.add(parser)
             }
         }
-        if (parsers.all { this in it }) {
-            throw IllegalArgumentException("Must have one dependent parser at least")
+        if (isRecurseParser(this)) {
+            throw recursiveException
         }
     }
 
@@ -32,6 +33,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
             listOf(resultParser)
         }
     }
+
     private fun isRecurseParser(parser: Parser): Boolean {
         return parser is RecurseBuilder
     }
@@ -90,10 +92,9 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
         return result
     }
 
-    override fun contains(parser: Parser): Boolean {
+    override fun isRecursive(parser: Parser): Boolean {
         return this === parser
-                || primitiveParsers.any { it.contains(parser) }
-                || recursiveParsers.any { it.contains(parser) }
+                || (primitiveParsers + recursiveParsers).all { it.isRecursive(parser) }
     }
 
     private inner class RecurseBuilder : ParserBuilder()

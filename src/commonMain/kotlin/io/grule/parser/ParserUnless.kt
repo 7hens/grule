@@ -16,7 +16,7 @@ internal class ParserUnless(val parser: Parser, val terminal: Parser) : Parser()
         return result
     }
 
-    override fun contains(parser: Parser): Boolean {
-        return this === parser || this.parser.contains(parser) || this.terminal.contains(parser)
+    override fun isRecursive(parser: Parser): Boolean {
+        return this === parser || this.parser.isRecursive(parser) || this.terminal.isRecursive(parser)
     }
 }

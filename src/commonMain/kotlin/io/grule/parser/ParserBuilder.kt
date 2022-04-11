@@ -33,8 +33,8 @@ internal open class ParserBuilder : Parser() {
         return this
     }
 
-    override fun contains(parser: Parser): Boolean {
-        return this === parser || (!isNamed && myParser.contains(parser))
+    override fun isRecursive(parser: Parser): Boolean {
+        return this === parser || (!isNamed && myParser.isRecursive(parser))
     }
 
     object Shadow : Parser() {

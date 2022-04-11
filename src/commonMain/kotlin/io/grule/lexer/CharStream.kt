@@ -15,5 +15,9 @@ interface CharStream {
 
     companion object {
         const val EOF = -1
+
+        fun fromString(text: String): CharStream {
+            return CharReader.fromString(text).toStream()
+        }
     }
 }
