@@ -30,6 +30,10 @@ abstract class Lexer {
     operator fun minus(text: String): Lexer {
         return minus(text.toList())
     }
+    
+    operator fun div(text: String): Lexer {
+        return plus(LexerRegex(text))
+    }
 
     open infix fun or(lexer: Lexer): Lexer {
         return LexerOr(mutableListOf(this, lexer))

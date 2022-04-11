@@ -1,5 +1,6 @@
-package io.grule
+package io.grule.parser
 
+import io.grule.Grule
 import io.grule.lexer.CharReader
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -213,39 +214,6 @@ class ParserTest {
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
             println("================")
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
-    fun json() {
-        val source = """{ "a": [1, 2.34], "b": "hello" }"""
-        println(source)
-        println("-----------------")
-
-        Grule {
-            val string by token(L + '"' + L_any.until(L + '"'))
-            val float by token(L + L_digit.repeat(1) + "." + L_digit.repeat(1))
-            val integer by token(L + L_digit.repeat(1))
-            val bool by token(L + "true" or L + "false")
-            val nil by token(L + "null")
-
-            token(L - "{}[]:,")
-            skip(L + L_space or L_wrap)
-
-            val jObject by P
-            val jString by P + string
-            val jInteger by P + integer
-            val jFloat by P + float
-            val jBool by P + bool
-            val jNil by P + nil
-            val jArray by P + "[" + jObject.join(P + ",") + "]"
-            val jPair by P + jString + ":" + jObject
-            val jDict by P + "{" + jPair.join(P + ",") + "}"
-            jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict
-
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(jObject, charStream)
             println(astNode.toStringTree())
         }
     }
