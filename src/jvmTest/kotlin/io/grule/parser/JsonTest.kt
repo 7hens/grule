@@ -15,7 +15,7 @@ class JsonTest: Grule() {
         skip(L + L_space or L_wrap)
     }
 
-    val jObject: Parser by p { jObject or jString or jFloat or jInteger or jBool or jNil or jArray or jDict }
+    val jObject: Parser by p { jString or jFloat or jInteger or jBool or jNil or jArray or jDict }
     val jString by P + string
     val jInteger by P + integer
     val jFloat by P + float

@@ -23,6 +23,11 @@ internal class LexerRegexTest {
     fun range() {
         assertEquals(3, match("[a-z]*", "abc"))
     }
+    
+    @Test
+    fun escape() {
+        assertEquals(2, match("\\t\\n", "\t\n"))
+    }
 
     private fun match(pattern: String, text: String): Int {
         return LexerRegex(pattern).match(CharStream.fromString(text))

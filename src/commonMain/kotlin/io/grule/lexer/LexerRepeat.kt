@@ -22,6 +22,6 @@ internal class LexerRepeat(val lexer: Lexer, val minTimes: Int, val maxTimes: In
     }
 
     override fun toString(): String {
-        return "$lexer *"
+        return "($lexer *)"
     }
 }
