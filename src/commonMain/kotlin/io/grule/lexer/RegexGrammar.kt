@@ -19,13 +19,13 @@ class RegexGrammar : Grule() {
 
     val regex: Parser by p { P + (P + branch).join(P + "|") }
     val escape by P + EscapeOperator or P + EscapeChar or P + Unicode or P + Hex or P + Octal
-    val char by P + escape or P + Digit or P + Char
+    val char by P + escape or P + Digit or P + Char or P + "."
     val item by P + char + "-" + char or P + char
     val atom by P + char or P + "(" + regex + ")" or P + "[" + (P + "^").optional() + item.repeat(1) + "]"
     val digits by P + (P + Digit).repeat(1)
     val quantity by P + digits + "," + (P + digits).optional() or P + digits
-    val quantifier by P + (P + "+" or P + "*") + (P + "?").optional() or P + "?" or P + "{" + quantity + "}"
-    val piece by P + atom + quantifier.optional()
+    val quantifier by P + "+" or P + "*" or P + "?" or P + "{" + quantity + "}"
+    val piece by P + atom + (P + "+" or P + "*") + "?" + atom or P + atom + quantifier.optional()
     val branch by P + piece.repeat()
 
 

@@ -4,7 +4,7 @@ import io.grule.Grule
 import org.junit.Test
 
 class JsonRegLexerTest: Grule() {
-    val string by token(L / """("[^"]+")""")
+    val string by token(L / """(".*?")""")
     val float by token(L / "\\d+\\.\\d+")
     val integer by token(L / "\\d+")
     val bool by token(L / "true|false")

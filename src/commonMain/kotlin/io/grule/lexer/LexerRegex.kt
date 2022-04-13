@@ -29,8 +29,15 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
     }
 
     private fun parsePiece(piece: AstNode): Lexer {
-        val atom = parseAtom(piece.first(g.atom))
-        return parseQuantifier(piece.firstOrNull(g.quantifier), atom)
+        val firstAtom = parseAtom(piece.first(g.atom))
+        if ("?" in piece) {
+            val lastAtom = parseAtom(piece.last(g.atom))
+            if ("+" in piece) {
+                return firstAtom + firstAtom.until(lastAtom)
+            }
+            return firstAtom.until(lastAtom)
+        }
+        return parseQuantifier(piece.firstOrNull(g.quantifier), firstAtom)
     }
 
     private fun parseQuantifier(quantifier: AstNode?, lexer: Lexer): Lexer {
@@ -44,13 +51,11 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
             val lastNum = parseDigits(digits.last())
             return lexer.repeat(firstNum, lastNum)
         }
-        val isOptional = quantifier.contains("?")
-        val isStar = quantifier.contains("*")
-        val isPlus = quantifier.contains("+")
-        if (!isStar && !isPlus) {
-            return lexer.optional(isOptional)
+        return when {
+            "*" in quantifier -> lexer.repeat(0)
+            "+" in quantifier -> lexer.repeat(1)
+            else -> lexer.optional()
         }
-        return lexer.repeat(if (isStar) 0 else 1)
     }
 
     private fun parseDigits(digits: AstNode): Int {
