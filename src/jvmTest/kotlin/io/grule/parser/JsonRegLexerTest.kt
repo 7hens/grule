@@ -5,8 +5,7 @@ import org.junit.Test
 
 class JsonRegLexerTest: Grule() {
     val string by token(L / """(".*?")""")
-    val float by token(L / "\\d+\\.\\d+")
-    val integer by token(L / "\\d+")
+    val number by token(L / "\\d+(\\.\\d+)?")
     val bool by token(L / "true|false")
     val nil by token(L / "null")
 
@@ -15,10 +14,9 @@ class JsonRegLexerTest: Grule() {
         skip(L + L_space or L_wrap)
     }
 
-    val jObject: Parser by p { jString or jFloat or jInteger or jBool or jNil or jArray or jDict }
+    val jObject: Parser by p { jString or jNumber or jBool or jNil or jArray or jDict }
     val jString by P + string
-    val jInteger by P + integer
-    val jFloat by P + float
+    val jNumber by P + number
     val jBool by P + bool
     val jNil by P + nil
     val jArray by P + "[" + jObject.join(P + ",") + "]"

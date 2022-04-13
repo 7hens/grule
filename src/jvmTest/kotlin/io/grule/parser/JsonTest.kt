@@ -3,10 +3,9 @@ package io.grule.parser
 import io.grule.Grule
 import org.junit.Test
 
-class JsonTest: Grule() {
+class JsonTest : Grule() {
     val string by token(L + '"' + L_any.until(L + '"'))
-    val float by token(L + L_digit.repeat(1) + "." + L_digit.repeat(1))
-    val integer by token(L + L_digit.repeat(1))
+    val number by token(L + L_digit.repeat(1) + (L + "." + L_digit.repeat(1)).optional())
     val bool by token(L + "true" or L + "false")
     val nil by token(L + "null")
 
@@ -15,10 +14,9 @@ class JsonTest: Grule() {
         skip(L + L_space or L_wrap)
     }
 
-    val jObject: Parser by p { jString or jFloat or jInteger or jBool or jNil or jArray or jDict }
+    val jObject: Parser by p { jString or jNumber or jBool or jNil or jArray or jDict }
     val jString by P + string
-    val jInteger by P + integer
-    val jFloat by P + float
+    val jNumber by P + number
     val jBool by P + bool
     val jNil by P + nil
     val jArray by P + "[" + jObject.join(P + ",") + "]"
