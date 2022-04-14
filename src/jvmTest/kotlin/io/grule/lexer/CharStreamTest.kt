@@ -1,10 +1,7 @@
 package io.grule.lexer
 
-import io.grule.lexer.CharReader
-import io.grule.lexer.CharStream
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 @Suppress("SpellCheckingInspection")
 internal class CharStreamTest {

@@ -57,10 +57,6 @@ abstract class Lexer {
         return repeat(0, 1)
     }
 
-    fun optional(isOptional: Boolean): Lexer {
-        return if (isOptional) optional() else this
-    }
-
     fun interlace(separator: Lexer): Lexer {
         return LexerBuilder() + separator.optional() + join(separator) + separator.optional()
     }
@@ -71,6 +67,10 @@ abstract class Lexer {
 
     fun until(terminal: Lexer): Lexer {
         return LexerUntil(this, terminal)
+    }
+    
+    fun test(): Lexer {
+        return LexerTest(this)
     }
 
     companion object {
