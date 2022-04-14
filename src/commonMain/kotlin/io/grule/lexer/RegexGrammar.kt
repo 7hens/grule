@@ -7,15 +7,16 @@ import io.grule.parser.Parser
 class RegexGrammar : Grule() {
     val EscapeChar by token(L + "\\" - "abtrvfneSsDdWw")
     val EscapeOperator by token(L + "\\" - REG_OPERATORS)
-    val Unicode by token(L + "\\u" + (L_digit or L - "ABCDEFabcdef").repeat(4, 4))
-    val Hex by token(L + "\\x" + (L_digit or L - "ABCDEFabcdef").repeat(2, 2))
-    val Octal by token(L + "\\" + (L - ('0'..'7')).repeat(3, 3))
+    val Unicode by token(L + "\\u" + L_hex.repeat(4, 4))
+    val Hex by token(L + "\\x" + L_hex.repeat(2, 2))
+    val Octal by token(L + "\\" + L_octal.repeat(3, 3))
     val Digit by token(L + L_digit)
-    val Char by token(L + L_letter or L - "`~@#$%&_=:;'\",<>/ ")
 
     init {
         token(L - REG_OPERATORS)
     }
+    
+    val Char by token(L_any)
 
     val regex: Parser by p { P + (P + branch).join(P + "|") }
     val escape by P + EscapeOperator or P + EscapeChar or P + Unicode or P + Hex or P + Octal

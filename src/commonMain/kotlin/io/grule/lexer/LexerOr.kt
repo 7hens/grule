@@ -11,7 +11,7 @@ internal class LexerOr(
                 continue
             }
         }
-        throw LexerException()
+        throw LexerException(toString())
     }
 
     override fun or(lexer: Lexer): Lexer {
