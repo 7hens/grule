@@ -85,6 +85,10 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return ParserUntil(this, terminal)
     }
 
+    fun test(): Parser {
+        return ParserTest(this)
+    }
+
     fun binary(operator: Any, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
         return ParserBinary(this, operator, comparator)
     }
