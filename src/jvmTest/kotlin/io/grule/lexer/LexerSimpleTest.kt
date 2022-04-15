@@ -14,11 +14,11 @@ class LexerSimpleTest {
             assertEquals(4, (L + "0123").match(charStream, 0))
             assertEquals(10, (L + L_digit).repeat().match(charStream, 0))
             assertEquals(1, (L + L_word).match(charStream, 0))
-            assertEquals(10, (L + "01" + L_any.until(L + "89")).match(charStream, 0))
+            assertEquals(10, (L + "01" + L_any.untilNonGreedy(L + "89")).match(charStream, 0))
             assertEquals(3, (L - "DF").join(L+"E").match(charStream, 13))
             assertEquals(3, (L - "DF").interlace(L+"E").match(charStream, 13))
-            assertEquals(6, (L - "ABCDE").unless(L+"F").match(charStream, 10))
-            assertEquals(6, (L - "ABCDE").until(L+"F").match(charStream, 10))
+            assertEquals(6, (L - "ABCDE").untilGreedy(L+"F").match(charStream, 10))
+            assertEquals(6, (L - "ABCDE").untilNonGreedy(L+"F").match(charStream, 10))
             assertEquals(10, (L_digit.repeat() + (L + "A").test()).match(charStream, 0))
         }
     }

@@ -20,7 +20,7 @@ class RegexGrammar : Grule() {
 
     val regex: Parser by p { P + (P + branch).join(P + "|") }
     val specChar by P + EscapeChar or P + Unicode or P + Hex or P + Octal or P + Digit or P + Char
-    val char by P + specChar or P + CharClass
+    val char by P + CharClass or P + specChar
     val item by P + specChar + "-" + specChar or P + char
     val atom by P + char or
             P + "(" + "?" + "=" + regex + ")" or

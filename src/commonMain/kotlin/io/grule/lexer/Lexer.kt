@@ -30,7 +30,7 @@ abstract class Lexer {
     operator fun minus(text: String): Lexer {
         return minus(text.toList())
     }
-    
+
     operator fun div(text: String): Lexer {
         return plus(LexerRegex(text))
     }
@@ -40,17 +40,13 @@ abstract class Lexer {
     }
 
     open fun repeat(minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Lexer {
-        require(minTimes <= maxTimes)
-        require(minTimes >= 0)
         return LexerRepeat(this, minTimes, maxTimes)
     }
 
     fun join(separator: Lexer, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Lexer {
         val min = maxOf(minTimes - 1, 0)
         val max = maxOf(maxTimes - 1, 0)
-        val item = LexerBuilder() + this + separator
-        val lexer = LexerBuilder() + item.repeat(min, max) + this
-        return if (minTimes == 0) lexer.optional() else lexer
+        return (LexerBuilder() + this + separator).untilGreedy(this, min, max)
     }
 
     fun optional(): Lexer {
@@ -61,14 +57,14 @@ abstract class Lexer {
         return LexerBuilder() + separator.optional() + join(separator) + separator.optional()
     }
 
-    fun unless(terminal: Lexer): Lexer {
-        return LexerUnless(this, terminal)
+    fun untilGreedy(terminal: Lexer, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Lexer {
+        return LexerUntilGreedy(this, terminal, minTimes, maxTimes)
     }
 
-    fun until(terminal: Lexer): Lexer {
-        return LexerUntil(this, terminal)
+    fun untilNonGreedy(terminal: Lexer, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Lexer {
+        return LexerUntilNonGreedy(this, terminal, minTimes, maxTimes)
     }
-    
+
     fun test(): Lexer {
         return LexerTest(this)
     }

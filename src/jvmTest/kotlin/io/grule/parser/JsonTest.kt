@@ -4,7 +4,7 @@ import io.grule.Grule
 import org.junit.Test
 
 class JsonTest : Grule() {
-    val string by token(L + '"' + L_any.until(L + '"'))
+    val string by token(L + '"' + L_any.untilNonGreedy(L + '"'))
     val number by token(L + L_digit.repeat(1) + (L + "." + L_digit.repeat(1)).optional())
     val bool by token(L + "true" or L + "false")
     val nil by token(L + "null")

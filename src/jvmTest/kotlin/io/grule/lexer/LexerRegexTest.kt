@@ -9,7 +9,7 @@ internal class LexerRegexTest {
     private fun match(pattern: String): Int {
         val charStream = CharStream.fromString(text)
         val lexerRegex = LexerRegex(pattern)
-        val offset = lexerRegex.not().until(lexerRegex.test()).match(charStream, 0)
+        val offset = lexerRegex.not().untilNonGreedy(lexerRegex.test()).match(charStream, 0)
         return lexerRegex.match(charStream, offset)
     }
     
@@ -33,11 +33,12 @@ internal class LexerRegexTest {
         assertEquals(4, match("[0123]+"))
         assertEquals(10, match("[0-9]+"))
         assertEquals(16, match("[0-9A-F]+"))
-        assertEquals(9, match("[^0-9A-F]+"))
+        assertEquals(11, match("[^0-9A-F]+"))
         assertEquals(10, match("\\d+"))
         assertEquals(16, match("\\w+"))
         assertEquals(4, match("\\s+"))
         assertEquals(16, match("[\\d\\w]+"))
+        assertEquals(text.length, match(".+"))
     }
 
     @Test
@@ -45,6 +46,11 @@ internal class LexerRegexTest {
         assertEquals(10, match("\\d+"))
         assertEquals(11, match("\\d+A"))
         assertEquals(11, match("\\d+?A"))
+        assertEquals(10, match("\\d+?"))
+        assertEquals(1, match("\\d?"))
+        assertEquals(3, match("(012)?"))
+        assertEquals(11, match("0.*?A"))
+        assertEquals(11, match("0.+?A"))
         assertEquals(6, match("(789|ABC)+"))
     }
 

@@ -40,32 +40,26 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
         }
     }
 
-    private fun parseQuantifier(quantifier: AstNode, firstAtom: Lexer, lastAtom: Lexer?): Lexer {
-        val firstLexer = parseQuantifier(quantifier, firstAtom)
-        return when {
-            quantifier.contains("?") && lastAtom != null -> firstLexer.until(lastAtom)
-            lastAtom != null -> firstLexer.unless(lastAtom)
-            else -> firstLexer
-        }
-    }
+    private fun parseQuantifier(quantifier: AstNode, lexer: Lexer, terminal: Lexer?): Lexer {
+        val isGreedy = !quantifier.contains("?")
+        var minTimes = 0
+        var maxTimes = Int.MAX_VALUE
 
-    private fun parseQuantifier(quantifier: AstNode, firstAtom: Lexer): Lexer {
         val quantity = quantifier.firstOrNull(g.quantity)
-        return when {
+        when {
             quantity != null -> {
                 val digits = quantity.all(g.digits)
-                val firstNum = parseDigits(digits.first())
-                val lastNum = parseDigits(digits.last())
-                return firstAtom.repeat(firstNum, lastNum)
+                minTimes = digits.first().text.toInt()
+                maxTimes = digits.last().text.toInt()
             }
-            quantifier.contains("*") -> firstAtom.repeat(0)
-            quantifier.contains("+") -> firstAtom.repeat(1)
-            else -> firstAtom.optional()
+            quantifier.contains("+") -> minTimes = 1
+            else -> Unit
         }
-    }
-
-    private fun parseDigits(digits: AstNode): Int {
-        return digits.text.toInt()
+        return when {
+            terminal == null -> lexer.repeat(minTimes, maxTimes)
+            isGreedy -> lexer.untilGreedy(terminal, minTimes, maxTimes)
+            else -> lexer.untilNonGreedy(terminal, minTimes, maxTimes)
+        }
     }
 
     private fun parseAtom(atom: AstNode): Lexer {
