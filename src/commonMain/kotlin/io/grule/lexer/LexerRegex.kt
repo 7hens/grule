@@ -2,6 +2,7 @@ package io.grule.lexer
 
 import io.grule.parser.AstNode
 
+@Suppress("MoveVariableDeclarationIntoWhen")
 internal class LexerRegex(private val pattern: String) : Lexer() {
     private val g = RegexGrammar()
     private val lexer = parseRegex(pattern)
@@ -12,7 +13,6 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
 
     private fun parseRegex(pattern: String): Lexer {
         val astNode = g.parse(g.regex, pattern)
-//        println(astNode.toStringTree())
         return parseRegex(astNode)
     }
 
@@ -69,9 +69,7 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
     }
 
     private fun parseAtom(atom: AstNode): Lexer {
-        if (g.char in atom) {
-            return atom.all(g.char).lexerPlus { parseChar(it) }
-        }
+        atom.firstOrNull(g.char)?.let { return parseChar(it) }
         atom.firstOrNull(g.regex)?.let { return parseRegex(it) }
         return atom.all(g.item).lexerOr { parseItem(it) }.let {
             if (atom.contains("^")) it.not() else it
@@ -79,61 +77,65 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
     }
 
     private fun parseChar(char: AstNode): Lexer {
-        val escape = char.firstOrNull(g.escape)
-        if (escape != null) {
-            return parseEscape(escape)
-        }
-        val text = char.text
-        if (text == ".") {
-            return g.L_any
-        }
-        return LexerString(text)
-    }
-
-    private fun parseEscape(escape: AstNode): Lexer {
-        escape.firstOrNull(g.EscapeOperator)?.let {
-            return LexerString(it.text.substring(1))
-        }
-        escape.firstOrNull(g.EscapeChar)?.let {
-            return parseEscapeChar(it.text.substring(1))
-        }
-        (escape.firstOrNull(g.Unicode) ?: escape.firstOrNull(g.Hex))?.let {
-            return LexerString(it.text.substring(2).toInt(16).toChar().toString())
-        }
-        escape.firstOrNull(g.Octal)?.let {
-            return LexerString(it.text.substring(1).toInt(8).toChar().toString())
-        }
-        throw IllegalArgumentException(escape.toString())
-    }
-
-    private fun parseEscapeChar(text: String): Lexer {
-        when (text) {
-            "a" -> return LexerString("\u0007")
-            "b" -> return LexerString("\b")
-            "t" -> return LexerString("\t")
-            "r" -> return LexerString("\r")
-            "v" -> return LexerString("\u000B")
-            "f" -> return LexerString("\u000C")
-            "n" -> return LexerString("\n")
-            "e" -> return LexerString("\u001B")
-            "S" -> return g.L_space.not()
-            "s" -> return g.L_space
-            "D" -> return g.L_digit.not()
-            "d" -> return g.L_digit
-            "W" -> return g.L_word.not()
-            "w" -> return g.L_word
-        }
-        throw IllegalArgumentException(text)
+        char.firstOrNull(g.singleChar)?.let { return LexerString("" + parseSingleChar(it)) }
+        return parseClassChar(char.first(g.CharClass))
     }
 
     private fun parseItem(item: AstNode): Lexer {
-        val charList = item.all(g.char)
-        val firstChar = charList.first().text
-        val lastChar = charList.last().text
-        if (charList.size == 1) {
-            return LexerString(firstChar)
+        val char = item.firstOrNull(g.char)
+        if (char != null) {
+            return parseChar(char)
         }
-        return LexerCharSet(firstChar[0]..lastChar[0])
+        val singleChars = item.all(g.singleChar).map { parseSingleChar(it) }
+        return LexerCharSet(singleChars[0]..singleChars[1])
+    }
+
+    private fun parseSingleChar(singleChar: AstNode): Char {
+        singleChar.firstOrNull(g.EscapeChar)?.let {
+            return parseEscapeChar(it)
+        }
+        (singleChar.firstOrNull(g.Unicode) ?: singleChar.firstOrNull(g.Hex))?.let {
+            return parseHex(it)
+        }
+        singleChar.firstOrNull(g.Octal)?.let {
+            return parseOctal(it)
+        }
+        return singleChar.text[0]
+    }
+
+    private fun parseEscapeChar(escapeChar: AstNode): Char {
+        val text = escapeChar.text
+        return when (text) {
+            "\\a" -> '\u0007'
+            "\\t" -> '\t'
+            "\\r" -> '\r'
+            "\\v" -> '\u000B'
+            "\\f" -> '\u000C'
+            "\\n" -> '\n'
+            "\\e" -> '\u001B'
+            else -> text[1]
+        }
+    }
+
+    private fun parseClassChar(classChar: AstNode): Lexer {
+        val text = classChar.text
+        return when (text) {
+            "\\S" -> g.L_space.not()
+            "\\s" -> g.L_space
+            "\\D" -> g.L_digit.not()
+            "\\d" -> g.L_digit
+            "\\W" -> g.L_word.not()
+            "\\w" -> g.L_word
+            else -> g.L_any
+        }
+    }
+
+    private fun parseHex(hex: AstNode): Char {
+        return hex.text.substring(2).toInt(16).toChar().toString()[0]
+    }
+
+    private fun parseOctal(octal: AstNode): Char {
+        return octal.text.substring(1).toInt(8).toChar().toString()[0]
     }
 
     private fun <T> List<T>.lexerOr(fn: (T) -> Lexer): Lexer {

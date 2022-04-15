@@ -4,12 +4,12 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 internal class LexerRegexTest {
-    private val text = "0123456789ABCDEF你好\uD83D\uDE04\u0000\n\t "
+    private val text = "0123456789ABCDEF你好\uD83D\uDE04\u0000\n\r\t "
 
     private fun match(pattern: String): Int {
         val charStream = CharStream.fromString(text)
         val lexerRegex = LexerRegex(pattern)
-        val offset = lexerRegex.not().repeat().match(charStream, 0)
+        val offset = lexerRegex.not().until(lexerRegex.test()).match(charStream, 0)
         return lexerRegex.match(charStream, offset)
     }
     
@@ -28,19 +28,19 @@ internal class LexerRegexTest {
 
     @Test
     fun characterClass() {
-        assertEquals(4, match("[0123]*"))
-        assertEquals(10, match("[0-9]*"))
-        assertEquals(16, match("[0-9A-F]*"))
-        assertEquals(10, match("\\d*"))
-        assertEquals(16, match("\\w*"))
-//        assertEquals(2, match("\\s*"))
-//        assertEquals(16, match("[\\d\\w]*"))
+        assertEquals(4, match("[0123]+"))
+        assertEquals(10, match("[0-9]+"))
+        assertEquals(16, match("[0-9A-F]+"))
+        assertEquals(10, match("\\d+"))
+        assertEquals(16, match("\\w+"))
+        assertEquals(4, match("\\s+"))
+        assertEquals(16, match("[\\d\\w]+"))
     }
 
     @Test
     fun quantifier() {
-        assertEquals(10, match("\\d*"))
-        assertEquals(11, match("\\d*A"))
-        assertEquals(11, match("\\d*?A"))
+        assertEquals(10, match("\\d+"))
+        assertEquals(11, match("\\d+A"))
+        assertEquals(11, match("\\d+?A"))
     }
 }
