@@ -36,4 +36,11 @@ internal class LexerRegexTest {
 //        assertEquals(2, match("\\s*"))
 //        assertEquals(16, match("[\\d\\w]*"))
     }
+
+    @Test
+    fun quantifier() {
+        assertEquals(10, match("\\d*"))
+        assertEquals(11, match("\\d*A"))
+        assertEquals(11, match("\\d*?A"))
+    }
 }

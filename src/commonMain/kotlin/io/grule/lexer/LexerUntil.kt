@@ -7,7 +7,11 @@ internal class LexerUntil(val lexer: Lexer, val terminal: Lexer) : Lexer() {
             result += terminal.match(charStream, offset + result)
         } catch (_: LexerException) {
             result += lexer.match(charStream, offset + result)
-            result += match(charStream, offset + result)
+            if (result > 0) {
+                result += match(charStream, offset + result)
+            } else {
+                throw LexerException("lexer ($lexer) matched nothing until ($terminal)")
+            }
         }
         return result
     }

@@ -15,7 +15,7 @@ class RegexGrammar : Grule() {
     init {
         token(L - REG_OPERATORS)
     }
-    
+
     val Char by token(L_any)
 
     val regex: Parser by p { P + (P + branch).join(P + "|") }
@@ -25,8 +25,8 @@ class RegexGrammar : Grule() {
     val atom by P + char or P + "(" + regex + ")" or P + "[" + (P + "^").optional() + item.repeat(1) + "]"
     val digits by P + (P + Digit).repeat(1)
     val quantity by P + digits + "," + (P + digits).optional() or P + digits
-    val quantifier by P + "+" or P + "*" or P + "?" or P + "{" + quantity + "}"
-    val piece by P + atom + (P + "+" or P + "*") + "?" + atom or P + atom + quantifier.optional()
+    val quantifier by (P + "+" or P + "*" or P + "{" + quantity + "}") + (P + "?").optional()
+    val piece by P + atom + quantifier + atom.optional() or P + atom + (P + "?").optional()
     val branch by P + piece.repeat()
 
 
