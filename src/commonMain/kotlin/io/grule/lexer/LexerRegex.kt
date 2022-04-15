@@ -31,11 +31,11 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
     private fun parsePiece(piece: AstNode): Lexer {
         val firstAtom = parseAtom(piece.first(g.atom))
         return when {
-            g.quantifier in piece -> {
+            piece.contains(g.quantifier) -> {
                 val lastAtom = piece.all(g.atom).getOrNull(1)?.let { parseAtom(it) }
                 parseQuantifier(piece.first(g.quantifier), firstAtom, lastAtom)
             }
-            "?" in piece -> firstAtom.optional()
+            piece.contains("?") -> firstAtom.optional()
             else -> firstAtom
         }
     }
@@ -43,7 +43,7 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
     private fun parseQuantifier(quantifier: AstNode, firstAtom: Lexer, lastAtom: Lexer?): Lexer {
         val firstLexer = parseQuantifier(quantifier, firstAtom)
         return when {
-            "?" in quantifier && lastAtom != null -> firstLexer.until(lastAtom)
+            quantifier.contains("?") && lastAtom != null -> firstLexer.until(lastAtom)
             lastAtom != null -> firstLexer.unless(lastAtom)
             else -> firstLexer
         }
@@ -58,8 +58,8 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
                 val lastNum = parseDigits(digits.last())
                 return firstAtom.repeat(firstNum, lastNum)
             }
-            "*" in quantifier -> firstAtom.repeat(0)
-            "+" in quantifier -> firstAtom.repeat(1)
+            quantifier.contains("*") -> firstAtom.repeat(0)
+            quantifier.contains("+") -> firstAtom.repeat(1)
             else -> firstAtom.optional()
         }
     }
@@ -70,37 +70,44 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
 
     private fun parseAtom(atom: AstNode): Lexer {
         atom.firstOrNull(g.char)?.let { return parseChar(it) }
-        atom.firstOrNull(g.regex)?.let { return parseRegex(it) }
+        atom.firstOrNull(g.regex)?.let {
+            val regex = parseRegex(it)
+            return when {
+                atom.contains("=") -> regex.test()
+                atom.contains("!") -> regex.not().test()
+                else -> regex
+            }
+        }
         return atom.all(g.item).lexerOr { parseItem(it) }.let {
             if (atom.contains("^")) it.not() else it
         }
     }
 
     private fun parseChar(char: AstNode): Lexer {
-        char.firstOrNull(g.singleChar)?.let { return LexerString("" + parseSingleChar(it)) }
+        char.firstOrNull(g.specChar)?.let { return LexerString("" + parseSpecChar(it)) }
         return parseClassChar(char.first(g.CharClass))
     }
 
     private fun parseItem(item: AstNode): Lexer {
-        val char = item.firstOrNull(g.char)
-        if (char != null) {
-            return parseChar(char)
-        }
-        val singleChars = item.all(g.singleChar).map { parseSingleChar(it) }
+        item.firstOrNull(g.char)?.let { return parseChar(it) }
+        val singleChars = item.all(g.specChar).map { parseSpecChar(it) }
         return LexerCharSet(singleChars[0]..singleChars[1])
     }
 
-    private fun parseSingleChar(singleChar: AstNode): Char {
-        singleChar.firstOrNull(g.EscapeChar)?.let {
-            return parseEscapeChar(it)
-        }
-        (singleChar.firstOrNull(g.Unicode) ?: singleChar.firstOrNull(g.Hex))?.let {
-            return parseHex(it)
-        }
-        singleChar.firstOrNull(g.Octal)?.let {
-            return parseOctal(it)
-        }
+    private fun parseSpecChar(singleChar: AstNode): Char {
+        singleChar.firstOrNull(g.EscapeChar)?.let { return parseEscapeChar(it) }
+        singleChar.firstOrNull(g.Unicode)?.let { return parseHex(it) }
+        singleChar.firstOrNull(g.Hex)?.let { return parseHex(it) }
+        singleChar.firstOrNull(g.Octal)?.let { return parseOctal(it) }
         return singleChar.text[0]
+    }
+
+    private fun parseHex(hex: AstNode): Char {
+        return hex.text.substring(2).toInt(16).toChar().toString()[0]
+    }
+
+    private fun parseOctal(octal: AstNode): Char {
+        return octal.text.substring(1).toInt(8).toChar().toString()[0]
     }
 
     private fun parseEscapeChar(escapeChar: AstNode): Char {
@@ -128,14 +135,6 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
             "\\w" -> g.L_word
             else -> g.L_any
         }
-    }
-
-    private fun parseHex(hex: AstNode): Char {
-        return hex.text.substring(2).toInt(16).toChar().toString()[0]
-    }
-
-    private fun parseOctal(octal: AstNode): Char {
-        return octal.text.substring(1).toInt(8).toChar().toString()[0]
     }
 
     private fun <T> List<T>.lexerOr(fn: (T) -> Lexer): Lexer {

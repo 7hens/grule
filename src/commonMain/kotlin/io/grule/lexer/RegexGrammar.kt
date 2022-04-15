@@ -19,10 +19,14 @@ class RegexGrammar : Grule() {
     val Char by token(L_any)
 
     val regex: Parser by p { P + (P + branch).join(P + "|") }
-    val singleChar by P + EscapeChar or P + Unicode or P + Hex or P + Octal or P + Digit or P + Char
-    val char by P + singleChar or P + CharClass
-    val item by P + singleChar + "-" + singleChar or P + char
-    val atom by P + char or P + "(" + regex + ")" or P + "[" + (P + "^").optional() + item.repeat(1) + "]"
+    val specChar by P + EscapeChar or P + Unicode or P + Hex or P + Octal or P + Digit or P + Char
+    val char by P + specChar or P + CharClass
+    val item by P + specChar + "-" + specChar or P + char
+    val atom by P + char or
+            P + "(" + "?" + "=" + regex + ")" or
+            P + "(" + "?" + "!" + regex + ")" or
+            P + "(" + regex + ")" or
+            P + "[" + (P + "^").optional() + item.repeat(1) + "]"
     val digits by P + (P + Digit).repeat(1)
     val quantity by P + digits + "," + (P + digits).optional() or P + digits
     val quantifier by (P + "+" or P + "*" or P + "{" + quantity + "}") + (P + "?").optional()
