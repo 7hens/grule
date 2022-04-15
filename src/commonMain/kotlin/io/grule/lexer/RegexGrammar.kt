@@ -9,7 +9,7 @@ class RegexGrammar : Grule() {
     val EscapeOperator by token(L + "\\" - REG_OPERATORS)
     val Unicode by token(L + "\\u" + L_hex.repeat(4, 4))
     val Hex by token(L + "\\x" + L_hex.repeat(2, 2))
-    val Octal by token(L + "\\" + L_octal.repeat(3, 3))
+    val Octal by token(L + "\\" + L_octal.repeat(3, 3) or L + "\\0")
     val Digit by token(L + L_digit)
 
     init {
