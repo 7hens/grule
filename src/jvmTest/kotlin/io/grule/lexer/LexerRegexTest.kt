@@ -36,6 +36,7 @@ internal class LexerRegexTest {
         assertEquals(11, match("[^0-9A-F]+"))
         assertEquals(10, match("\\d+"))
         assertEquals(16, match("\\w+"))
+        assertEquals(17, match("\\d+\\w+?\\W"))
         assertEquals(4, match("\\s+"))
         assertEquals(16, match("[\\d\\w]+"))
         assertEquals(text.length, match(".+"))

@@ -23,7 +23,7 @@ internal open class LexerBuilder : Lexer() {
 
     object Shadow : Lexer() {
         override fun match(charStream: CharStream, offset: Int): Int {
-            throw UnsupportedOperationException()
+            throw UnsupportedOperationException("shadow lexer")
         }
 
         override fun plus(lexer: Lexer): Lexer {

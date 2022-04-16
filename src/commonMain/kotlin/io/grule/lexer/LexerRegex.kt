@@ -32,7 +32,7 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
         val firstAtom = parseAtom(piece.first(g.atom))
         return when {
             piece.contains(g.quantifier) -> {
-                val lastAtom = piece.all(g.atom).getOrNull(1)?.let { parseAtom(it) }
+                val lastAtom = piece.lastOrNull(g.branch)?.let { parseBranch(it) }
                 parseQuantifier(piece.first(g.quantifier), firstAtom, lastAtom)
             }
             piece.contains("?") -> firstAtom.optional()
