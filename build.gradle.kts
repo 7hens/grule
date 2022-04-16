@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.7hens.grule"
-version = "0.1-SNAPSHOT"
+version = "-SNAPSHOT"
 
 repositories {
     maven("https://maven.aliyun.com/repository/public")
