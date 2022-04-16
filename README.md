@@ -91,6 +91,6 @@ allprojects {
 
 ```kotlin
 dependencies {
-    implementation("com.github.7hens.grule:grule:0.1-SNAPSHOT")
+    implementation("com.github.7hens.grule:grule:0.1")
 }
 ```
