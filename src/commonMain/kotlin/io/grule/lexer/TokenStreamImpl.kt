@@ -50,7 +50,7 @@ internal class TokenStreamImpl(val charStream: CharStream, val scanner: Scanner)
         while (true) {
             val token = peek(i)
             builder.append(token).append("\n")
-            if (token.scanner == Lexer.EOF) {
+            if (token.scanner == Scanners.EOF) {
                 break
             }
             i++

@@ -38,7 +38,7 @@ class LexerSimpleTest {
             assertEquals(t1, scanner.peek(0).scanner)
             assertEquals(t2, scanner.peek(1).scanner)
             assertEquals(t3, scanner.peek(2).scanner)
-            assertEquals(Lexer.EOF, scanner.peek(15).scanner)
+            assertEquals(Scanners.EOF, scanner.peek(15).scanner)
             println(scanner)
         }
     }

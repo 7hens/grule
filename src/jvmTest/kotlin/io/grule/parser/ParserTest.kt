@@ -117,7 +117,7 @@ class ParserTest {
             skip(L + L_space or L_wrap)
             token(L + "x")
 
-            val exp by P + (P + Num + Op).unless(P + "x")
+            val exp by P + (P + Num + Op).untilGreedy(P + "x")
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -135,7 +135,7 @@ class ParserTest {
             skip(L + L_space or L_wrap)
             token(L + "x")
 
-            val exp by P + (P + Num + Op).until(P + "x")
+            val exp by P + (P + Num + Op).untilNonGreedy(P + "x")
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -153,7 +153,7 @@ class ParserTest {
             skip(L + L_space or L_wrap)
             token(L + "x")
 
-            val exp by P + (P + Num + Op).until(P + "x").binary(Op)
+            val exp by P + (P + Num + Op).untilNonGreedy(P + "x").binary(Op)
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)

@@ -56,17 +56,13 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     }
 
     open fun repeat(minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
-        require(minTimes >= 0)
-        require(minTimes <= maxTimes)
         return ParserRepeat(this, minTimes, maxTimes)
     }
 
     fun join(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
         val min = maxOf(minTimes - 1, 0)
         val max = maxOf(maxTimes - 1, 0)
-        val item = ParserBuilder() + this + separator
-        val parser = ParserBuilder() + item.repeat(min, max) + this
-        return if (minTimes == 0) parser.optional() else parser
+        return (ParserBuilder() + this + separator).untilGreedy(this, min, max)
     }
 
     fun optional(): Parser {
@@ -77,12 +73,12 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return ParserBuilder() + separator.optional() + join(separator) + separator.optional()
     }
 
-    fun unless(terminal: Parser): Parser {
-        return ParserUnless(this, terminal)
+    fun untilGreedy(terminal: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
+        return ParserUntilGreedy(this, terminal, minTimes, maxTimes)
     }
 
-    fun until(terminal: Parser): Parser {
-        return ParserUntil(this, terminal)
+    fun untilNonGreedy(terminal: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
+        return ParserUntilNonGreedy(this, terminal, minTimes, maxTimes)
     }
 
     fun test(): Parser {
