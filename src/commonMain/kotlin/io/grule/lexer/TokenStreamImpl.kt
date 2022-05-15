@@ -41,9 +41,9 @@ internal class TokenStreamImpl(val charStream: CharStream, val scanner: Scanner)
     }
 
     override fun emit(scanner: Scanner, text: String) {
-        emit(Token(scanner, text, charStream))
+        emit(Token(scanner, text, charStream.position))
     }
-
+    
     override fun toString(): String {
         val builder = StringBuilder()
         var i = 0

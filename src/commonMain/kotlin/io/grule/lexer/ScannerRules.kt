@@ -14,12 +14,12 @@ internal class ScannerRules : Scanner() {
             }
         }
         if (!matches) {
-            if (charStream.peek(0) == CharStream.EOF) {
+            if (charStream.peek(0) == null) {
                 tokenStream.emitEOF()
                 return
             }
             throw LexerException(
-                "Unmatched character (${charStream.peek(0).toChar()}) " +
+                "Unmatched character (${charStream.peek(0)}) " +
                         "at #${charStream.position}"
             )
         }

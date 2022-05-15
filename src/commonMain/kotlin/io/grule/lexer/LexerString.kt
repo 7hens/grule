@@ -4,13 +4,14 @@ internal class LexerString(private val text: String) : Lexer() {
 
     override fun match(charStream: CharStream, offset: Int): Int {
         charStream.peek(offset + text.length)
-        if (charStream.peek(offset) == CharStream.EOF) {
-            throw LexerException("expected \"$text\" at ${charStream.position}, actual is <EOF>")
+        if (charStream.peek(offset) == null) {
+            throw LexerException(charStream, text, "<EOF>")
         }
-        if (charStream.getText(offset, offset + text.length) == text) {
+        val actualText = charStream.getText(offset, offset + text.length)
+        if (actualText == text) {
             return text.length
         }
-        throw LexerException("Unmatched text \"$text\", current char is '${charStream.peek(offset).toChar()}'")
+        throw LexerException(charStream, text, actualText)
     }
 
     override fun toString(): String {

@@ -31,14 +31,14 @@ internal class ScannerIndent(val newLine: Scanner, val indent: Scanner, val dede
 //        println(">> tab: $prevTabCount -> $tabCount")
         if (tabCount > prevTabCount) {
             for (i in prevTabCount until tabCount) {
-                tokenStream.emit(indent, "::{")
+                tokenStream.emit(indent)
             }
         } else {
             for (i in tabCount until prevTabCount) {
-                tokenStream.emit(dedent, "}::")
+                tokenStream.emit(dedent)
             }
             if (spaceNum >= 0) {
-                tokenStream.emit(newLine, "\\n")
+                tokenStream.emit(newLine)
             } else {
                 tokenStream.emitEOF()
             }

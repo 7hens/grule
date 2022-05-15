@@ -4,7 +4,7 @@ object Scanners {
     val EOF = object : Scanner() {
         override fun scan(charStream: CharStream, tokenStream: TokenStream) {
             Lexer.EOF.match(charStream)
-            tokenStream.emit(this, "<EOF>")
+            tokenStream.emit(this)
         }
 
         override fun toString(): String {

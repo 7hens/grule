@@ -2,6 +2,7 @@ package io.grule.lexer
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import kotlin.test.assertNull
 
 @Suppress("SpellCheckingInspection")
 internal class CharStreamTest {
@@ -10,11 +11,11 @@ internal class CharStreamTest {
     @Test
     fun peek() {
         val charStream = CharReader.fromString(text).toStream()
-        assertEquals('0', charStream.peek(0).toChar())
-        assertEquals('8', charStream.peek(8).toChar())
-        assertEquals('F', charStream.peek(15).toChar())
-        assertEquals(CharStream.EOF, charStream.peek(100))
-        assertEquals(CharStream.EOF, charStream.peek(10000))
+        assertEquals('0', charStream.peek(0))
+        assertEquals('8', charStream.peek(8))
+        assertEquals('F', charStream.peek(15))
+        assertNull(charStream.peek(100))
+        assertNull(charStream.peek(10000))
     }
 
     @Test
@@ -28,7 +29,7 @@ internal class CharStreamTest {
     fun seekTo() {
         val charStream = CharReader.fromString(text).toStream(1)
         charStream.peek(14)
-        assertEquals('8', charStream.peek(8).toChar())
+        assertEquals('8', charStream.peek(8))
         charStream.moveNext(14)
         assertEquals(14, charStream.position.index)
     }

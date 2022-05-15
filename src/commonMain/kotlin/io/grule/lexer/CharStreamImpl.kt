@@ -12,17 +12,17 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
     override val position: TextPosition
         get() = TextPosition(currentIndex, currentLine, currentColumn)
 
-    override fun peek(offset: Int): Int {
+    override fun peek(offset: Int): Char? {
         require(offset >= 0)
         prepare(offset + 1)
         val dataOffset = dataStartPos + offset
         if (dataOffset < dataEndPos) {
-            return buffer[dataOffset].code
+            return buffer[dataOffset]
         }
         require(isReadOver)
-        return CharStream.EOF
+        return null
     }
-
+    
     override fun moveNext(count: Int) {
         require(count >= 0)
         if (count == 0) {

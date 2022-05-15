@@ -10,6 +10,6 @@ object LexerShadow : Lexer() {
     }
 
     override fun or(lexer: Lexer): Lexer {
-        throw UnsupportedOperationException("shadow lexer")
+        return LexerOr(mutableListOf(lexer))
     }
 }
