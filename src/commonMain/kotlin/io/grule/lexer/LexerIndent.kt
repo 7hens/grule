@@ -3,7 +3,7 @@ package io.grule.lexer
 import io.grule.matcher.Matcher
 import io.grule.matcher.MatcherException
 
-internal class LexerIndent(val newLine: Lexer, val indent: Lexer, val dedent: Lexer) : Lexer() {
+internal class LexerIndent(val newLine: Lexer, val indent: Lexer, val dedent: Lexer) : Lexer {
     private var prevTabCount = 0
 
     override fun lex(context: LexerContext) {

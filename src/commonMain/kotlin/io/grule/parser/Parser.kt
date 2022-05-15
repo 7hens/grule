@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
 abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     var name: String? = null
         private set
-    
+
     val isNamed: Boolean get() = name != null
 
     abstract fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int
@@ -43,11 +43,11 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     }
 
     operator fun plus(lexer: Lexer): Parser {
-        return plus(ParserToken(TokenMatcher(lexer)))
+        return plus(ParserLexer(lexer))
     }
 
     operator fun plus(text: String): Parser {
-        return plus(ParserToken(TokenMatcher(text)))
+        return plus(ParserString(text))
     }
 
     open infix fun or(parser: Parser): Parser {

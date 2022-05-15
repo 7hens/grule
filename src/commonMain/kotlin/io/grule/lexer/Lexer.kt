@@ -7,31 +7,13 @@ import io.grule.parser.AstNode
 import io.grule.parser.Parser
 import io.grule.parser.ParserBuilder
 import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate")
-abstract class Lexer : ReadOnlyProperty<Any?, Lexer> {
-    val P: Parser get() = ParserBuilder()
-
-    abstract fun lex(context: LexerContext)
-
-    var name = "__" + this::class.simpleName
-
-    override fun getValue(thisRef: Any?, property: KProperty<*>): Lexer {
-        name = property.name
-        return this
-    }
-
-    override fun toString(): String {
-        return name
-    }
+interface Lexer {
+    fun lex(context: LexerContext)
 
     fun tokenStream(charStream: CharStream): TokenStream {
         return TokenStreamImpl(charStream, this)
-    }
-
-    operator fun String.unaryMinus(): Matcher {
-        return MatcherCharSet(toList())
     }
 
     fun parse(parser: Parser, charStream: CharStream): AstNode {
@@ -44,5 +26,17 @@ abstract class Lexer : ReadOnlyProperty<Any?, Lexer> {
 
     companion object {
         val EOF: Lexer = LexerEOF
+
+        fun of(matcher: Matcher, emitsToken: Boolean = true): Lexer {
+            return LexerMatcher(matcher, emitsToken)
+        }
+
+        fun indent(newLine: Lexer, indent: Lexer, dedent: Lexer): Lexer {
+            return LexerIndent(newLine, indent, dedent)
+        }
+        
+        fun builder(): LexerBuilder {
+            return LexerBuilder()
+        }
     }
 }

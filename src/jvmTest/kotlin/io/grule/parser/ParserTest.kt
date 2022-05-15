@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.Grule
+import io.grule.Grammar
 import io.grule.matcher.CharReader
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -11,9 +11,9 @@ class ParserTest {
         val source = "abc"
         val charStream = CharReader.fromString(source).toStream(2)
 
-        Grule {
-            val A by token { X + "a" }
-            token { WORD }
+        Grammar {
+            val A by lexer { X + "a" }
+            lexer.token { WORD }
 
             val a by P + A
             val b by P + "b"
@@ -33,10 +33,10 @@ class ParserTest {
         val source = "abcd"
         val charStream = CharReader.fromString(source).toStream(2)
 
-        Grule {
-            val A by token { X + "a" }
-            val Bc by token { X + "bc" }
-            val D by token { X + "d" }
+        Grammar {
+            val A by lexer { X + "a" }
+            val Bc by lexer { X + "bc" }
+            val D by lexer { X + "d" }
 
             val e by P + "e"
             val bc by P + Bc
@@ -57,9 +57,9 @@ class ParserTest {
         val source = "0123456789"
         val charStream = CharReader.fromString(source).toStream(2)
 
-        Grule {
-            val t1 by token { X + "01" }
-            val t2 by token { DIGIT }
+        Grammar {
+            val t1 by lexer { X + "01" }
+            val t2 by lexer { DIGIT }
 
             val digit by P + t2
             val parser by P + t1 + digit.repeat()
@@ -75,10 +75,10 @@ class ParserTest {
         val source = "017,8,9"
         val charStream = CharReader.fromString(source).toStream(2)
 
-        Grule {
-            val t1 by token { X + "01" }
-            val t2 by token { DIGIT }
-            token { X + "," }
+        Grammar {
+            val t1 by lexer { X + "01" }
+            val t2 by lexer { DIGIT }
+            lexer.token { X + "," }
 
             val digit by P + t2
             val parser by P + t1 + digit.join(P + ",")
@@ -95,9 +95,9 @@ class ParserTest {
         val source = "012345"
         val charStream = CharReader.fromString(source).toStream(2)
 
-        Grule {
-            token { X + "0123" }
-            token { X + "45" }
+        Grammar {
+            lexer.token { X + "0123" }
+            lexer.token { X + "45" }
 
             val parser by P + "0123" + (P + "45")
             val node = parse(parser, charStream)
@@ -107,17 +107,22 @@ class ParserTest {
         }
     }
 
+    private class RepeatGrammar : Grammar() {
+        val Num by lexer { DIGIT.repeat(1) }
+        val Op by lexer { X - "+-*/%><=!" }
+
+        init {
+            lexer.skip { WRAP or SPACE }
+            lexer.token { X + "x" }
+        }
+    }
+
     @Test
     fun untilGreedy() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        Grule {
-            val Num by token { DIGIT.repeat(1) }
-            val Op by token { X - "+-*/%><=!" }
-
-            skip { WRAP or SPACE }
-            token { X + "x" }
-
-            val exp by P + (P + Num + Op).untilGreedy(P + "x")
+        val g = RepeatGrammar()
+        Grammar {
+            val exp by P + (P + g.Num + g.Op).untilGreedy(P + "x")
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -128,14 +133,9 @@ class ParserTest {
     @Test
     fun untilReluctant() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        Grule {
-            val Num by token { DIGIT.repeat(1) }
-            val Op by token { X - "+-*/%><=!" }
-
-            skip { WRAP or SPACE }
-            token { X + "x" }
-
-            val exp by P + (P + Num + Op).untilNonGreedy(P + "x")
+        val g = RepeatGrammar()
+        Grammar {
+            val exp by P + (P + g.Num + g.Op).untilNonGreedy(P + "x")
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -146,14 +146,10 @@ class ParserTest {
     @Test
     fun binary() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        Grule {
-            val Num by token { DIGIT.repeat(1) }
-            val Op by token { X - "+-*/%><=!" }
+        val g = RepeatGrammar()
+        Grammar {
 
-            skip { WRAP or SPACE }
-            token { X + "x" }
-
-            val exp by P + (P + Num + Op).untilNonGreedy(P + "x").binary(Op)
+            val exp by P + (P + g.Num + g.Op).untilNonGreedy(P + "x").binary(g.Op)
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -164,14 +160,9 @@ class ParserTest {
     @Test
     fun recursiveLeft() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        Grule {
-            val Num by token { DIGIT.repeat(1) }
-            val Op by token { X - "+-*/%><=!" }
-
-            skip { WRAP or SPACE }
-            token { X + "x" }
-
-            val exp by p { P + Num or it + "x" or it + Num or it + Op }
+        val g = RepeatGrammar()
+        Grammar {
+            val exp by p { P + g.Num or it + "x" or it + g.Num or it + g.Op }
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -183,14 +174,9 @@ class ParserTest {
     @Test
     fun recursiveRight() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        Grule {
-            val Num by token { DIGIT.repeat(1) }
-            val Op by token { X - "+-*/%><=!" }
-
-            skip { WRAP or SPACE }
-            token { X + "x" }
-
-            val exp by p { P + Num + Op + it or P + "x" or P + Num }
+        val g = RepeatGrammar()
+        Grammar {
+            val exp by p { P + g.Num + g.Op + it or P + "x" or P + g.Num }
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)
@@ -202,14 +188,9 @@ class ParserTest {
     @Test
     fun recursiveBinary() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        Grule {
-            val Num by token { DIGIT.repeat(1) }
-            val Op by token { X - "+-*/%><=!" }
-
-            skip { WRAP or SPACE }
-            token { X + "x" }
-
-            val exp by p { P + Num or P + "x" or it + Op + it }
+        val g = RepeatGrammar()
+        Grammar {
+            val exp by p { P + g.Num or P + "x" or it + g.Op + it }
 
             val charStream = CharReader.fromString(source).toStream()
             val astNode = parse(exp, charStream)

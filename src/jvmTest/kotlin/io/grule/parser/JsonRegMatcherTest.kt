@@ -1,17 +1,17 @@
 package io.grule.parser
 
-import io.grule.Grule
+import io.grule.Grammar
 import org.junit.Test
 
-class JsonRegMatcherTest : Grule() {
-    val string by token { X / """(".*?")""" }
-    val number by token { X / "\\d+(\\.\\d+)?" }
-    val bool by token { X / "true|false" }
-    val nil by token { X / "null" }
+class JsonRegMatcherTest : Grammar() {
+    val string by lexer { X / """(".*?")""" }
+    val number by lexer { X / "\\d+(\\.\\d+)?" }
+    val bool by lexer { X / "true|false" }
+    val nil by lexer { X / "null" }
 
     init {
-        token { X - "{}[]:," }
-        skip { SPACE or WRAP }
+        lexer.token { X - "{}[]:," }
+        lexer.skip { SPACE or WRAP }
     }
 
     val jObject: Parser by p { jString or jNumber or jBool or jNil or jArray or jDict }

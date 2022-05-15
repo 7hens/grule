@@ -13,7 +13,7 @@ internal class MatcherOr(private val matchers: List<Matcher>) : Matcher {
                 continue
             }
         }
-        throw MatcherException(toString())
+        throw MatcherException(context, context.peek(0).toString(), toString())
     }
 
     override fun or(matcher: Matcher): Matcher {

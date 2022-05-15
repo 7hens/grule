@@ -14,4 +14,7 @@ open class MatcherException : RuntimeException {
 
     constructor(context: MatcherContext, expect: Matcher, actual: Matcher)
             : this(context, expect.toString(), actual.toString())
+
+    constructor(context: MatcherContext)
+            : this("unmatched '${context.peek(0)}' at ${context.position}")
 }

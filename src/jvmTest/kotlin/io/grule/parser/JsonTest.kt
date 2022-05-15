@@ -1,17 +1,17 @@
 package io.grule.parser
 
-import io.grule.Grule
+import io.grule.Grammar
 import org.junit.Test
 
-class JsonTest : Grule() {
-    val string by token { X + '"' + ANY.untilNonGreedy(X + '"') }
-    val number by token { X + DIGIT.repeat(1) + (X + "." + DIGIT.repeat(1)).optional() }
-    val bool by token { X + "true" or X + "false" }
-    val nil by token { X + "null" }
+class JsonTest : Grammar() {
+    val string by lexer { X + '"' + ANY.untilNonGreedy(X + '"') }
+    val number by lexer { X + DIGIT.repeat(1) + (X + "." + DIGIT.repeat(1)).optional() }
+    val bool by lexer { X + "true" or X + "false" }
+    val nil by lexer { X + "null" }
 
     init {
-        token { X - "{}[]:," }
-        skip { SPACE }
+        lexer { X - "{}[]:," }
+        lexer { SPACE }
     }
 
     val jObject: Parser by p { jString or jNumber or jBool or jNil or jArray or jDict }

@@ -1,6 +1,5 @@
 package io.grule.matcher
 
-import io.grule.Grule
 import io.grule.lexer.Lexer
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -27,20 +26,19 @@ class MatcherSimpleTest {
     @Test
     fun matchToken() {
         val charStream = CharReader.fromString(text).toStream(2)
-        Grule {
-            val t1 by token { X + "01" }
-            val t2 by token { DIGIT.repeat(1) }
-            val t3 by token { ANY }
-            println(t1.name)
-            println(t2.name)
-            println(t3.name)
+        val lexer = Lexer.builder()
+        val t1 by lexer { X + "01" }
+        val t2 by lexer { DIGIT.repeat(1) }
+        val t3 by lexer { ANY }
+        println(t1)
+        println(t2)
+        println(t3)
 
-            val scanner = tokenStream(charStream)
-            assertEquals(t1, scanner.peek(0).lexer)
-            assertEquals(t2, scanner.peek(1).lexer)
-            assertEquals(t3, scanner.peek(2).lexer)
-            assertEquals(Lexer.EOF, scanner.peek(15).lexer)
-            println(scanner)
-        }
+        val scanner = lexer.tokenStream(charStream)
+        assertEquals(t1, scanner.peek(0).lexer)
+        assertEquals(t2, scanner.peek(1).lexer)
+        assertEquals(t3, scanner.peek(2).lexer)
+        assertEquals(Lexer.EOF, scanner.peek(15).lexer)
+        println(scanner)
     }
 }

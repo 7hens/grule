@@ -1,22 +1,22 @@
 package io.grule.matcher
 
-import io.grule.Grule
+import io.grule.Grammar
 import io.grule.parser.Parser
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate")
-class RegexGrammar : Grule() {
-    val EscapeChar by token { X + "\\" - "abtrvfne" or X + "\\" - REG_OPERATORS }
-    val Unicode by token { X + "\\u" + HEX.repeat(4, 4) }
-    val Hex by token { X + "\\x" + HEX.repeat(2, 2) }
-    val Octal by token { X + "\\" + OCTAL.repeat(3, 3) or X + "\\0" }
-    val Digit by token { DIGIT }
-    val CharClass by token { X + "\\" - "SsDdWw" or X + "." }
+class RegexGrammar : Grammar() {
+    val EscapeChar by lexer { X + "\\" - "abtrvfne" or X + "\\" - REG_OPERATORS }
+    val Unicode by lexer { X + "\\u" + HEX.repeat(4, 4) }
+    val Hex by lexer { X + "\\x" + HEX.repeat(2, 2) }
+    val Octal by lexer { X + "\\" + OCTAL.repeat(3, 3) or X + "\\0" }
+    val Digit by lexer { DIGIT }
+    val CharClass by lexer { X + "\\" - "SsDdWw" or X + "." }
 
     init {
-        token { X - REG_OPERATORS }
+        lexer.token { X - REG_OPERATORS }
     }
 
-    val Char by token { ANY }
+    val Char by lexer { ANY }
 
     val branch: Parser by p { P + piece.repeat(1) }
     val regex by P + (P + branch).join(P + "|")
