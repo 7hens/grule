@@ -3,7 +3,7 @@ package io.grule.parser
 import io.grule.lexer.TokenStream
 
 internal open class ParserBuilder : Parser() {
-    var myParser: Parser = Shadow
+    var myParser: Parser = ParserShadow
 
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         return if (isNamed) {
@@ -37,17 +37,4 @@ internal open class ParserBuilder : Parser() {
         return this === parser || (!isNamed && myParser.isRecursive(parser))
     }
 
-    object Shadow : Parser() {
-        override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
-            return 0
-        }
-
-        override fun plus(parser: Parser): Parser {
-            return ParserPlus(mutableListOf(parser))
-        }
-
-        override fun or(parser: Parser): Parser {
-            return ParserOr(mutableListOf(parser))
-        }
-    }
 }
