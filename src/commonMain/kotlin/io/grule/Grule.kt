@@ -1,12 +1,9 @@
 package io.grule
 
-import io.grule.matcher.*
+import io.grule.lexer.*
+import io.grule.matcher.Matcher
 import io.grule.parser.Parser
 import io.grule.parser.ParserRecurse
-import io.grule.lexer.Lexer
-import io.grule.lexer.LexerContext
-import io.grule.lexer.LexerRules
-import io.grule.lexer.Lexers
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
 open class Grule : Lexer() {
@@ -39,7 +36,7 @@ open class Grule : Lexer() {
     }
 
     fun token(matcher: Matcher): Lexer {
-        return Lexers.token(matcher).also { addRule(it) }
+        return LexerToken(matcher).also { addRule(it) }
     }
 
     fun token(fn: Matcher.Companion.() -> Matcher): Lexer {
@@ -47,7 +44,7 @@ open class Grule : Lexer() {
     }
 
     fun skip(matcher: Matcher): Lexer {
-        return Lexers.skip(matcher).also { addRule(it) }
+        return LexerSkip(matcher).also { addRule(it) }
     }
 
     fun skip(fn: Matcher.Companion.() -> Matcher): Lexer {

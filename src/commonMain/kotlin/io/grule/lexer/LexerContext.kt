@@ -18,6 +18,6 @@ interface LexerContext : CharStream {
     }
 
     fun emitEOF() {
-        emit(Lexers.EOF)
+        emit(Lexer.EOF)
     }
 }

@@ -41,4 +41,8 @@ abstract class Lexer : ReadOnlyProperty<Any?, Lexer> {
     fun parse(parser: Parser, text: String): AstNode {
         return parse(parser, CharStream.fromString(text))
     }
+
+    companion object {
+        val EOF: Lexer = LexerEOF
+    }
 }

@@ -1,7 +1,7 @@
 package io.grule.matcher
 
 import io.grule.Grule
-import io.grule.lexer.Lexers
+import io.grule.lexer.Lexer
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -39,7 +39,7 @@ class MatcherSimpleTest {
             assertEquals(t1, scanner.peek(0).lexer)
             assertEquals(t2, scanner.peek(1).lexer)
             assertEquals(t3, scanner.peek(2).lexer)
-            assertEquals(Lexers.EOF, scanner.peek(15).lexer)
+            assertEquals(Lexer.EOF, scanner.peek(15).lexer)
             println(scanner)
         }
     }
