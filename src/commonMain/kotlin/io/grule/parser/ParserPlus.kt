@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.scanner.TokenStream
+import io.grule.lexer.TokenStream
 
 internal class ParserPlus(private val parsers: List<Parser>) : Parser() {
     init {

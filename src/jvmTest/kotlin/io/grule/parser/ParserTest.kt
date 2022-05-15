@@ -1,7 +1,7 @@
 package io.grule.parser
 
 import io.grule.Grule
-import io.grule.lexer.CharReader
+import io.grule.matcher.CharReader
 import org.junit.Test
 import kotlin.test.assertEquals
 

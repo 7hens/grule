@@ -1,7 +1,7 @@
 package io.grule.parser
 
-import io.grule.scanner.Scanner
-import io.grule.scanner.Token
+import io.grule.lexer.Lexer
+import io.grule.lexer.Token
 
 interface TokenMatcher {
     val rule: Any
@@ -17,8 +17,8 @@ interface TokenMatcher {
             return TextMatcher(text)
         }
 
-        operator fun invoke(scanner: Scanner): TokenMatcher {
-            return LexerMatcher(scanner)
+        operator fun invoke(lexer: Lexer): TokenMatcher {
+            return LexerMatcher(lexer)
         }
     }
 
@@ -30,11 +30,11 @@ interface TokenMatcher {
         }
     }
 
-    private class LexerMatcher(private val scanner: Scanner) : TokenMatcher {
-        override val rule: Any = scanner
+    private class LexerMatcher(private val lexer: Lexer) : TokenMatcher {
+        override val rule: Any = lexer
 
         override fun matches(token: Token): Boolean {
-            return token.scanner == scanner
+            return token.lexer == lexer
         }
     }
 }

@@ -1,9 +1,23 @@
 package io.grule.lexer
 
-interface LexerContext {
-    val position: TextPosition
+import io.grule.matcher.CharStream
 
-    fun peek(offset: Int): Char?
+interface LexerContext : CharStream {
+    fun emit(token: Token)
 
-    fun getText(start: Int, end: Int): String
+    fun emit(lexer: Lexer, text: String) {
+        emit(Token(lexer, text, position))
+    }
+
+    fun emit(lexer: Lexer, count: Int) {
+        emit(lexer, getText(0, count))
+    }
+
+    fun emit(lexer: Lexer) {
+        emit(lexer, "<$lexer>")
+    }
+
+    fun emitEOF() {
+        emit(Lexers.EOF)
+    }
 }

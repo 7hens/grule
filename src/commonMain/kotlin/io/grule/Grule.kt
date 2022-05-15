@@ -1,57 +1,57 @@
 package io.grule
 
-import io.grule.lexer.*
+import io.grule.matcher.*
 import io.grule.parser.Parser
 import io.grule.parser.ParserRecurse
-import io.grule.scanner.Scanner
-import io.grule.scanner.ScannerContext
-import io.grule.scanner.ScannerRules
-import io.grule.scanner.Scanners
+import io.grule.lexer.Lexer
+import io.grule.lexer.LexerContext
+import io.grule.lexer.LexerRules
+import io.grule.lexer.Lexers
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
-open class Grule : Scanner() {
-    private val rules = ScannerRules()
+open class Grule : Lexer() {
+    private val rules = LexerRules()
 
     fun p(fn: (Parser) -> Parser): Parser {
         return ParserRecurse(fn)
     }
 
-    private var scanners = mutableListOf<Scanner>(rules)
+    private var lexers = mutableListOf<Lexer>(rules)
 
-    override fun scan(context: ScannerContext) {
-        scanners.last().scan(context)
+    override fun lex(context: LexerContext) {
+        lexers.last().lex(context)
     }
 
-    fun push(scanner: Scanner) {
-        scanners.add(scanner)
+    fun push(lexer: Lexer) {
+        lexers.add(lexer)
     }
 
     fun pop() {
-        scanners.removeLast()
+        lexers.removeLast()
     }
 
-    fun addRule(scanner: Scanner) {
-        rules.add(scanner)
+    fun addRule(lexer: Lexer) {
+        rules.add(lexer)
     }
 
-    fun addIndentRules(newLine: Scanner, indent: Scanner, dedent: Scanner) {
+    fun addIndentRules(newLine: Lexer, indent: Lexer, dedent: Lexer) {
         rules.addIndentRules(newLine, indent, dedent)
     }
 
-    fun token(lexer: Lexer): Scanner {
-        return Scanners.token(lexer).also { addRule(it) }
+    fun token(matcher: Matcher): Lexer {
+        return Lexers.token(matcher).also { addRule(it) }
     }
 
-    fun token(fn: Lexer.Companion.() -> Lexer): Scanner {
-        return token(fn(Lexer))
+    fun token(fn: Matcher.Companion.() -> Matcher): Lexer {
+        return token(fn(Matcher))
     }
 
-    fun skip(lexer: Lexer): Scanner {
-        return Scanners.skip(lexer).also { addRule(it) }
+    fun skip(matcher: Matcher): Lexer {
+        return Lexers.skip(matcher).also { addRule(it) }
     }
 
-    fun skip(fn: Lexer.Companion.() -> Lexer): Scanner {
-        return skip(fn(Lexer))
+    fun skip(fn: Matcher.Companion.() -> Matcher): Lexer {
+        return skip(fn(Matcher))
     }
 
     companion object {
