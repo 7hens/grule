@@ -3,33 +3,33 @@ package io.grule.lexer
 internal class ScannerIndent(val newLine: Scanner, val indent: Scanner, val dedent: Scanner) : Scanner() {
     private var prevTabCount = 0
 
-    override fun scan(charStream: CharStream, tokenStream: TokenStream) {
+    override fun scan(context: ScannerContext) {
         try {
-            Lexer.EOF.match(charStream)
-            onIndent(tokenStream, 0)
+            Lexer.EOF.match(context)
+            onIndent(context, 0)
         } catch (_: LexerException) {
-            val offset = Lexer.WRAP.match(charStream)
-            val spaceNum = (Lexer.X + "    ").repeat().match(charStream, offset)
-            onIndent(tokenStream, spaceNum)
-            charStream.moveNext(offset + spaceNum)
+            val offset = Lexer.WRAP.match(context)
+            val spaceNum = (Lexer.X + "    ").repeat().match(context, offset)
+            onIndent(context, spaceNum)
+            context.moveNext(offset + spaceNum)
         }
     }
 
-    private fun onIndent(tokenStream: TokenStream, spaceNum: Int) {
+    private fun onIndent(context: ScannerContext, spaceNum: Int) {
         val tabCount = spaceNum / 4
 //        println(">> tab: $prevTabCount -> $tabCount")
         if (tabCount > prevTabCount) {
             for (i in prevTabCount until tabCount) {
-                tokenStream.emit(indent)
+                context.emit(indent)
             }
         } else {
             for (i in tabCount until prevTabCount) {
-                tokenStream.emit(dedent)
+                context.emit(dedent)
             }
             if (spaceNum >= 0) {
-                tokenStream.emit(newLine)
+                context.emit(newLine)
             } else {
-                tokenStream.emitEOF()
+                context.emitEOF()
             }
         }
         prevTabCount = tabCount

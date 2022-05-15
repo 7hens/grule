@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty
 abstract class Scanner : ReadOnlyProperty<Any?, Scanner> {
     val P: Parser get() = ParserBuilder()
 
-    abstract fun scan(charStream: CharStream, tokenStream: TokenStream)
+    abstract fun scan(context: ScannerContext)
 
     var name = "__" + this::class.simpleName
 

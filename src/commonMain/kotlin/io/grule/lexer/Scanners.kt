@@ -2,9 +2,9 @@ package io.grule.lexer
 
 object Scanners {
     val EOF = object : Scanner() {
-        override fun scan(charStream: CharStream, tokenStream: TokenStream) {
-            Lexer.EOF.match(charStream)
-            tokenStream.emit(this)
+        override fun scan(context: ScannerContext) {
+            Lexer.EOF.match(context)
+            context.emit(this)
         }
 
         override fun toString(): String {
@@ -13,25 +13,25 @@ object Scanners {
     }
 
     val EMPTY = object : Scanner() {
-        override fun scan(charStream: CharStream, tokenStream: TokenStream) {
+        override fun scan(context: ScannerContext) {
         }
     }
 
     fun skip(lexer: Lexer): Scanner {
         return object : Scanner() {
-            override fun scan(charStream: CharStream, tokenStream: TokenStream) {
-                val matchNum = lexer.match(charStream)
-                charStream.moveNext(matchNum)
+            override fun scan(context: ScannerContext) {
+                val matchNum = lexer.match(context)
+                context.moveNext(matchNum)
             }
         }.apply { name = lexer.toString() }
     }
 
     fun token(lexer: Lexer): Scanner {
         return object : Scanner() {
-            override fun scan(charStream: CharStream, tokenStream: TokenStream) {
-                val matchNum = lexer.match(charStream)
-                tokenStream.emit(this, charStream.getText(0, matchNum))
-                charStream.moveNext(matchNum)
+            override fun scan(context: ScannerContext) {
+                val matchNum = lexer.match(context)
+                context.emit(this, matchNum)
+                context.moveNext(matchNum)
             }
         }.apply { name = lexer.toString() }
     }

@@ -3,6 +3,7 @@ package io.grule.lexer
 internal class TokenStreamImpl(val charStream: CharStream, val scanner: Scanner) : TokenStream {
     private val buffer = mutableListOf<Token>()
     private var eof: Token? = null
+    private val context = ScannerContextImpl(charStream, this)
 
     override fun peek(offset: Int): Token {
         require(offset >= 0)
@@ -27,7 +28,7 @@ internal class TokenStreamImpl(val charStream: CharStream, val scanner: Scanner)
     private fun prepare(expectedNum: Int) {
         var bufferSize = buffer.size
         while (eof == null && bufferSize < expectedNum) {
-            scanner.scan(charStream, this)
+            scanner.scan(context)
             bufferSize = buffer.size
         }
     }
@@ -40,10 +41,6 @@ internal class TokenStreamImpl(val charStream: CharStream, val scanner: Scanner)
         }
     }
 
-    override fun emit(scanner: Scanner, text: String) {
-        emit(Token(scanner, text, charStream.position))
-    }
-    
     override fun toString(): String {
         val builder = StringBuilder()
         var i = 0

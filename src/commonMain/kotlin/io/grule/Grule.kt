@@ -14,8 +14,8 @@ open class Grule : Scanner() {
 
     private var scanners = mutableListOf<Scanner>(rules)
 
-    override fun scan(charStream: CharStream, tokenStream: TokenStream) {
-        scanners.last().scan(charStream, tokenStream)
+    override fun scan(context: ScannerContext) {
+        scanners.last().scan(context)
     }
 
     fun push(scanner: Scanner) {

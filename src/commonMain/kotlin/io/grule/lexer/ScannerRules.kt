@@ -3,24 +3,24 @@ package io.grule.lexer
 internal class ScannerRules : Scanner() {
     private val rules = mutableListOf<Scanner>()
 
-    override fun scan(charStream: CharStream, tokenStream: TokenStream) {
+    override fun scan(context: ScannerContext) {
         var matches = false
         for (rule in rules) {
             try {
-                rule.scan(charStream, tokenStream)
+                rule.scan(context)
                 matches = true
                 break
             } catch (_: LexerException) {
             }
         }
         if (!matches) {
-            if (charStream.peek(0) == null) {
-                tokenStream.emitEOF()
+            if (context.peek(0) == null) {
+                context.emitEOF()
                 return
             }
             throw LexerException(
-                "Unmatched character (${charStream.peek(0)}) " +
-                        "at #${charStream.position}"
+                "Unmatched character (${context.peek(0)}) " +
+                        "at #${context.position}"
             )
         }
     }
