@@ -11,12 +11,12 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
 
     val isNamed: Boolean get() = name != null
 
-    abstract fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int
+    abstract fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int
 
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = ParserBuilder() + this + Lexer.EOF
         val node = AstNode("<ROOT>")
-        mainParser.parse(tokenStream, 0, node)
+        mainParser.parse(tokenStream, node, 0)
 //        println(node.toStringTree())
         return node.first(this)
     }

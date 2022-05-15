@@ -9,7 +9,7 @@ internal class ParserUntilNonGreedy(
         require(maxTimes >= minTimes)
     }
 
-    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         var repeatTimes = 0
         var result = 0
         val parserNode = AstNode(parentNode.key)
@@ -17,14 +17,14 @@ internal class ParserUntilNonGreedy(
             if (repeatTimes >= minTimes) {
                 try {
                     val terminalNode = AstNode(parentNode.key)
-                    result += terminal.parse(tokenStream, offset + result, terminalNode)
+                    result += terminal.parse(tokenStream, terminalNode, offset + result)
                     parentNode.merge(parserNode)
                     parentNode.merge(terminalNode)
                     return result
                 } catch (_: ParserException) {
                 }
             }
-            result += parser.parse(tokenStream, offset + result, parserNode)
+            result += parser.parse(tokenStream, parserNode, offset + result)
             repeatTimes++
             if (repeatTimes > maxTimes) {
                 throw ParserException("limit out of range $maxTimes")

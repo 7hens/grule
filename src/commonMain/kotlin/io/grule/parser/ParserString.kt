@@ -3,7 +3,7 @@ package io.grule.parser
 import io.grule.lexer.TokenStream
 
 internal class ParserString(val text: String) : Parser() {
-    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val token = tokenStream.peek(offset)
         if (token.text == text) {
             parentNode.add(AstNode.Terminal(text, token))

@@ -46,7 +46,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
         return RecurseBuilder() + parser
     }
 
-    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         lazyInit
         if (isMatchedSelf(parentNode)) {
             return 0
@@ -56,7 +56,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
         for (parser in primitiveParsers) {
             try {
                 val node = AstNode(this)
-                result += parser.parse(tokenStream, offset + result, node)
+                result += parser.parse(tokenStream, node, offset + result)
                 parentNode.add(node)
                 result += parseRecursive(tokenStream, offset + result, parentNode)
                 return result
@@ -81,7 +81,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
                 val node = AstNode(this)
                 val lastChild = parentNode.all().last()
                 node.add(lastChild)
-                result += parser.parse(tokenStream, offset + result, node)
+                result += parser.parse(tokenStream, node, offset + result)
                 parentNode.remove(lastChild)
                 parentNode.add(node)
                 result += parseRecursive(tokenStream, offset + result, parentNode)

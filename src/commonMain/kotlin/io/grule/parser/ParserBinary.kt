@@ -7,10 +7,10 @@ internal class ParserBinary(
     val operator: Any,
     val comparator: Comparator<AstNode>,
 ) : Parser() {
-    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val key = parentNode.key
         val nodeTree = AstNode(key)
-        val result = parser.parse(tokenStream, offset, nodeTree)
+        val result = parser.parse(tokenStream, nodeTree, offset)
         if (nodeTree.all().isEmpty()) {
             return result
         }

@@ -8,13 +8,13 @@ internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes:
         require(maxTimes >= minTimes)
     }
 
-    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         var repeatTimes = 0
         var result = 0
         val node = AstNode(parentNode.key)
         while (true) {
             try {
-                result += parser.parse(tokenStream, offset + result, node)
+                result += parser.parse(tokenStream, node, offset + result)
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
                     break

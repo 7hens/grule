@@ -5,15 +5,15 @@ import io.grule.lexer.TokenStream
 internal open class ParserBuilder : Parser() {
     var myParser: Parser = ParserShadow
 
-    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         return if (isNamed) {
             val node = AstNode(this)
-            val result = myParser.parse(tokenStream, offset, node)
+            val result = myParser.parse(tokenStream, node, offset)
             parentNode.add(node)
             result
         } else {
             val node = AstNode(parentNode.key)
-            val result = myParser.parse(tokenStream, offset, node)
+            val result = myParser.parse(tokenStream, node, offset)
             parentNode.merge(node)
             result
         }

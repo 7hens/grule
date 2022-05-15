@@ -5,7 +5,7 @@ import io.grule.lexer.TokenStream
 
 internal class ParserLexer(private val lexer: Lexer) : Parser() {
 
-    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val token = tokenStream.peek(offset)
         if (token.lexer == lexer) {
             parentNode.add(AstNode.Terminal(lexer, token))

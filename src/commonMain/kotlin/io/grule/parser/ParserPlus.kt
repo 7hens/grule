@@ -7,11 +7,11 @@ internal class ParserPlus(private val parsers: List<Parser>) : Parser() {
         require(parsers.isNotEmpty())
     }
 
-    override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val node = AstNode(parentNode.key)
         var result = 0
         for (parser in parsers) {
-            result += parser.parse(tokenStream, offset + result, node)
+            result += parser.parse(tokenStream, node, offset + result)
         }
         parentNode.merge(node)
         return result
