@@ -1,4 +1,7 @@
-package io.grule.lexer
+package io.grule.scanner
+
+import io.grule.lexer.Lexer
+import io.grule.lexer.LexerException
 
 internal class ScannerIndent(val newLine: Scanner, val indent: Scanner, val dedent: Scanner) : Scanner() {
     private var prevTabCount = 0

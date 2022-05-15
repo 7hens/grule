@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenStream
+import io.grule.scanner.TokenStream
 
 internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes: Int) : Parser() {
     init {

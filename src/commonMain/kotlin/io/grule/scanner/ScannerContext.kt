@@ -1,4 +1,6 @@
-package io.grule.lexer
+package io.grule.scanner
+
+import io.grule.lexer.CharStream
 
 interface ScannerContext : CharStream {
     fun emit(token: Token)

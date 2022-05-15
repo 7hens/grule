@@ -1,4 +1,6 @@
-package io.grule.lexer
+package io.grule.scanner
+
+import io.grule.lexer.TextPosition
 
 open class Token(
     val scanner: Scanner,

@@ -38,11 +38,11 @@ fun interface Lexer {
         return plus(LexerRegex(text))
     }
 
-    open infix fun or(lexer: Lexer): Lexer {
+    infix fun or(lexer: Lexer): Lexer {
         return LexerOr(mutableListOf(this, lexer))
     }
 
-    open fun repeat(minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Lexer {
+    fun repeat(minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Lexer {
         return LexerRepeat(this, minTimes, maxTimes)
     }
 

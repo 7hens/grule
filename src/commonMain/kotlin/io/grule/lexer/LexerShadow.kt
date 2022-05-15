@@ -6,10 +6,10 @@ object LexerShadow : Lexer {
     }
 
     override fun plus(lexer: Lexer): Lexer {
-        return LexerPlus(mutableListOf(lexer))
+        return LexerPlus(listOf(lexer))
     }
 
     override fun or(lexer: Lexer): Lexer {
-        return LexerOr(mutableListOf(lexer))
+        return LexerOr(listOf(lexer))
     }
 }

@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenStream
+import io.grule.scanner.TokenStream
 
 internal open class ParserBuilder : Parser() {
     var myParser: Parser = ParserShadow

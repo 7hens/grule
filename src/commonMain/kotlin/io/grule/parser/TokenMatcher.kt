@@ -1,7 +1,7 @@
 package io.grule.parser
 
-import io.grule.lexer.Scanner
-import io.grule.lexer.Token
+import io.grule.scanner.Scanner
+import io.grule.scanner.Token
 
 interface TokenMatcher {
     val rule: Any

@@ -3,6 +3,10 @@ package io.grule
 import io.grule.lexer.*
 import io.grule.parser.Parser
 import io.grule.parser.ParserRecurse
+import io.grule.scanner.Scanner
+import io.grule.scanner.ScannerContext
+import io.grule.scanner.ScannerRules
+import io.grule.scanner.Scanners
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
 open class Grule : Scanner() {

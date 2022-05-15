@@ -1,8 +1,8 @@
 package io.grule.parser
 
-import io.grule.lexer.Scanner
-import io.grule.lexer.Scanners
-import io.grule.lexer.TokenStream
+import io.grule.scanner.Scanner
+import io.grule.scanner.Scanners
+import io.grule.scanner.TokenStream
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 

@@ -1,4 +1,6 @@
-package io.grule.lexer
+package io.grule.scanner
+
+import io.grule.lexer.LexerException
 
 internal class ScannerRules : Scanner() {
     private val rules = mutableListOf<Scanner>()

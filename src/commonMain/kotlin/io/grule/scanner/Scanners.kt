@@ -1,4 +1,6 @@
-package io.grule.lexer
+package io.grule.scanner
+
+import io.grule.lexer.Lexer
 
 object Scanners {
     val EOF = object : Scanner() {

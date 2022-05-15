@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenStream
+import io.grule.scanner.TokenStream
 
 // val parser by p { v or it + x + it }
 internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {

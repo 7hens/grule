@@ -1,6 +1,7 @@
 package io.grule.lexer
 
 import io.grule.Grule
+import io.grule.scanner.Scanners
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

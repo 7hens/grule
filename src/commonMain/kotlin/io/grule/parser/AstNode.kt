@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.lexer.Token
+import io.grule.scanner.Token
 
 open class AstNode(val key: Any) {
     private val groups = mutableMapOf<Any, MutableList<AstNode>>()
