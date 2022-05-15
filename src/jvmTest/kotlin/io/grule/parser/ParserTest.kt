@@ -12,8 +12,8 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            val A by token(L + "a")
-            token(L + L_word)
+            val A by token { X + "a" }
+            token { WORD }
 
             val a by P + A
             val b by P + "b"
@@ -34,9 +34,9 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            val A by token(L + "a")
-            val Bc by token(L + "bc")
-            val D by token(L + "d")
+            val A by token { X + "a" }
+            val Bc by token { X + "bc" }
+            val D by token { X + "d" }
 
             val e by P + "e"
             val bc by P + Bc
@@ -58,8 +58,8 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            val t1 by token(L + "01")
-            val t2 by token(L + L_digit)
+            val t1 by token { X + "01" }
+            val t2 by token { DIGIT }
 
             val digit by P + t2
             val parser by P + t1 + digit.repeat()
@@ -76,9 +76,9 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            val t1 by token(L + "01")
-            val t2 by token(L + L_digit)
-            token(L + ",")
+            val t1 by token { X + "01" }
+            val t2 by token { DIGIT }
+            token { X + "," }
 
             val digit by P + t2
             val parser by P + t1 + digit.join(P + ",")
@@ -96,8 +96,8 @@ class ParserTest {
         val charStream = CharReader.fromString(source).toStream(2)
 
         Grule {
-            token(L + "0123")
-            token(L + "45")
+            token { X + "0123" }
+            token { X + "45" }
 
             val parser by P + "0123" + (P + "45")
             val node = parse(parser, charStream)
@@ -111,11 +111,11 @@ class ParserTest {
     fun untilGreedy() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
         Grule {
-            val Num by token(L_digit.repeat(1))
-            val Op by token(L - "+-*/%><=!")
+            val Num by token { DIGIT.repeat(1) }
+            val Op by token { X - "+-*/%><=!" }
 
-            skip(L + L_space or L_wrap)
-            token(L + "x")
+            skip { WRAP or SPACE }
+            token { X + "x" }
 
             val exp by P + (P + Num + Op).untilGreedy(P + "x")
 
@@ -129,11 +129,11 @@ class ParserTest {
     fun untilReluctant() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
         Grule {
-            val Num by token(L_digit.repeat(1))
-            val Op by token(L - "+-*/%><=!")
+            val Num by token { DIGIT.repeat(1) }
+            val Op by token { X - "+-*/%><=!" }
 
-            skip(L + L_space or L_wrap)
-            token(L + "x")
+            skip { WRAP or SPACE }
+            token { X + "x" }
 
             val exp by P + (P + Num + Op).untilNonGreedy(P + "x")
 
@@ -147,11 +147,11 @@ class ParserTest {
     fun binary() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
         Grule {
-            val Num by token(L_digit.repeat(1))
-            val Op by token(L - "+-*/%><=!")
+            val Num by token { DIGIT.repeat(1) }
+            val Op by token { X - "+-*/%><=!" }
 
-            skip(L + L_space or L_wrap)
-            token(L + "x")
+            skip { WRAP or SPACE }
+            token { X + "x" }
 
             val exp by P + (P + Num + Op).untilNonGreedy(P + "x").binary(Op)
 
@@ -165,11 +165,11 @@ class ParserTest {
     fun recursiveLeft() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
         Grule {
-            val Num by token(L_digit.repeat(1))
-            val Op by token(L - "+-*/%><=!")
+            val Num by token { DIGIT.repeat(1) }
+            val Op by token { X - "+-*/%><=!" }
 
-            skip(L + L_space or L_wrap)
-            token(L + "x")
+            skip { WRAP or SPACE }
+            token { X + "x" }
 
             val exp by p { P + Num or it + "x" or it + Num or it + Op }
 
@@ -179,16 +179,16 @@ class ParserTest {
             println(astNode.toStringTree())
         }
     }
-    
+
     @Test
     fun recursiveRight() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
         Grule {
-            val Num by token(L_digit.repeat(1))
-            val Op by token(L - "+-*/%><=!")
+            val Num by token { DIGIT.repeat(1) }
+            val Op by token { X - "+-*/%><=!" }
 
-            skip(L + L_space or L_wrap)
-            token(L + "x")
+            skip { WRAP or SPACE }
+            token { X + "x" }
 
             val exp by p { P + Num + Op + it or P + "x" or P + Num }
 
@@ -198,16 +198,16 @@ class ParserTest {
             println(astNode.toStringTree())
         }
     }
-    
+
     @Test
     fun recursiveBinary() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
         Grule {
-            val Num by token(L_digit.repeat(1))
-            val Op by token(L - "+-*/%><=!")
+            val Num by token { DIGIT.repeat(1) }
+            val Op by token { X - "+-*/%><=!" }
 
-            skip(L + L_space or L_wrap)
-            token(L + "x")
+            skip { WRAP or SPACE }
+            token { X + "x" }
 
             val exp by p { P + Num or P + "x" or it + Op + it }
 

@@ -1,5 +1,6 @@
 package io.grule.lexer
 
+@Suppress("MemberVisibilityCanBePrivate")
 abstract class Lexer {
     abstract fun match(charStream: CharStream, offset: Int = 0): Int
 
@@ -70,6 +71,19 @@ abstract class Lexer {
     }
 
     companion object {
+        val X: Lexer = LexerShadow
+        val ANY: Lexer = LexerCharSet.ANY
         val EOF: Lexer = LexerEOF
+
+        val DIGIT = X - ('0'..'9')
+        val BIT = X - "01"
+        val OCTAL = X - ('0'..'7')
+        val HEX = X - "0123456789ABCDEFabcdef"
+        val UPPER = X - ('A'..'Z')
+        val LOWER = X - ('a'..'z')
+        val LETTER = UPPER or LOWER
+        val WORD = LETTER or DIGIT or X + '_'
+        val SPACE = X - "\t\r\n\u0085\u000B\u000C "
+        val WRAP = X + "\r\n" or X - "\r\n"
     }
 }

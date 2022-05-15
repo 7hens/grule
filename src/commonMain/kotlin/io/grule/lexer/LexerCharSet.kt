@@ -3,7 +3,7 @@ package io.grule.lexer
 internal class LexerCharSet(val set: Iterable<Char>) : Lexer() {
     override fun match(charStream: CharStream, offset: Int): Int {
         val c = charStream.peek(offset)
-            ?: throw LexerException(charStream, this, LexerRules.eof)
+            ?: throw LexerException(charStream, this, EOF)
         if (c in set) {
             return 1
         }

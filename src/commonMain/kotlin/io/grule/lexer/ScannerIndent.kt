@@ -4,26 +4,15 @@ internal class ScannerIndent(val newLine: Scanner, val indent: Scanner, val dede
     private var prevTabCount = 0
 
     override fun scan(charStream: CharStream, tokenStream: TokenStream) {
-        if (!scanEOF(charStream, tokenStream)) {
-            val offset = L_wrap.match(charStream)
-            val spaceNum = (L + "    ").repeat().match(charStream, offset)
+        try {
+            Lexer.EOF.match(charStream)
+            onIndent(tokenStream, 0)
+        } catch (_: LexerException) {
+            val offset = Lexer.WRAP.match(charStream)
+            val spaceNum = (Lexer.X + "    ").repeat().match(charStream, offset)
             onIndent(tokenStream, spaceNum)
             charStream.moveNext(offset + spaceNum)
         }
-    }
-
-    private fun scanEOF(charStream: CharStream, tokenStream: TokenStream): Boolean {
-        return try {
-            Lexer.EOF.match(charStream)
-            onIndent(tokenStream, -1)
-            true
-        } catch (e: LexerException) {
-            false
-        }
-    }
-
-    override fun toString(): String {
-        return "<INDENT>"
     }
 
     private fun onIndent(tokenStream: TokenStream, spaceNum: Int) {
@@ -44,5 +33,9 @@ internal class ScannerIndent(val newLine: Scanner, val indent: Scanner, val dede
             }
         }
         prevTabCount = tabCount
+    }
+
+    override fun toString(): String {
+        return "INDENT"
     }
 }

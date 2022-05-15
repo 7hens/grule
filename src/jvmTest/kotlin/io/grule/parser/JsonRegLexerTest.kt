@@ -3,15 +3,15 @@ package io.grule.parser
 import io.grule.Grule
 import org.junit.Test
 
-class JsonRegLexerTest: Grule() {
-    val string by token(L / """(".*?")""")
-    val number by token(L / "\\d+(\\.\\d+)?")
-    val bool by token(L / "true|false")
-    val nil by token(L / "null")
+class JsonRegLexerTest : Grule() {
+    val string by token { X / """(".*?")""" }
+    val number by token { X / "\\d+(\\.\\d+)?" }
+    val bool by token { X / "true|false" }
+    val nil by token { X / "null" }
 
     init {
-        token(L - "{}[]:,")
-        skip(L + L_space or L_wrap)
+        token { X - "{}[]:," }
+        skip { SPACE or WRAP }
     }
 
     val jObject: Parser by p { jString or jNumber or jBool or jNil or jArray or jDict }

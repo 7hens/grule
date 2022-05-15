@@ -5,18 +5,18 @@ import io.grule.parser.Parser
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate")
 class RegexGrammar : Grule() {
-    val EscapeChar by token(L + "\\" - "abtrvfne" or L + "\\" - REG_OPERATORS)
-    val Unicode by token(L + "\\u" + L_hex.repeat(4, 4))
-    val Hex by token(L + "\\x" + L_hex.repeat(2, 2))
-    val Octal by token(L + "\\" + L_octal.repeat(3, 3) or L + "\\0")
-    val Digit by token(L + L_digit)
-    val CharClass by token(L + "\\" - "SsDdWw" or L + ".")
+    val EscapeChar by token { X + "\\" - "abtrvfne" or X + "\\" - REG_OPERATORS }
+    val Unicode by token { X + "\\u" + HEX.repeat(4, 4) }
+    val Hex by token { X + "\\x" + HEX.repeat(2, 2) }
+    val Octal by token { X + "\\" + OCTAL.repeat(3, 3) or X + "\\0" }
+    val Digit by token { DIGIT }
+    val CharClass by token { X + "\\" - "SsDdWw" or X + "." }
 
     init {
-        token(L - REG_OPERATORS)
+        token { X - REG_OPERATORS }
     }
 
-    val Char by token(L_any)
+    val Char by token { ANY }
 
     val branch: Parser by p { P + piece.repeat(1) }
     val regex by P + (P + branch).join(P + "|")

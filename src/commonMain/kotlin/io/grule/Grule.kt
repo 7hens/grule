@@ -38,8 +38,16 @@ open class Grule : Scanner() {
         return Scanners.token(lexer).also { addRule(it) }
     }
 
+    fun token(fn: Lexer.Companion.() -> Lexer): Scanner {
+        return token(fn(Lexer))
+    }
+
     fun skip(lexer: Lexer): Scanner {
         return Scanners.skip(lexer).also { addRule(it) }
+    }
+
+    fun skip(fn: Lexer.Companion.() -> Lexer): Scanner {
+        return skip(fn(Lexer))
     }
 
     companion object {

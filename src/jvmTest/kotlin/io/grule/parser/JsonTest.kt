@@ -4,14 +4,14 @@ import io.grule.Grule
 import org.junit.Test
 
 class JsonTest : Grule() {
-    val string by token(L + '"' + L_any.untilNonGreedy(L + '"'))
-    val number by token(L + L_digit.repeat(1) + (L + "." + L_digit.repeat(1)).optional())
-    val bool by token(L + "true" or L + "false")
-    val nil by token(L + "null")
+    val string by token { X + '"' + ANY.untilNonGreedy(X + '"') }
+    val number by token { X + DIGIT.repeat(1) + (X + "." + DIGIT.repeat(1)).optional() }
+    val bool by token { X + "true" or X + "false" }
+    val nil by token { X + "null" }
 
     init {
-        token(L - "{}[]:,")
-        skip(L + L_space or L_wrap)
+        token { X - "{}[]:," }
+        skip { SPACE }
     }
 
     val jObject: Parser by p { jString or jNumber or jBool or jNil or jArray or jDict }

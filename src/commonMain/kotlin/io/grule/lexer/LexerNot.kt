@@ -4,7 +4,7 @@ internal class LexerNot(private val lexer: Lexer) : Lexer() {
 
     override fun match(charStream: CharStream, offset: Int): Int {
         charStream.peek(offset)
-            ?: throw LexerException(charStream, lexer, LexerRules.eof)
+            ?: throw LexerException(charStream, lexer, EOF)
         try {
             lexer.match(charStream, offset)
         } catch (e: LexerException) {

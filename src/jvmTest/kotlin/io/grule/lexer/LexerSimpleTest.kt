@@ -10,16 +10,16 @@ class LexerSimpleTest {
     @Test
     fun matchLexer() {
         val charStream = CharReader.fromString(text).toStream(2)
-        Grule {
-            assertEquals(4, (L + "0123").match(charStream, 0))
-            assertEquals(10, (L + L_digit).repeat().match(charStream, 0))
-            assertEquals(1, (L + L_word).match(charStream, 0))
-            assertEquals(10, (L + "01" + L_any.untilNonGreedy(L + "89")).match(charStream, 0))
-            assertEquals(3, (L - "DF").join(L+"E").match(charStream, 13))
-            assertEquals(3, (L - "DF").interlace(L+"E").match(charStream, 13))
-            assertEquals(6, (L - "ABCDE").untilGreedy(L+"F").match(charStream, 10))
-            assertEquals(6, (L - "ABCDE").untilNonGreedy(L+"F").match(charStream, 10))
-            assertEquals(10, (L_digit.repeat() + (L + "A").test()).match(charStream, 0))
+        Lexer.run {
+            assertEquals(4, (X + "0123").match(charStream, 0))
+            assertEquals(10, (DIGIT).repeat().match(charStream, 0))
+            assertEquals(1, (WORD).match(charStream, 0))
+            assertEquals(10, (X + "01" + ANY.untilNonGreedy(ANY + "89")).match(charStream, 0))
+            assertEquals(3, (X - "DF").join(X + "E").match(charStream, 13))
+            assertEquals(3, (X - "DF").interlace(X + "E").match(charStream, 13))
+            assertEquals(6, (X - "ABCDE").untilGreedy(X + "F").match(charStream, 10))
+            assertEquals(6, (X - "ABCDE").untilNonGreedy(X + "F").match(charStream, 10))
+            assertEquals(10, (DIGIT.repeat() + (X + "A").test()).match(charStream, 0))
         }
     }
 
@@ -27,9 +27,9 @@ class LexerSimpleTest {
     fun matchToken() {
         val charStream = CharReader.fromString(text).toStream(2)
         Grule {
-            val t1 by token(L + "01")
-            val t2 by token(L + L_digit.repeat(1))
-            val t3 by token(L + L_any)
+            val t1 by token { X + "01" }
+            val t2 by token { DIGIT.repeat(1) }
+            val t3 by token { ANY }
             println(t1.name)
             println(t2.name)
             println(t3.name)
