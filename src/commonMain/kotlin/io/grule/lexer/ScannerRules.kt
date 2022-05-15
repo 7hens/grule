@@ -20,7 +20,7 @@ internal class ScannerRules : Scanner() {
             }
             throw LexerException(
                 "Unmatched character (${charStream.peek(0).toChar()}) " +
-                        "at #${charStream.line}:${charStream.column}"
+                        "at #${charStream.position}"
             )
         }
     }

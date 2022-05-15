@@ -30,6 +30,6 @@ internal class CharStreamTest {
         charStream.peek(14)
         assertEquals('8', charStream.peek(8).toChar())
         charStream.moveNext(14)
-        assertEquals(14, charStream.charIndex)
+        assertEquals(14, charStream.position.index)
     }
 }

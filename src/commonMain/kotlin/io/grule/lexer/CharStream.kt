@@ -1,12 +1,8 @@
 package io.grule.lexer
 
 interface CharStream {
-    val charIndex: Int
-
-    val line: Int
-
-    val column: Int
-
+    val position: TextPosition
+    
     fun peek(offset: Int): Int
 
     fun moveNext(count: Int)

@@ -2,7 +2,11 @@ package io.grule.parser
 
 import io.grule.lexer.TokenStream
 
-internal class ParserOr(val parsers: MutableList<Parser>) : Parser() {
+internal class ParserOr(val parsers: List<Parser>) : Parser() {
+    init {
+        require(parsers.isNotEmpty())
+    }
+    
     override fun parse(tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
         var error: Throwable? = null
         for (parser in parsers) {
@@ -19,8 +23,7 @@ internal class ParserOr(val parsers: MutableList<Parser>) : Parser() {
     }
 
     override infix fun or(parser: Parser): Parser {
-        parsers.add(parser)
-        return this
+        return ParserOr(parsers + parser)
     }
 
     override fun isRecursive(parser: Parser): Boolean {

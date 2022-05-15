@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-internal class CharStreamImpl(private val reader: CharReader, private val chunkSize: Int): CharStream {
+internal class CharStreamImpl(private val reader: CharReader, private val chunkSize: Int) : CharStream {
     private var buffer = CharArray(chunkSize)
     private var dataStartPos = 0
     private var dataEndPos = 0
@@ -9,11 +9,8 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
     private var currentLine = 1
     private var currentColumn = 1
 
-    override val charIndex get() = currentIndex
-
-    override val line get() = currentLine
-
-    override val column get() = currentColumn
+    override val position: TextPosition
+        get() = TextPosition(currentIndex, currentLine, currentColumn)
 
     override fun peek(offset: Int): Int {
         require(offset >= 0)
@@ -33,7 +30,7 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
         }
         val newDataStartOffset = dataStartPos + count
         require(newDataStartOffset <= dataEndPos)
-        for(i in dataStartPos until newDataStartOffset) {
+        for (i in dataStartPos until newDataStartOffset) {
             if (buffer[i] == '\n') {
                 currentLine++
                 currentColumn = 1

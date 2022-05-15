@@ -1,11 +1,11 @@
 package io.grule.lexer
 
-internal class LexerPlus(private val lexers: MutableList<Lexer>) : Lexer() {
+internal class LexerPlus(private val lexers: List<Lexer>) : Lexer() {
+    init {
+        require(lexers.isNotEmpty())
+    }
 
     override fun match(charStream: CharStream, offset: Int): Int {
-        if (lexers.isEmpty()) {
-            throw LexerException("Empty lexers")
-        }
         var result = 0
         for (lexer in lexers) {
             result += lexer.match(charStream, offset + result)
@@ -14,9 +14,7 @@ internal class LexerPlus(private val lexers: MutableList<Lexer>) : Lexer() {
     }
 
     override fun plus(lexer: Lexer): Lexer {
-        if (lexers.isEmpty()) return lexer
-        lexers.add(lexer)
-        return this
+        return LexerPlus(lexers + lexer)
     }
 
     override fun toString(): String {
