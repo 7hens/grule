@@ -3,12 +3,12 @@ package io.grule.lexer
 import io.grule.parser.AstNode
 
 @Suppress("MoveVariableDeclarationIntoWhen")
-internal class LexerRegex(private val pattern: String) : Lexer() {
+internal class LexerRegex(private val pattern: String) : Lexer {
     private val g = RegexGrammar()
     private val lexer = parseRegex(pattern)
 
-    override fun match(charStream: CharStream, offset: Int): Int {
-        return lexer.match(charStream, offset)
+    override fun match(context: LexerContext, offset: Int): Int {
+        return lexer.match(context, offset)
     }
 
     private fun parseRegex(pattern: String): Lexer {
@@ -121,21 +121,21 @@ internal class LexerRegex(private val pattern: String) : Lexer() {
     private fun parseClassChar(classChar: AstNode): Lexer {
         val text = classChar.text
         return when (text) {
-            "\\S" -> SPACE.not()
-            "\\s" -> SPACE
-            "\\D" -> DIGIT.not()
-            "\\d" -> DIGIT
-            "\\W" -> WORD.not()
-            "\\w" -> WORD
-            else -> ANY
+            "\\S" -> Lexer.SPACE.not()
+            "\\s" -> Lexer.SPACE
+            "\\D" -> Lexer.DIGIT.not()
+            "\\d" -> Lexer.DIGIT
+            "\\W" -> Lexer.WORD.not()
+            "\\w" -> Lexer.WORD
+            else -> Lexer.ANY
         }
     }
 
     private fun <T> List<T>.lexerOr(fn: (T) -> Lexer): Lexer {
-        return fold(X) { acc, node -> acc.or(fn(node)) }
+        return fold(Lexer.X) { acc, node -> acc.or(fn(node)) }
     }
 
     private fun <T> List<T>.lexerPlus(fn: (T) -> Lexer): Lexer {
-        return fold(X) { acc, node -> acc.plus(fn(node)) }
+        return fold(Lexer.X) { acc, node -> acc.plus(fn(node)) }
     }
 }

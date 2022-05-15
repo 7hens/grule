@@ -1,14 +1,16 @@
 package io.grule.lexer
 
 @Suppress("MemberVisibilityCanBePrivate")
-abstract class Lexer {
-    abstract fun match(charStream: CharStream, offset: Int = 0): Int
+fun interface Lexer {
+    fun match(context: LexerContext, offset: Int): Int
 
-    open fun not(): Lexer {
+    fun match(context: LexerContext) = match(context, 0)
+
+    fun not(): Lexer {
         return LexerNot(this)
     }
 
-    open operator fun plus(lexer: Lexer): Lexer {
+    operator fun plus(lexer: Lexer): Lexer {
         return LexerPlus(mutableListOf(this, lexer))
     }
 

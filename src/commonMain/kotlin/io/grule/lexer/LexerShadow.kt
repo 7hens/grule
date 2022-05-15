@@ -1,7 +1,7 @@
 package io.grule.lexer
 
-object LexerShadow : Lexer() {
-    override fun match(charStream: CharStream, offset: Int): Int {
+object LexerShadow : Lexer {
+    override fun match(context: LexerContext, offset: Int): Int {
         throw UnsupportedOperationException("shadow lexer")
     }
 

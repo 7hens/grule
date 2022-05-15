@@ -42,11 +42,11 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
         currentIndex += count
     }
 
-    override fun getText(startOffset: Int, endOffset: Int): String {
-        require(startOffset >= 0)
-        require(endOffset >= startOffset)
-        val offset = dataStartPos + startOffset
-        val length = minOf(endOffset - startOffset, dataEndPos - offset)
+    override fun getText(start: Int, end: Int): String {
+        require(start >= 0)
+        require(end >= start)
+        val offset = dataStartPos + start
+        val length = minOf(end - start, dataEndPos - offset)
         return buffer.concatToString(offset, offset + length)
     }
 

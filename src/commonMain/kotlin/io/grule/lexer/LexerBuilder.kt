@@ -1,10 +1,10 @@
 package io.grule.lexer
 
-internal open class LexerBuilder : Lexer() {
+internal open class LexerBuilder : Lexer {
     private var myLexer: Lexer = LexerShadow
 
-    override fun match(charStream: CharStream, offset: Int): Int {
-        return myLexer.match(charStream, offset)
+    override fun match(context: LexerContext, offset: Int): Int {
+        return myLexer.match(context, offset)
     }
 
     override fun plus(lexer: Lexer): Lexer {

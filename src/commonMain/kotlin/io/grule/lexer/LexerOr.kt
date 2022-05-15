@@ -1,14 +1,14 @@
 package io.grule.lexer
 
-internal class LexerOr(private val lexers: List<Lexer>) : Lexer() {
+internal class LexerOr(private val lexers: List<Lexer>) : Lexer {
     init {
         require(lexers.isNotEmpty())
     }
     
-    override fun match(charStream: CharStream, offset: Int): Int {
+    override fun match(context: LexerContext, offset: Int): Int {
         for (lexer in lexers) {
             try {
-                return lexer.match(charStream, offset)
+                return lexer.match(context, offset)
             } catch (_: LexerException) {
                 continue
             }

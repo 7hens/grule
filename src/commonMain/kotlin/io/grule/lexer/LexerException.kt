@@ -9,9 +9,9 @@ open class LexerException : RuntimeException {
 
     constructor(message: String, cause: Throwable) : super(message, cause)
 
-    constructor(charStream: CharStream, expect: String, actual: String)
-            : this("Expect '$expect' at ${charStream.position}, actual is '$actual'")
+    constructor(context: LexerContext, expect: String, actual: String)
+            : this("Expect '$expect' at ${context.position}, actual is '$actual'")
 
-    constructor(charStream: CharStream, expect: Lexer, actual: Lexer)
-            : this(charStream, expect.toString(), actual.toString())
+    constructor(context: LexerContext, expect: Lexer, actual: Lexer)
+            : this(context, expect.toString(), actual.toString())
 }

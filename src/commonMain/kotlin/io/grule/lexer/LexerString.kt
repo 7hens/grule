@@ -1,17 +1,17 @@
 package io.grule.lexer
 
-internal class LexerString(private val text: String) : Lexer() {
+internal class LexerString(private val text: String) : Lexer {
 
-    override fun match(charStream: CharStream, offset: Int): Int {
-        charStream.peek(offset + text.length)
-        if (charStream.peek(offset) == null) {
-            throw LexerException(charStream, text, "<EOF>")
+    override fun match(context: LexerContext, offset: Int): Int {
+        context.peek(offset + text.length)
+        if (context.peek(offset) == null) {
+            throw LexerException(context, text, "<EOF>")
         }
-        val actualText = charStream.getText(offset, offset + text.length)
+        val actualText = context.getText(offset, offset + text.length)
         if (actualText == text) {
             return text.length
         }
-        throw LexerException(charStream, text, actualText)
+        throw LexerException(context, text, actualText)
     }
 
     override fun toString(): String {

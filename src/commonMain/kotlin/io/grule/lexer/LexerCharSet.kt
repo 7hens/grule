@@ -1,13 +1,13 @@
 package io.grule.lexer
 
-internal class LexerCharSet(val set: Iterable<Char>) : Lexer() {
-    override fun match(charStream: CharStream, offset: Int): Int {
-        val c = charStream.peek(offset)
-            ?: throw LexerException(charStream, this, EOF)
+internal class LexerCharSet(val set: Iterable<Char>) : Lexer {
+    override fun match(context: LexerContext, offset: Int): Int {
+        val c = context.peek(offset)
+            ?: throw LexerException(context, this, Lexer.EOF)
         if (c in set) {
             return 1
         }
-        throw LexerException(charStream, toString(), c.toString())
+        throw LexerException(context, toString(), c.toString())
     }
 
     override fun toString(): String {

@@ -1,12 +1,12 @@
 package io.grule.lexer
 
-internal class LexerNot(private val lexer: Lexer) : Lexer() {
+internal class LexerNot(private val lexer: Lexer) : Lexer {
 
-    override fun match(charStream: CharStream, offset: Int): Int {
-        charStream.peek(offset)
-            ?: throw LexerException(charStream, lexer, EOF)
+    override fun match(context: LexerContext, offset: Int): Int {
+        context.peek(offset)
+            ?: throw LexerException(context, lexer, Lexer.EOF)
         try {
-            lexer.match(charStream, offset)
+            lexer.match(context, offset)
         } catch (e: LexerException) {
             return 1
         }
