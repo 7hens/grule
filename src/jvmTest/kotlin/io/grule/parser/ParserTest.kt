@@ -1,7 +1,6 @@
 package io.grule.parser
 
 import io.grule.Grammar
-import io.grule.matcher.CharReader
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -9,19 +8,17 @@ class ParserTest {
     @Test
     fun plus() {
         val source = "abc"
-        val charStream = CharReader.fromString(source).toStream(2)
-
         Grammar {
             val A by lexer { X + "a" }
             lexer.token { WORD }
 
-            val a by P + A
-            val b by P + "b"
-            val b2 by P + b
-            val abc by P + a + b2 + "c"
-            val node = parse(abc, charStream)
+            val a by parser { X + A }
+            val b by parser { X + "b" }
+            val b2 by parser { X + b }
+            val abc by parser { X + a + b2 + "c" }
 
-            print(node)
+            val node = parse(abc, source)
+            println(node.toStringTree())
             assertEquals(1, node.all(a).size)
             assertEquals(1, node.all(b2).size)
             assertEquals(1, node.all("c").size)
@@ -31,20 +28,18 @@ class ParserTest {
     @Test
     fun or() {
         val source = "abcd"
-        val charStream = CharReader.fromString(source).toStream(2)
-
         Grammar {
             val A by lexer { X + "a" }
             val Bc by lexer { X + "bc" }
             val D by lexer { X + "d" }
 
-            val e by P + "e"
-            val bc by P + Bc
-            val eOrBc by P + e or bc
-            val d by P + D
-            val abcd by P + A + eOrBc + d
+            val e by parser { X + "e" }
+            val bc by parser { X + Bc }
+            val eOrBc by parser { X + e or bc }
+            val d by parser { X + D }
+            val abcd by parser { X + A + eOrBc + d }
 
-            val node = parse(abcd, charStream)
+            val node = parse(abcd, source)
             println(node.toStringTree())
             assertEquals(1, node.all(A).size)
             assertEquals(1, node.all(eOrBc).size)
@@ -55,15 +50,14 @@ class ParserTest {
     @Test
     fun repeat() {
         val source = "0123456789"
-        val charStream = CharReader.fromString(source).toStream(2)
-
         Grammar {
             val t1 by lexer { X + "01" }
             val t2 by lexer { DIGIT }
 
-            val digit by P + t2
-            val parser by P + t1 + digit.repeat()
-            val node = parse(parser, charStream)
+            val digit by parser { X + t2 }
+            val parser by parser { X + t1 + digit.repeat() }
+
+            val node = parse(parser, source)
             println(node.toStringTree())
             assertEquals(1, node.all(t1).size)
             assertEquals(8, node.all(digit).size)
@@ -73,16 +67,15 @@ class ParserTest {
     @Test
     fun repeatWith() {
         val source = "017,8,9"
-        val charStream = CharReader.fromString(source).toStream(2)
-
         Grammar {
             val t1 by lexer { X + "01" }
             val t2 by lexer { DIGIT }
             lexer.token { X + "," }
 
-            val digit by P + t2
-            val parser by P + t1 + digit.join(P + ",")
-            val node = parse(parser, charStream)
+            val digit by parser { X + t2 }
+            val parser by parser { X + t1 + digit.join(X + ",") }
+
+            val node = parse(parser, source)
             println(node.toStringTree())
             assertEquals(1, node.all(t1).size)
             assertEquals(3, node.all(digit).size)
@@ -93,14 +86,12 @@ class ParserTest {
     @Test
     fun builder() {
         val source = "012345"
-        val charStream = CharReader.fromString(source).toStream(2)
-
         Grammar {
             lexer.token { X + "0123" }
             lexer.token { X + "45" }
 
-            val parser by P + "0123" + (P + "45")
-            val node = parse(parser, charStream)
+            val parser by parser { X + "0123" + (X + "45") }
+            val node = parse(parser, source)
             println(node.toStringTree())
             assertEquals(1, node.all("0123").size)
             assertEquals(1, node.all("45").size)
@@ -120,12 +111,10 @@ class ParserTest {
     @Test
     fun untilGreedy() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        val g = RepeatGrammar()
-        Grammar {
-            val exp by P + (P + g.Num + g.Op).untilGreedy(P + "x")
+        RepeatGrammar().apply {
+            val exp by parser { (X + Num + Op).untilGreedy(X + "x") }
 
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(exp, charStream)
+            val astNode = parse(exp, source)
             println(astNode.toStringTree())
         }
     }
@@ -133,12 +122,10 @@ class ParserTest {
     @Test
     fun untilReluctant() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        val g = RepeatGrammar()
-        Grammar {
-            val exp by P + (P + g.Num + g.Op).untilNonGreedy(P + "x")
+        RepeatGrammar().apply {
+            val exp by parser { (X + Num + Op).untilNonGreedy(X + "x") }
 
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(exp, charStream)
+            val astNode = parse(exp, source)
             println(astNode.toStringTree())
         }
     }
@@ -146,13 +133,10 @@ class ParserTest {
     @Test
     fun binary() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        val g = RepeatGrammar()
-        Grammar {
+        RepeatGrammar().apply {
+            val exp by parser { (X + Num + Op).untilNonGreedy(X + "x").binary(Op) }
 
-            val exp by P + (P + g.Num + g.Op).untilNonGreedy(P + "x").binary(g.Op)
-
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(exp, charStream)
+            val astNode = parse(exp, source)
             println(astNode.toStringTree())
         }
     }
@@ -160,12 +144,10 @@ class ParserTest {
     @Test
     fun recursiveLeft() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        val g = RepeatGrammar()
-        Grammar {
-            val exp by p { P + g.Num or it + "x" or it + g.Num or it + g.Op }
+        RepeatGrammar().apply {
+            val exp by parser { X + Num or it + "x" or it + Num or it + Op }
 
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(exp, charStream)
+            val astNode = parse(exp, source)
             println("================")
             println(astNode.toStringTree())
         }
@@ -174,12 +156,10 @@ class ParserTest {
     @Test
     fun recursiveRight() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        val g = RepeatGrammar()
-        Grammar {
-            val exp by p { P + g.Num + g.Op + it or P + "x" or P + g.Num }
+        RepeatGrammar().apply {
+            val exp by parser { X + Num + Op + it or X + "x" or X + Num }
 
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(exp, charStream)
+            val astNode = parse(exp, source)
             println("================")
             println(astNode.toStringTree())
         }
@@ -188,12 +168,10 @@ class ParserTest {
     @Test
     fun recursiveBinary() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
-        val g = RepeatGrammar()
-        Grammar {
-            val exp by p { P + g.Num or P + "x" or it + g.Op + it }
+        RepeatGrammar().apply {
+            val exp by parser { X + Num or X + "x" or it + Op + it }
 
-            val charStream = CharReader.fromString(source).toStream()
-            val astNode = parse(exp, charStream)
+            val astNode = parse(exp, source)
             println("================")
             println(astNode.toStringTree())
         }

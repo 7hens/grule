@@ -2,7 +2,7 @@ package io.grule.parser
 
 import io.grule.lexer.TokenStream
 
-internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes: Int) : Parser() {
+internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes: Int) : Parser {
     init {
         require(minTimes >= 0)
         require(maxTimes >= minTimes)
@@ -11,10 +11,9 @@ internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes:
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         var repeatTimes = 0
         var result = 0
-        val node = AstNode(parentNode.key)
         while (true) {
             try {
-                result += parser.parse(tokenStream, node, offset + result)
+                result += parser.parse(tokenStream, parentNode, offset + result)
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
                     break
@@ -26,7 +25,6 @@ internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes:
                 break
             }
         }
-        parentNode.merge(node)
         return result
     }
 

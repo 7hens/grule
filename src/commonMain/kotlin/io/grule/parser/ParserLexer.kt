@@ -3,7 +3,7 @@ package io.grule.parser
 import io.grule.lexer.Lexer
 import io.grule.lexer.TokenStream
 
-internal class ParserLexer(private val lexer: Lexer) : Parser() {
+internal class ParserLexer(private val lexer: Lexer) : Parser {
 
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val token = tokenStream.peek(offset)
@@ -11,6 +11,10 @@ internal class ParserLexer(private val lexer: Lexer) : Parser() {
             parentNode.add(AstNode.Terminal(lexer, token))
             return 1
         }
-        throw ParserException("Unmatched '$lexer' in ${parentNode.key}, actual is $token")
+        throw ParserException("Unmatched <$lexer> in ${parentNode.key}, actual is $token")
+    }
+
+    override fun toString(): String {
+        return "<$lexer>"
     }
 }

@@ -1,8 +1,10 @@
 package io.grule.matcher
 
-object MatcherShadow : Matcher {
+class MatcherShadow : Matcher {
+    private val error = UnsupportedOperationException("shadow matcher")
+
     override fun match(context: MatcherContext, offset: Int): Int {
-        throw UnsupportedOperationException("shadow lexer")
+        throw error
     }
 
     override fun plus(matcher: Matcher): Matcher {

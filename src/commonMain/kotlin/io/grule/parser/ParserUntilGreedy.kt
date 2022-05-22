@@ -3,7 +3,7 @@ package io.grule.parser
 import io.grule.lexer.TokenStream
 
 internal class ParserUntilGreedy(
-    val parser: Parser, val terminal: Parser, val minTimes: Int, val maxTimes: Int) : Parser() {
+    val parser: Parser, val terminal: Parser, val minTimes: Int, val maxTimes: Int) : Parser {
     init {
         require(minTimes >= 0)
         require(maxTimes >= minTimes)

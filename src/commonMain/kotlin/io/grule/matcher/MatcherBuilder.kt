@@ -1,24 +1,24 @@
 package io.grule.matcher
 
 internal open class MatcherBuilder : Matcher {
-    private var myMatcher: Matcher = MatcherShadow
+    private var delegate: Matcher = MatcherShadow()
 
     override fun match(context: MatcherContext, offset: Int): Int {
-        return myMatcher.match(context, offset)
+        return delegate.match(context, offset)
     }
 
     override fun plus(matcher: Matcher): Matcher {
-        myMatcher = myMatcher.plus(matcher)
+        delegate = delegate.plus(matcher)
         return this
     }
 
     override fun or(matcher: Matcher): Matcher {
-        myMatcher = myMatcher.or(matcher)
+        delegate = delegate.or(matcher)
         return this
     }
 
     override fun toString(): String {
-        return myMatcher.toString()
+        return delegate.toString()
     }
 
 }

@@ -2,7 +2,7 @@ package io.grule.parser
 
 import io.grule.lexer.TokenStream
 
-internal class ParserNot(val parser: Parser) : Parser() {
+internal class ParserNot(val parser: Parser) : Parser {
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val node = AstNode(parentNode.key)
         try {

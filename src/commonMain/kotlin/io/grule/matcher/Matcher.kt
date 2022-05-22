@@ -73,7 +73,7 @@ fun interface Matcher {
     }
 
     companion object {
-        val X: Matcher = MatcherShadow
+        val X: Matcher get() = MatcherShadow()
         val ANY: Matcher = MatcherCharSet.ANY
         val EOF: Matcher = MatcherEOF
 

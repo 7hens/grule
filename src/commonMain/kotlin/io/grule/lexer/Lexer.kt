@@ -2,14 +2,11 @@ package io.grule.lexer
 
 import io.grule.matcher.CharStream
 import io.grule.matcher.Matcher
-import io.grule.matcher.MatcherCharSet
 import io.grule.parser.AstNode
 import io.grule.parser.Parser
-import io.grule.parser.ParserBuilder
-import kotlin.properties.ReadOnlyProperty
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate")
-interface Lexer {
+fun interface Lexer {
     fun lex(context: LexerContext)
 
     fun tokenStream(charStream: CharStream): TokenStream {
@@ -34,9 +31,9 @@ interface Lexer {
         fun indent(newLine: Lexer, indent: Lexer, dedent: Lexer): Lexer {
             return LexerIndent(newLine, indent, dedent)
         }
-        
-        fun builder(): LexerBuilder {
-            return LexerBuilder()
+
+        fun factory(): LexerFactory {
+            return LexerFactory()
         }
     }
 }

@@ -3,7 +3,7 @@ package io.grule.parser
 import io.grule.lexer.TokenStream
 
 // val parser by p { v or it + x + it }
-internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
+internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser {
     private val primitiveParsers = mutableListOf<Parser>()
     private val recursiveParsers = mutableListOf<Parser>()
     private val lazyInit by lazy { init() }
@@ -23,9 +23,20 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
         }
     }
 
+    fun degrade(): Parser {
+        init()
+        if (recursiveParsers.isNotEmpty()) {
+            return this
+        }
+        if (primitiveParsers.size == 1) {
+            return primitiveParsers.first()
+        }
+        return ParserOr(primitiveParsers)
+    }
+
     private fun getSubParsers(): List<Parser> {
         val resultParser = fn(this).let {
-            if (it is ParserBuilder) it.myParser else it
+            if (it is ParserBuilder) it.delegate else it
         }
         return if (resultParser is ParserOr) {
             resultParser.parsers
@@ -57,7 +68,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
             try {
                 val node = AstNode(this)
                 result += parser.parse(tokenStream, node, offset + result)
-                parentNode.add(node)
+                parentNode.merge(node)
                 result += parseRecursive(tokenStream, offset + result, parentNode)
                 return result
             } catch (e: ParserException) {
@@ -98,4 +109,8 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser() {
     }
 
     private inner class RecurseBuilder : ParserBuilder()
+
+    override fun toString(): String {
+        return "{recursive}"
+    }
 }

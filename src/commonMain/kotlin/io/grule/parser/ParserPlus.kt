@@ -2,7 +2,7 @@ package io.grule.parser
 
 import io.grule.lexer.TokenStream
 
-internal class ParserPlus(private val parsers: List<Parser>) : Parser() {
+internal class ParserPlus(private val parsers: List<Parser>) : Parser {
     init {
         require(parsers.isNotEmpty())
     }
@@ -23,5 +23,9 @@ internal class ParserPlus(private val parsers: List<Parser>) : Parser() {
 
     override fun isRecursive(parser: Parser): Boolean {
         return this === parser || (parsers.firstOrNull()?.isRecursive(parser) ?: false)
+    }
+
+    override fun toString(): String {
+        return parsers.joinToString(" + ")
     }
 }

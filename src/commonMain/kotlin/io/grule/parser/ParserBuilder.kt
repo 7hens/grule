@@ -2,39 +2,28 @@ package io.grule.parser
 
 import io.grule.lexer.TokenStream
 
-internal open class ParserBuilder : Parser() {
-    var myParser: Parser = ParserShadow
+open class ParserBuilder : Parser {
+    internal var delegate: Parser = ParserShadow()
 
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
-        return if (isNamed) {
-            val node = AstNode(this)
-            val result = myParser.parse(tokenStream, node, offset)
-            parentNode.add(node)
-            result
-        } else {
-            val node = AstNode(parentNode.key)
-            val result = myParser.parse(tokenStream, node, offset)
-            parentNode.merge(node)
-            result
-        }
+        return delegate.parse(tokenStream, parentNode, offset)
     }
 
     override fun toString(): String {
-        return name ?: myParser.toString()
+        return delegate.toString()
     }
 
     override fun plus(parser: Parser): Parser {
-        myParser = myParser.plus(parser)
+        delegate = delegate.plus(parser)
         return this
     }
 
     override fun or(parser: Parser): Parser {
-        myParser = myParser.or(parser)
+        delegate = delegate.or(parser)
         return this
     }
 
     override fun isRecursive(parser: Parser): Boolean {
-        return this === parser || (!isNamed && myParser.isRecursive(parser))
+        return this === parser || delegate.isRecursive(parser)
     }
-
 }

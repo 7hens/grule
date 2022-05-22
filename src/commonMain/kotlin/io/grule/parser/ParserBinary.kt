@@ -6,7 +6,7 @@ internal class ParserBinary(
     val parser: Parser,
     val operator: Any,
     val comparator: Comparator<AstNode>,
-) : Parser() {
+) : Parser {
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val key = parentNode.key
         val nodeTree = AstNode(key)

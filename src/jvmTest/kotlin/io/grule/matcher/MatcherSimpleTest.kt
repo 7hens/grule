@@ -26,7 +26,7 @@ class MatcherSimpleTest {
     @Test
     fun matchToken() {
         val charStream = CharReader.fromString(text).toStream(2)
-        val lexer = Lexer.builder()
+        val lexer = Lexer.factory()
         val t1 by lexer { X + "01" }
         val t2 by lexer { DIGIT.repeat(1) }
         val t3 by lexer { ANY }

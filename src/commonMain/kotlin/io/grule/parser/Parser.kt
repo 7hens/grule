@@ -2,43 +2,28 @@ package io.grule.parser
 
 import io.grule.lexer.Lexer
 import io.grule.lexer.TokenStream
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 
-abstract class Parser : ReadOnlyProperty<Any?, Parser> {
-    var name: String? = null
-        private set
+fun interface Parser {
 
-    val isNamed: Boolean get() = name != null
-
-    abstract fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int
+    fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int
 
     fun parse(tokenStream: TokenStream): AstNode {
-        val mainParser = ParserBuilder() + this + Lexer.EOF
+        val mainParser = this + Lexer.EOF
         val node = AstNode("<ROOT>")
         mainParser.parse(tokenStream, node, 0)
 //        println(node.toStringTree())
         return node.first(this)
     }
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
-        name = property.name
-        return this
-    }
-
-    override fun toString(): String {
-        return name ?: ("__" + this::class.simpleName)
-    }
-
-    open fun isRecursive(parser: Parser): Boolean {
+    fun isRecursive(parser: Parser): Boolean {
         return this === parser
     }
 
-    open fun not(): Parser {
+    fun not(): Parser {
         return ParserNot(this)
     }
 
-    open operator fun plus(parser: Parser): Parser {
+    operator fun plus(parser: Parser): Parser {
         return ParserPlus(mutableListOf(this, parser))
     }
 
@@ -50,18 +35,18 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
         return plus(ParserString(text))
     }
 
-    open infix fun or(parser: Parser): Parser {
+    infix fun or(parser: Parser): Parser {
         return ParserOr(mutableListOf(this, parser))
     }
 
-    open fun repeat(minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
+    fun repeat(minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
         return ParserRepeat(this, minTimes, maxTimes)
     }
 
     fun join(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
         val min = maxOf(minTimes - 1, 0)
         val max = maxOf(maxTimes - 1, 0)
-        return (ParserBuilder() + this + separator).untilGreedy(this, min, max)
+        return (this + separator).untilGreedy(this, min, max)
     }
 
     fun optional(): Parser {
@@ -69,7 +54,7 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
     }
 
     fun interlace(separator: Parser): Parser {
-        return ParserBuilder() + separator.optional() + join(separator) + separator.optional()
+        return separator.optional() + join(separator) + separator.optional()
     }
 
     fun untilGreedy(terminal: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
@@ -86,5 +71,13 @@ abstract class Parser : ReadOnlyProperty<Any?, Parser> {
 
     fun binary(operator: Any, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
         return ParserBinary(this, operator, comparator)
+    }
+
+    companion object {
+        val X: Parser get() = ParserShadow()
+
+        fun factory(): ParserFactory {
+            return ParserFactory()
+        }
     }
 }

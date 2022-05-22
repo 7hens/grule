@@ -18,6 +18,6 @@ internal class MatcherPlus(private val matchers: List<Matcher>) : Matcher {
     }
 
     override fun toString(): String {
-        return matchers.joinToString("  ")
+        return matchers.joinToString(" + ")
     }
 }

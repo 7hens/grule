@@ -2,16 +2,18 @@ package io.grule.parser
 
 import io.grule.lexer.TokenStream
 
-internal object ParserShadow : Parser() {
+internal class ParserShadow : Parser {
+    private val error = UnsupportedOperationException("shadow parser")
+    
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
-        return 0
+        throw error
     }
 
     override fun plus(parser: Parser): Parser {
-        return ParserPlus(listOf(parser))
+        return parser
     }
 
     override fun or(parser: Parser): Parser {
-        return ParserOr(listOf(parser))
+        return parser
     }
 }

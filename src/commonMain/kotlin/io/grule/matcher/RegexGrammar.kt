@@ -18,20 +18,22 @@ class RegexGrammar : Grammar() {
 
     val Char by lexer { ANY }
 
-    val branch: Parser by p { P + piece.repeat(1) }
-    val regex by P + (P + branch).join(P + "|")
-    val specChar by P + EscapeChar or P + Unicode or P + Hex or P + Octal or P + Digit or P + Char
-    val char by P + CharClass or P + specChar
-    val item by P + specChar + "-" + specChar or P + char
-    val atom by P + char or
-            P + "(" + "?" + "=" + regex + ")" or
-            P + "(" + "?" + "!" + regex + ")" or
-            P + "(" + regex + ")" or
-            P + "[" + (P + "^").optional() + item.repeat(1) + "]"
-    val digits by P + (P + Digit).repeat(1)
-    val quantity by P + digits + "," + (P + digits).optional() or P + digits
-    val quantifier by (P + "+" or P + "*" or P + "{" + quantity + "}") + (P + "?").optional()
-    val piece by P + atom + quantifier + branch.optional() or P + atom + (P + "?").optional()
+    val branch: Parser by parser { X + piece.repeat(1) }
+    val regex by parser { X + (X + branch).join(X + "|") }
+    val specChar by parser { X + EscapeChar or X + Unicode or X + Hex or X + Octal or X + Digit or X + Char }
+    val char by parser { X + CharClass or X + specChar }
+    val item by parser { X + specChar + "-" + specChar or X + char }
+    val atom by parser {
+        X + char or
+                X + "(" + "?" + "=" + regex + ")" or
+                X + "(" + "?" + "!" + regex + ")" or
+                X + "(" + regex + ")" or
+                X + "[" + (X + "^").optional() + item.repeat(1) + "]"
+    }
+    val digits by parser { X + (X + Digit).repeat(1) }
+    val quantity by parser { X + digits + "," + (X + digits).optional() or X + digits }
+    val quantifier by parser { (X + "+" or X + "*" or X + "{" + quantity + "}") + (X + "?").optional() }
+    val piece by parser { X + atom + quantifier + branch.optional() or X + atom + (X + "?").optional() }
 
     companion object {
         const val REG_OPERATORS = "\\()[]{}|.-?+*^\$"
