@@ -111,6 +111,6 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser {
     private inner class RecurseBuilder : ParserBuilder()
 
     override fun toString(): String {
-        return "{recursive}"
+        return "{${primitiveParsers.joinToString("|")}}"
     }
 }

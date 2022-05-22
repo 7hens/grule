@@ -14,7 +14,7 @@ class JsonTest : Grammar() {
         lexer.skip { SPACE }
     }
 
-    val jObject: Parser by parser { jString or jNumber or jBool or jNil or jArray or jDict }
+    val jObject: Parser by parser { X + jString or jNumber or jBool or jNil or jArray or jDict }
     val jString by parser { X + string }
     val jNumber by parser { X + number }
     val jBool by parser { X + bool }

@@ -69,4 +69,8 @@ internal class ParserBinary(
     override fun isRecursive(parser: Parser): Boolean {
         return this === parser || this.parser.isRecursive(parser)
     }
+
+    override fun toString(): String {
+        return "(@ $parser, $operator)"
+    }
 }

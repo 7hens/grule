@@ -50,4 +50,9 @@ internal class ParserUntilGreedy(
     override fun isRecursive(parser: Parser): Boolean {
         return this === parser || parser.isRecursive(parser)
     }
+
+    override fun toString(): String {
+        val maxText = if (maxTimes == Int.MAX_VALUE) "$maxTimes" else ""
+        return "{$parser|$minTimes,$maxText*$terminal}"
+    }
 }
