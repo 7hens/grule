@@ -29,7 +29,11 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser {
             return this
         }
         if (primitiveParsers.size == 1) {
-            return primitiveParsers.first()
+            val parser = primitiveParsers.first()
+            if (parser is ParserShadow) {
+                return ParserEmpty
+            }
+            return parser
         }
         return ParserOr(primitiveParsers)
     }

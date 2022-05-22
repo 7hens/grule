@@ -10,9 +10,9 @@ class LexerFactory internal constructor() : Lexer {
 
     override fun lex(context: LexerContext) {
         var matches = false
-        for (lexer in lexers) {
+        for (item in lexers) {
             try {
-                lexer.lex(context)
+                item.lex(context)
                 matches = true
                 break
             } catch (_: MatcherException) {
@@ -29,6 +29,10 @@ class LexerFactory internal constructor() : Lexer {
 
     operator fun invoke(fn: MatcherSupplier): ReadOnlyProperty<Any?, Lexer> {
         return LexerProperty(fn).also { lexers.add(it) }
+    }
+
+    operator fun invoke(): ReadOnlyProperty<Any?, Lexer> {
+        return LexerProperty { X }
     }
 
     fun token(fn: MatcherSupplier): Lexer {

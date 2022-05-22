@@ -14,4 +14,8 @@ class MatcherShadow : Matcher {
     override fun or(matcher: Matcher): Matcher {
         return MatcherOr(listOf(matcher))
     }
+
+    override fun toString(): String {
+        return "<X>"
+    }
 }

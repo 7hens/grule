@@ -3,7 +3,7 @@ package io.grule.lexer
 import io.grule.matcher.CharStream
 import io.grule.matcher.Matcher
 
-internal class TokenStreamImpl(val charStream: CharStream, val lexer: Lexer) : TokenStream {
+internal class TokenStreamImpl(charStream: CharStream, val lexer: Lexer) : TokenStream {
     private val buffer = mutableListOf<Token>()
     private var eof: Token? = null
     private val context = LexerContextImpl(charStream, this)

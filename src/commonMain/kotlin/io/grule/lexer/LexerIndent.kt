@@ -9,7 +9,7 @@ internal class LexerIndent(val newLine: Lexer, val indent: Lexer, val dedent: Le
     override fun lex(context: LexerContext) {
         try {
             Matcher.EOF.match(context)
-            onIndent(context, 0)
+            onIndent(context, -1)
         } catch (_: MatcherException) {
             val offset = Matcher.WRAP.match(context)
             val spaceNum = (Matcher.X + "    ").repeat().match(context, offset)

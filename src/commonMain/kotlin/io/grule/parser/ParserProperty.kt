@@ -4,9 +4,9 @@ import io.grule.lexer.TokenStream
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-internal class ParserProperty(fn: Parser.Companion.() -> Parser) : Parser, ReadOnlyProperty<Any?, Parser> {
+internal class ParserProperty(fn: () -> Parser) : Parser, ReadOnlyProperty<Any?, Parser> {
     private var name: String? = null
-    private val parser by lazy { fn(Parser) }
+    private val parser by lazy(fn)
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         name = property.name

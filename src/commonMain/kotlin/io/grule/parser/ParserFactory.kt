@@ -6,4 +6,8 @@ class ParserFactory internal constructor() {
     operator fun invoke(fn: Parser.Companion.(Parser) -> Parser): ReadOnlyProperty<Any?, Parser> {
         return ParserProperty { ParserRecurse { fn(Parser.Companion, it) }.degrade() }
     }
+
+    operator fun invoke(): ReadOnlyProperty<Any, Parser> {
+        return ParserProperty { ParserEmpty }
+    }
 }
