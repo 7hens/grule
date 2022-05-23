@@ -142,10 +142,15 @@ class ParserTest {
     }
 
     @Test
+    fun recursiveError() {
+
+    }
+
+    @Test(expected = ParserException::class)
     fun recursiveLeft() {
         val source = "0 * 1 + 2 * 3 - 4 / x"
         RepeatGrammar().apply {
-            val exp by parser { X + Num or it + "x" or it + Num or it + Op }
+            val exp by parser { X + it + "x" or it + Num or it + Op }
 
             val astNode = parse(exp, source)
             println("================")

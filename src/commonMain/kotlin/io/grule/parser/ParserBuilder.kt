@@ -23,7 +23,4 @@ open class ParserBuilder : Parser {
         return this
     }
 
-    override fun isRecursive(parser: Parser): Boolean {
-        return this === parser || delegate.isRecursive(parser)
-    }
 }

@@ -24,7 +24,4 @@ internal class ParserProperty(fn: () -> Parser) : Parser, ReadOnlyProperty<Any?,
         return result
     }
 
-    override fun isRecursive(parser: Parser): Boolean {
-        return this === parser || (name == null && parser.isRecursive(parser))
-    }
 }

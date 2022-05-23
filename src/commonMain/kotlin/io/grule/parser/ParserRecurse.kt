@@ -18,7 +18,7 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser {
                 primitiveParsers.add(parser)
             }
         }
-        if (isRecurseParser(this)) {
+        if (primitiveParsers.isEmpty()) {
             throw recursiveException
         }
     }
@@ -107,14 +107,9 @@ internal class ParserRecurse(val fn: (Parser) -> Parser) : Parser {
         return result
     }
 
-    override fun isRecursive(parser: Parser): Boolean {
-        return this === parser
-                || (primitiveParsers + recursiveParsers).all { it.isRecursive(parser) }
-    }
-
     private inner class RecurseBuilder : ParserBuilder()
 
     override fun toString(): String {
-        return "{${primitiveParsers.joinToString("|")}}"
+        return "{...}"
     }
 }

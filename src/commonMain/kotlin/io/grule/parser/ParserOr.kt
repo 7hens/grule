@@ -26,10 +26,6 @@ internal class ParserOr(val parsers: List<Parser>) : Parser {
         return ParserOr(parsers + parser)
     }
 
-    override fun isRecursive(parser: Parser): Boolean {
-        return this === parser || parsers.any { it.isRecursive(parser) }
-    }
-
     override fun toString(): String {
         return parsers.joinToString(" | ")
     }

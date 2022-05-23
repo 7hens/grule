@@ -17,10 +17,6 @@ internal class ParserNot(val parser: Parser) : Parser {
         return parser
     }
 
-    override fun isRecursive(parser: Parser): Boolean {
-        return this === parser || this.parser.isRecursive(parser)
-    }
-
     override fun toString(): String {
         return "(! $parser)"
     }

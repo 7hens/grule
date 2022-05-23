@@ -21,10 +21,6 @@ internal class ParserPlus(private val parsers: List<Parser>) : Parser {
         return ParserPlus(parsers + parser)
     }
 
-    override fun isRecursive(parser: Parser): Boolean {
-        return this === parser || (parsers.firstOrNull()?.isRecursive(parser) ?: false)
-    }
-
     override fun toString(): String {
         return parsers.joinToString(" + ")
     }

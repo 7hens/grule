@@ -15,10 +15,6 @@ fun interface Parser {
         return node.first(this)
     }
 
-    fun isRecursive(parser: Parser): Boolean {
-        return this === parser
-    }
-
     fun not(): Parser {
         return ParserNot(this)
     }
