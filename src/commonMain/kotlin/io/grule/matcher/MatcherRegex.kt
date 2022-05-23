@@ -12,7 +12,7 @@ internal class MatcherRegex(private val pattern: String) : Matcher {
     }
 
     private fun parseRegex(pattern: String): Matcher {
-        val astNode = g.parse(g.regex, pattern)
+        val astNode = g.regex.parse(g, pattern)
         return parseRegex(astNode)
     }
 

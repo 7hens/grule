@@ -13,14 +13,6 @@ fun interface Lexer {
         return TokenStreamImpl(charStream, this)
     }
 
-    fun parse(parser: Parser, charStream: CharStream): AstNode {
-        return parser.parse(tokenStream(charStream))
-    }
-
-    fun parse(parser: Parser, text: String): AstNode {
-        return parse(parser, CharStream.fromString(text))
-    }
-
     companion object {
         val EOF: Lexer = LexerEOF
 

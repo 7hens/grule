@@ -28,9 +28,9 @@ class JsonTest : Grammar() {
         val source = """{ "a": [1, 2.34], "b": "hello" }"""
         println(source)
         println("-----------------")
-        
+
         println(jObject)
-        val astNode = parse(jObject, source)
+        val astNode = jObject.parse(this, source)
         println(astNode.toStringTree())
     }
 }

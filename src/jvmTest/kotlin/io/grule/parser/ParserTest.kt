@@ -17,7 +17,7 @@ class ParserTest {
             val b2 by parser { X + b }
             val abc by parser { X + a + b2 + "c" }
 
-            val node = parse(abc, source)
+            val node = abc.parse(this, source)
             println(node.toStringTree())
             assertEquals(1, node.all(a).size)
             assertEquals(1, node.all(b2).size)
@@ -39,7 +39,7 @@ class ParserTest {
             val d by parser { X + D }
             val abcd by parser { X + A + eOrBc + d }
 
-            val node = parse(abcd, source)
+            val node = abcd.parse(this, source)
             println(node.toStringTree())
             assertEquals(1, node.all(A).size)
             assertEquals(1, node.all(eOrBc).size)
@@ -57,7 +57,7 @@ class ParserTest {
             val digit by parser { X + t2 }
             val parser by parser { X + t1 + digit.repeat() }
 
-            val node = parse(parser, source)
+            val node = parser.parse(this, source)
             println(node.toStringTree())
             assertEquals(1, node.all(t1).size)
             assertEquals(8, node.all(digit).size)
@@ -75,7 +75,7 @@ class ParserTest {
             val digit by parser { X + t2 }
             val parser by parser { X + t1 + digit.join(X + ",") }
 
-            val node = parse(parser, source)
+            val node = parser.parse(this, source)
             println(node.toStringTree())
             assertEquals(1, node.all(t1).size)
             assertEquals(3, node.all(digit).size)
@@ -91,7 +91,7 @@ class ParserTest {
             lexer.token { X + "45" }
 
             val parser by parser { X + "0123" + (X + "45") }
-            val node = parse(parser, source)
+            val node = parser.parse(this, source)
             println(node.toStringTree())
             assertEquals(1, node.all("0123").size)
             assertEquals(1, node.all("45").size)
@@ -114,7 +114,7 @@ class ParserTest {
         RepeatGrammar().apply {
             val exp by parser { (X + Num + Op).untilGreedy(X + "x") }
 
-            val astNode = parse(exp, source)
+            val astNode = exp.parse(this, source)
             println(astNode.toStringTree())
         }
     }
@@ -125,7 +125,7 @@ class ParserTest {
         RepeatGrammar().apply {
             val exp by parser { (X + Num + Op).untilNonGreedy(X + "x") }
 
-            val astNode = parse(exp, source)
+            val astNode = exp.parse(this, source)
             println(astNode.toStringTree())
         }
     }
@@ -136,7 +136,7 @@ class ParserTest {
         RepeatGrammar().apply {
             val exp by parser { (X + Num + Op).untilNonGreedy(X + "x").binary(Op) }
 
-            val astNode = parse(exp, source)
+            val astNode = exp.parse(this, source)
             println(astNode.toStringTree())
         }
     }
@@ -152,7 +152,7 @@ class ParserTest {
         RepeatGrammar().apply {
             val exp by parser { X + it + "x" or it + Num or it + Op }
 
-            val astNode = parse(exp, source)
+            val astNode = exp.parse(this, source)
             println("================")
             println(astNode.toStringTree())
         }
@@ -164,7 +164,7 @@ class ParserTest {
         RepeatGrammar().apply {
             val exp by parser { X + Num + Op + it or X + "x" or X + Num }
 
-            val astNode = parse(exp, source)
+            val astNode = exp.parse(this, source)
             println("================")
             println(astNode.toStringTree())
         }
@@ -176,7 +176,7 @@ class ParserTest {
         RepeatGrammar().apply {
             val exp by parser { X + Num or X + "x" or it + Op + it }
 
-            val astNode = parse(exp, source)
+            val astNode = exp.parse(this, source)
             println("================")
             println(astNode.toStringTree())
         }

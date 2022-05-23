@@ -36,7 +36,7 @@ class JsonRegMatcherTest : Grammar() {
         println(source)
         println("-----------------")
 
-        val astNode = parse(jObject, source)
+        val astNode = jObject.parse(this, source)
         println(astNode.toStringTree())
     }
 }

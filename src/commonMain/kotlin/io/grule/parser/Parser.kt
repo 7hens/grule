@@ -2,6 +2,7 @@ package io.grule.parser
 
 import io.grule.lexer.Lexer
 import io.grule.lexer.TokenStream
+import io.grule.matcher.CharStream
 
 fun interface Parser {
 
@@ -13,6 +14,14 @@ fun interface Parser {
         mainParser.parse(tokenStream, node, 0)
 //        println(node.toStringTree())
         return node.first(this)
+    }
+
+    fun parse(lexer: Lexer, charStream: CharStream): AstNode {
+        return parse(lexer.tokenStream(charStream))
+    }
+
+    fun parse(lexer: Lexer, text: String): AstNode {
+        return parse(lexer, CharStream.fromString(text))
     }
 
     fun not(): Parser {
