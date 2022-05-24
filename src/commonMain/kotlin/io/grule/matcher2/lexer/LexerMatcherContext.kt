@@ -1,11 +1,5 @@
 package io.grule.matcher2.lexer
 
-import io.grule.matcher.TextPosition
+import io.grule.matcher.MatcherContext
 
-interface LexerMatcherContext {
-    val position: TextPosition
-
-    fun peek(offset: Int): Char?
-
-    fun getText(start: Int, end: Int): String
-}
+typealias LexerMatcherContext = MatcherContext

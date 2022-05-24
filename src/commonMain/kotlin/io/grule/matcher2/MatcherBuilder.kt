@@ -2,6 +2,7 @@ package io.grule.matcher2
 
 open class MatcherBuilder<T, R : MatcherBuilder<T, R>> : Matcher<T> {
     private var delegate: Matcher<T> = MatcherShadow()
+    private var matchers = listOf<Matcher<T>>()
 
     override fun match(context: T, offset: Int): Int {
         return delegate.match(context, offset)
@@ -16,14 +17,18 @@ open class MatcherBuilder<T, R : MatcherBuilder<T, R>> : Matcher<T> {
     }
 
     operator fun plus(matcher: Matcher<T>): R {
-        val matchers = delegate.let { if (it is MatcherPlus) it.matchers else listOf(matcher) }
-        return set(MatcherPlus(matchers + matcher))
+        matchers = getMatchers(delegate is MatcherPlus) + matcher
+        return set(MatcherPlus(matchers))
     }
 
 
     infix fun or(matcher: Matcher<T>): Matcher<T> {
-        val matchers = delegate.let { if (it is MatcherOr) it.matchers else listOf(matcher) }
-        return set(MatcherOr(matchers + matcher))
+        matchers = getMatchers(delegate is MatcherPlus) + matcher
+        return set(MatcherOr(matchers))
+    }
+
+    private fun getMatchers(condition: Boolean): List<Matcher<T>> {
+        return if (condition) matchers else listOf(delegate)
     }
 
     override fun toString(): String {

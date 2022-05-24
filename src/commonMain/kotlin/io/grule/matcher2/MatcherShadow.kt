@@ -7,15 +7,7 @@ class MatcherShadow<T> : Matcher<T> {
         throw error
     }
 
-    override fun plus(matcher: Matcher<T>): Matcher<T>{
-        return MatcherPlus(listOf(matcher))
-    }
-
-    override fun or(matcher: Matcher<T>): Matcher<T>{
-        return MatcherOr(listOf(matcher))
-    }
-
     override fun toString(): String {
-        return "<X>"
+        return "<->"
     }
 }
