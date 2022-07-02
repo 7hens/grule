@@ -4,9 +4,11 @@ import io.grule.lexer.TokenStream
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-internal class ParserProperty(fn: () -> Parser) : Parser, ReadOnlyProperty<Any?, Parser> {
-    private var name: String? = null
-    private val parser by lazy(fn)
+internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> {
+    private lateinit var name: String
+    private val lazyParser by lazy { getParser() }
+
+    abstract fun getParser(): Parser
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         name = property.name
@@ -14,14 +16,13 @@ internal class ParserProperty(fn: () -> Parser) : Parser, ReadOnlyProperty<Any?,
     }
 
     override fun toString(): String {
-        return name ?: parser.toString()
+        return name
     }
 
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val node = AstNode(this)
-        val result = parser.parse(tokenStream, node, offset)
+        val result = lazyParser.parse(tokenStream, node, offset)
         parentNode.add(node)
         return result
     }
-
 }

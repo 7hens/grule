@@ -2,19 +2,23 @@ package io.grule.parser
 
 import io.grule.lexer.TokenStream
 
+/**
+ *
+ */
 internal class ParserBinary(
     val parser: Parser,
     val operator: Any,
     val comparator: Comparator<AstNode>,
 ) : Parser {
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
-        val key = parentNode.key
-        val nodeTree = AstNode(key)
+        val parentKey = parentNode.key
+        val nodeTree = AstNode(parentKey)
         val result = parser.parse(tokenStream, nodeTree, offset)
         if (nodeTree.all().isEmpty()) {
             return result
         }
-        var rightNode = AstNode(key)
+
+        var rightNode = AstNode(parentKey)
         var leftNode = rightNode
         var opNode = AstNode(operator)
         var hasOp = false
@@ -27,7 +31,7 @@ internal class ParserBinary(
                 }
                 hasOp = true
                 opNode = node
-                rightNode = AstNode(key)
+                rightNode = AstNode(parentKey)
             } else {
                 rightNode.add(node)
             }
@@ -43,6 +47,9 @@ internal class ParserBinary(
     }
 
     private fun mergeNode(leftNode: AstNode, opNode: AstNode, rightNode: AstNode): AstNode {
+        if (leftNode === rightNode) {
+            return leftNode
+        }
         val key = leftNode.key
         if (key !in leftNode) {
             val parentNode = AstNode(key)
