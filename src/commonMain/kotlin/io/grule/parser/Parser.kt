@@ -4,7 +4,7 @@ import io.grule.lexer.Lexer
 import io.grule.lexer.TokenStream
 import io.grule.matcher.CharStream
 
-fun interface Parser {
+fun interface Parser : AstNodeStream<Parser> {
 
     fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int
 
@@ -74,8 +74,16 @@ fun interface Parser {
         return ParserTest(this)
     }
 
+    override fun node(mapper: AstNode.Mapper): Parser {
+        return ParserNode(this, mapper)
+    }
+
+    fun flat(): Parser {
+        return flat { it.key == this }
+    }
+
     fun binary(operator: Any, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
-        return ParserBinary(this, operator, comparator)
+        return binary({ it.key == operator }, comparator)
     }
 
     companion object {

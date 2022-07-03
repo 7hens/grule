@@ -110,8 +110,8 @@ class ParserTest {
 
     @Test
     fun untilGreedy() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
         RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
             val exp by parser { (X + Num + Op).untilGreedy(X + "x") }
 
             val astNode = exp.parse(this, source)
@@ -121,8 +121,8 @@ class ParserTest {
 
     @Test
     fun untilReluctant() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
         RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
             val exp by parser { (X + Num + Op).untilNonGreedy(X + "x") }
 
             val astNode = exp.parse(this, source)
@@ -132,11 +132,22 @@ class ParserTest {
 
     @Test
     fun binary() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
         RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
             val exp by parser { (X + Num + Op).untilNonGreedy(X + "x").binary(Op) }
 
             val astNode = exp.parse(this, source)
+            println("--------------------------------------")
+            println(source)
+            println(astNode.toStringTree())
+        }
+        RepeatGrammar().apply {
+            val source = "* 1 + 2 * 3 * - 4 /"
+            val exp by parser { (X + Op).repeat(1).join(X + Num).binary(Op) }
+
+            val astNode = exp.parse(this, source)
+            println("--------------------------------------")
+            println(source)
             println(astNode.toStringTree())
         }
     }
@@ -148,8 +159,8 @@ class ParserTest {
 
     @Test(expected = ParserException::class)
     fun recursiveLeft() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
         RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
             val exp by parser { X + it + "x" or it + Num or it + Op }
 
             val astNode = exp.parse(this, source)
@@ -160,8 +171,8 @@ class ParserTest {
 
     @Test
     fun recursiveRight() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
         RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
             val exp by parser { X + Num + Op + it or X + "x" or X + Num }
 
             val astNode = exp.parse(this, source)
@@ -172,12 +183,14 @@ class ParserTest {
 
     @Test
     fun recursiveBinary() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
         RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
             val exp by parser { X + Num or X + "x" or it + Op + it }
+            val binary by parser { exp.flat().binary(Op) }
 
-            val astNode = exp.parse(this, source)
+            val astNode = binary.parse(this, source)
             println("================")
+            println(source)
             println(astNode.toStringTree())
         }
     }

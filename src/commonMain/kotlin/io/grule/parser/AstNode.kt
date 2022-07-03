@@ -2,7 +2,7 @@ package io.grule.parser
 
 import io.grule.lexer.Token
 
-open class AstNode(val key: Any) {
+open class AstNode(val key: Any) : AstNodeStream<AstNode> {
     private val groups = mutableMapOf<Any, MutableList<AstNode>>()
     private val children = mutableListOf<AstNode>()
 
@@ -15,9 +15,23 @@ open class AstNode(val key: Any) {
             return children.joinToString(" ") { it.text }
         }
 
+    override fun node(mapper: Mapper): AstNode {
+        return mapper.map(this)
+    }
+
     fun isEmpty(): Boolean = children.isEmpty()
 
     fun isNotEmpty(): Boolean = !isEmpty()
+
+    private fun isSingleChain(): Boolean {
+        return when {
+            children.isEmpty() -> true
+            children.size > 1 -> false
+            else -> children.first().isSingleChain()
+        }
+    }
+
+    val size: Int get() = children.size
 
     fun all(): List<AstNode> {
         return children
@@ -34,11 +48,11 @@ open class AstNode(val key: Any) {
     fun last(rule: Any): AstNode {
         return all(rule).last()
     }
-    
+
     fun firstOrNull(rule: Any): AstNode? {
         return all(rule).firstOrNull()
     }
-    
+
     fun lastOrNull(rule: Any): AstNode? {
         return all(rule).lastOrNull()
     }
@@ -90,8 +104,11 @@ open class AstNode(val key: Any) {
     }
 
     fun toStringTree(style: TreeStyle = TreeStyle.SOLID): String {
-        if (children.isEmpty()) {
+        if (isEmpty()) {
             return toString()
+        }
+        if (isSingleChain()) {
+            return "$key/${children.first().toStringTree()}"
         }
         val result = StringBuilder(key.toString())
         val childSize = children.size
@@ -108,12 +125,16 @@ open class AstNode(val key: Any) {
         override val text: String get() = firstToken.text
     }
 
-    open class Visitor {
-        open fun visit(node: AstNode) {
-            for (child in node.all()) {
-                visit(child)
-            }
-        }
+    fun interface Consumer {
+        fun consume(node: AstNode)
+    }
+
+    fun interface Mapper {
+        fun map(node: AstNode): AstNode
+    }
+
+    fun interface Predicate {
+        fun test(node: AstNode): Boolean
     }
 
     object DefaultComparator : Comparator<AstNode> {
@@ -125,11 +146,12 @@ open class AstNode(val key: Any) {
     }
 
     private enum class OperatorPriority {
-        MIN, QUERY, OR, XOR, AND, EQ, REL, PLUS, TIMES, MAX;
+        MIN, SEMICOLON, QUERY, OR, XOR, AND, EQ, REL, PLUS, TIMES, MAX;
 
         companion object {
             private val priorities = mapOf(
-                "?" to QUERY, ";" to QUERY,
+                ";" to SEMICOLON,
+                "?" to QUERY,
                 "|" to OR,
                 "^" to XOR,
                 "&" to AND,

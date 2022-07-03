@@ -1,49 +1,38 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenStream
-
-/**
- *
- */
-internal class ParserBinary(
-    val parser: Parser,
-    val operator: Any,
-    val comparator: Comparator<AstNode>,
-) : Parser {
-    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
-        val parentKey = parentNode.key
-        val nodeTree = AstNode(parentKey)
-        val result = parser.parse(tokenStream, nodeTree, offset)
-        if (nodeTree.all().isEmpty()) {
-            return result
+internal class AstNodeBinary(val isOperator: AstNode.Predicate, val comparator: Comparator<AstNode>) : AstNode.Mapper {
+    override fun map(node: AstNode): AstNode {
+        if (node.isEmpty()) {
+            return node
         }
-
+        val parentKey = node.key
+        val parentNode = AstNode(parentKey)
         var rightNode = AstNode(parentKey)
         var leftNode = rightNode
-        var opNode = AstNode(operator)
+        lateinit var opNode: AstNode
         var hasOp = false
         var isOpNode = false
-        nodeTree.all().forEach { node ->
-            isOpNode = node.key == operator
+        node.all().forEach { child ->
+            isOpNode = isOperator.test(child)
             if (isOpNode) {
                 if (hasOp) {
                     leftNode = mergeNode(leftNode, opNode, rightNode)
                 }
                 hasOp = true
-                opNode = node
+                opNode = child
                 rightNode = AstNode(parentKey)
             } else {
-                rightNode.add(node)
+                rightNode.add(child)
             }
         }
-        if (!isOpNode) {
-            leftNode = mergeNode(leftNode, opNode, rightNode)
-        }
-        parentNode.add(leftNode)
         if (isOpNode) {
+            parentNode.add(leftNode)
             parentNode.add(opNode)
+        } else {
+            leftNode = mergeNode(leftNode, opNode, rightNode)
+            parentNode.merge(leftNode)
         }
-        return result
+        return parentNode
     }
 
     private fun mergeNode(leftNode: AstNode, opNode: AstNode, rightNode: AstNode): AstNode {
@@ -71,9 +60,5 @@ internal class ParserBinary(
         leftNode.remove(prevRightNode)
         leftNode.add(mergeNode(prevRightNode, opNode, rightNode))
         return leftNode
-    }
-
-    override fun toString(): String {
-        return "(@ $parser, $operator)"
     }
 }

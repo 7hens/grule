@@ -74,12 +74,24 @@ internal class ParserRecurse(private val parentKey: Any, val fn: (Parser) -> Par
                 result += parser.parse(tokenStream, node, offset + result)
                 parentNode.merge(node)
                 result += parseRecursive(tokenStream, offset + result, parentNode)
+                flatSingleChildNode(parentNode)
                 return result
             } catch (e: ParserException) {
                 error = e
             }
         }
         throw error ?: ParserException()
+    }
+
+    private fun flatSingleChildNode(node: AstNode) {
+        if (node.isEmpty()) {
+            return
+        }
+        val firstChild = node.all().first()
+        if (node.size == 1 && firstChild.key == node.key) {
+            node.remove(firstChild)
+            node.merge(firstChild)
+        }
     }
 
     private fun isMatchedSelf(parentNode: AstNode): Boolean {
