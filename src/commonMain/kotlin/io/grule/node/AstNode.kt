@@ -1,4 +1,4 @@
-package io.grule.parser
+package io.grule.node
 
 import io.grule.lexer.Token
 
@@ -15,7 +15,7 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
             return children.joinToString(" ") { it.text }
         }
 
-    override fun node(mapper: Mapper): AstNode {
+    override fun map(mapper: Mapper): AstNode {
         return mapper.map(this)
     }
 

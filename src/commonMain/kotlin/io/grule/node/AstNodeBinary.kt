@@ -1,4 +1,4 @@
-package io.grule.parser
+package io.grule.node
 
 internal class AstNodeBinary(val isOperator: AstNode.Predicate, val comparator: Comparator<AstNode>) : AstNode.Mapper {
     override fun map(node: AstNode): AstNode {

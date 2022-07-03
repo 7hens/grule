@@ -1,4 +1,4 @@
-package io.grule.parser
+package io.grule.node
 
 internal class AstNodeFlat(private val predicate: AstNode.Predicate) : AstNode.Mapper {
 

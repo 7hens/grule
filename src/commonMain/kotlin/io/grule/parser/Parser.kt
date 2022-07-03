@@ -3,6 +3,8 @@ package io.grule.parser
 import io.grule.lexer.Lexer
 import io.grule.lexer.TokenStream
 import io.grule.matcher.CharStream
+import io.grule.node.AstNode
+import io.grule.node.AstNodeStream
 
 fun interface Parser : AstNodeStream<Parser> {
 
@@ -74,8 +76,8 @@ fun interface Parser : AstNodeStream<Parser> {
         return ParserTest(this)
     }
 
-    override fun node(mapper: AstNode.Mapper): Parser {
-        return ParserNode(this, mapper)
+    override fun map(mapper: AstNode.Mapper): Parser {
+        return ParserMap(this, mapper)
     }
 
     fun flat(): Parser {

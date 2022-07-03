@@ -1,6 +1,6 @@
-package io.grule.parser
+package io.grule.node
 
-internal class AstNodeEach(val consumer: AstNode.Consumer) : AstNode.Mapper {
+internal class AstNodeOnEach(val consumer: AstNode.Consumer) : AstNode.Mapper {
 
     override fun map(node: AstNode): AstNode {
         consumer.consume(node)

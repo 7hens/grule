@@ -2,8 +2,6 @@ package io.grule.lexer
 
 import io.grule.matcher.CharStream
 import io.grule.matcher.Matcher
-import io.grule.parser.AstNode
-import io.grule.parser.Parser
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate")
 fun interface Lexer {
