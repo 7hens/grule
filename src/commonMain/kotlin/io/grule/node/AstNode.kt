@@ -10,17 +10,12 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
     open val firstToken: Token get() = children.first().firstToken
     open val lastToken: Token get() = children.last().lastToken
 
-    open val text: String
-        get() {
-            return children.joinToString(" ") { it.text }
-        }
+    open val text: String get() = children.joinToString(" ") { it.text }
 
-    override fun map(mapper: Mapper): AstNode {
-        return mapper.map(this)
-    }
+    override fun map(mapper: Mapper): AstNode = mapper.map(this)
 
+    val size: Int get() = children.size
     fun isEmpty(): Boolean = children.isEmpty()
-
     fun isNotEmpty(): Boolean = !isEmpty()
 
     private fun isSingleChain(): Boolean {
@@ -31,39 +26,20 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
         }
     }
 
-    val size: Int get() = children.size
+    fun all(): List<AstNode> = children
+    fun all(rule: Any): List<AstNode> = groups[rule] ?: emptyList()
+    operator fun get(index: Int): AstNode = children[index]
+    operator fun contains(rule: Any): Boolean = groups[rule]?.isNotEmpty() ?: false
 
-    fun all(): List<AstNode> {
-        return children
-    }
+    fun first(): AstNode = children.first()
+    fun first(rule: Any): AstNode = all(rule).first()
+    fun firstOrNull(): AstNode? = children.firstOrNull()
+    fun firstOrNull(rule: Any): AstNode? = all(rule).firstOrNull()
 
-    fun all(rule: Any): List<AstNode> {
-        return groups[rule] ?: emptyList()
-    }
-
-    fun first(rule: Any): AstNode {
-        return all(rule).first()
-    }
-
-    fun last(rule: Any): AstNode {
-        return all(rule).last()
-    }
-
-    fun firstOrNull(rule: Any): AstNode? {
-        return all(rule).firstOrNull()
-    }
-
-    fun lastOrNull(rule: Any): AstNode? {
-        return all(rule).lastOrNull()
-    }
-
-    operator fun get(index: Int): AstNode {
-        return children[index]
-    }
-
-    operator fun contains(rule: Any): Boolean {
-        return groups[rule]?.isNotEmpty() ?: false
-    }
+    fun last(): AstNode = children.last()
+    fun last(rule: Any): AstNode = all(rule).last()
+    fun lastOrNull(): AstNode? = children.lastOrNull()
+    fun lastOrNull(rule: Any): AstNode? = all(rule).lastOrNull()
 
     fun add(child: AstNode) {
         require(!isTerminal)
