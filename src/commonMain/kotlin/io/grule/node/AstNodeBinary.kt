@@ -29,7 +29,9 @@ internal class AstNodeBinary(val isOperator: AstNode.Predicate, val comparator: 
             parentNode.add(leftNode)
             parentNode.add(opNode)
         } else {
-            leftNode = mergeNode(leftNode, opNode, rightNode)
+            if (hasOp) {
+                leftNode = mergeNode(leftNode, opNode, rightNode)
+            }
             parentNode.merge(leftNode)
         }
         return parentNode

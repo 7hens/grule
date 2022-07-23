@@ -47,33 +47,23 @@ Output
 ```plain
 { "a": [1, 2.34], "b": "hello" }
 -----------------
-jObject
- └─ jDict
-     ├─ ({)
-     ├─ jPair
-     │   ├─ jString
-     │   │   └─ string ("a")
-     │   ├─ (:)
-     │   └─ jObject
-     │       └─ jArray
-     │           ├─ ([)
-     │           ├─ jObject
-     │           │   └─ jInteger
-     │           │       └─ integer (1)
-     │           ├─ (,)
-     │           ├─ jObject
-     │           │   └─ jFloat
-     │           │       └─ float (2.34)
-     │           └─ (])
-     ├─ (,)
-     ├─ jPair
-     │   ├─ jString
-     │   │   └─ string ("b")
-     │   ├─ (:)
-     │   └─ jObject
-     │       └─ jString
-     │           └─ string ("hello")
-     └─ (})
+jObject/jDict
+ ├─ ({)
+ ├─ jPair
+ │   ├─ jString/string ("a")
+ │   ├─ (:)
+ │   └─ jObject/jArray
+ │       ├─ ([)
+ │       ├─ jObject/jNumber/number (1)
+ │       ├─ (,)
+ │       ├─ jObject/jNumber/number (2.34)
+ │       └─ (])
+ ├─ (,)
+ ├─ jPair
+ │   ├─ jString/string ("b")
+ │   ├─ (:)
+ │   └─ jObject/jString/string ("hello")
+ └─ (})
 ```
 
 ## Setting up the dependency

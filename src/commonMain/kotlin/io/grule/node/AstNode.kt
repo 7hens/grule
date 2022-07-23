@@ -18,14 +18,6 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
     fun isEmpty(): Boolean = children.isEmpty()
     fun isNotEmpty(): Boolean = !isEmpty()
 
-    private fun isSingleChain(): Boolean {
-        return when {
-            children.isEmpty() -> true
-            children.size > 1 -> false
-            else -> children.first().isSingleChain()
-        }
-    }
-
     fun all(): List<AstNode> = children
     fun all(rule: Any): List<AstNode> = groups[rule] ?: emptyList()
     operator fun get(index: Int): AstNode = children[index]
@@ -83,13 +75,15 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
         if (isEmpty()) {
             return toString()
         }
-        if (isSingleChain()) {
-            return "$key/${children.first().toStringTree()}"
-        }
         val result = StringBuilder(key.toString())
         val childSize = children.size
-        for ((index, child) in children.withIndex()) {
-            style.applyTo(result, child.toStringTree(style), childSize == index + 1)
+        if (childSize == 1) {
+            val child = children.first()
+            result.append("/").append(child.toStringTree(style))
+        } else {
+            for ((index, child) in children.withIndex()) {
+                style.applyTo(result, child.toStringTree(style), childSize == index + 1)
+            }
         }
         return result.toString()
     }

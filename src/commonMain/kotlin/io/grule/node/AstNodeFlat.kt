@@ -13,8 +13,8 @@ internal class AstNodeFlat(private val predicate: AstNode.Predicate) : AstNode.M
         }
         val resultNode = AstNode(node.key)
         node.all().forEach { child ->
+            flatNode(child)
             if (predicate.test(child)) {
-                flatNode(child)
                 resultNode.merge(child)
             } else {
                 resultNode.add(child)
