@@ -73,7 +73,7 @@ internal class ParserRecurse(private val parentKey: Any, val fn: (Parser) -> Par
             try {
                 val node = AstNode(parentKey)
                 result += parser.parse(tokenStream, node, offset + result)
-                parentNode.merge(node)
+                parentNode.add(node)
                 result += parseRecursive(tokenStream, offset + result, parentNode)
                 flatSingleChildNode(parentNode)
                 return result
