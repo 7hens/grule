@@ -1,66 +1,57 @@
 package io.grule.node
 
-internal class AstNodeBinary(val isOperator: AstNode.Predicate, val comparator: Comparator<AstNode>) : AstNode.Mapper {
+/**
+ * | Cases             | Examples            | Result              |
+ * | ----------------- | ------------------- | ------------------- |
+ * | Normal            | `1 + 2 * 3 - 4`     | `(1 + (2 * 3)) - 4` |
+ * | Missing operators | `1   2   3 - 4`     | `(1    2   3)  - 4` |
+ * | Missing elements  | `  + 2 *   - 4`     | `(_ + (2 * _)) - 4` |
+ * | Structured tree   | `(1 + 2) * (3 - 4)` | `(1 + (2 * 3)) - 4` |
+ */
+internal class AstNodeBinary(
+    val isOperator: (AstNode) -> Boolean,
+    val comparator: Comparator<AstNode>
+) : AstNode.Mapper {
+
     override fun map(node: AstNode): AstNode {
         if (node.isEmpty()) {
             return node
         }
-        val parentKey = node.key
-        val parentNode = AstNode(parentKey)
-        var rightNode = AstNode(parentKey)
-        var leftNode = rightNode
-        lateinit var opNode: AstNode
-        var hasOp = false
-        var isOpNode = false
-        node.all().forEach { child ->
-            isOpNode = isOperator.test(child)
-            if (isOpNode) {
-                if (hasOp) {
-                    leftNode = mergeNode(leftNode, opNode, rightNode)
-                }
-                hasOp = true
-                opNode = child
-                rightNode = AstNode(parentKey)
-            } else {
-                rightNode.add(child)
+        val operatorIndex = node.all().indexOfLast(isOperator)
+        if (operatorIndex == -1) {
+            if (node.size == 1 && node.contains(node.key)) {
+                return map(node.first())
             }
+            return node.map { if (it.key == node.key) map(it) else it }
         }
-        if (isOpNode) {
-            parentNode.add(leftNode)
-            parentNode.add(opNode)
-        } else {
-            if (hasOp) {
-                leftNode = mergeNode(leftNode, opNode, rightNode)
-            }
-            parentNode.merge(leftNode)
-        }
-        return parentNode
+        val leftNode = node.subList(0, operatorIndex)
+        val opNode = node.all()[operatorIndex]
+        val rightNode = node.subList(operatorIndex + 1)
+        return mergeNode(map(leftNode), opNode, map(rightNode))
     }
 
     private fun mergeNode(leftNode: AstNode, opNode: AstNode, rightNode: AstNode): AstNode {
         if (leftNode === rightNode) {
             return leftNode
         }
-        val key = leftNode.key
-        if (key !in leftNode) {
-            val parentNode = AstNode(key)
-            parentNode.add(leftNode)
-            parentNode.add(opNode)
-            parentNode.add(rightNode)
-            return parentNode
-        }
-        val prevOpNode = leftNode.first(opNode.key)
-        if (comparator.compare(prevOpNode, opNode) >= 0) {
-            val node = AstNode(key)
-            node.add(leftNode)
-            node.add(opNode)
-            node.add(rightNode)
-            return node
-        }
+        require(leftNode.key == rightNode.key)
 
-        val prevRightNode = leftNode.last(key)
+        val parentKey = leftNode.key
+        if (isLeftPriorityGreater(leftNode, opNode)) {
+            return AstNode.of(parentKey, leftNode, opNode, rightNode)
+        }
+        val prevRightNode = leftNode.last(parentKey)
         leftNode.remove(prevRightNode)
         leftNode.add(mergeNode(prevRightNode, opNode, rightNode))
         return leftNode
+    }
+
+    private fun isLeftPriorityGreater(leftNode: AstNode, opNode: AstNode): Boolean {
+        val opKey = opNode.key
+        if (opKey !in leftNode) {
+            return true
+        }
+        val prevOpNode = leftNode.first(opKey)
+        return comparator.compare(prevOpNode, opNode) >= 0
     }
 }

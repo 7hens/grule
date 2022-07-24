@@ -3,11 +3,11 @@ package io.grule.parser
 import io.grule.lexer.TokenStream
 import io.grule.node.AstNode
 
-internal class ParserMap(val parser: Parser, val mapper: AstNode.Mapper) : Parser {
+internal class ParserTransform(val parser: Parser, val mapper: AstNode.Mapper) : Parser {
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val node = AstNode(parentNode.key)
         val result = parser.parse(tokenStream, node, offset)
-        parentNode.merge(mapper.map(node))
+        parentNode.merge(node.map { mapper.map(it) })
         return result
     }
 

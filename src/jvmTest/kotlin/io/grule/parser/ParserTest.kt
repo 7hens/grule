@@ -139,7 +139,9 @@ class ParserTest {
             val astNode = exp.parse(this, source)
             println("--------------------------------------")
             println(source)
+            println(astNode.toStringLine())
             println(astNode.toStringTree())
+            assertEquals("(((0 * 1) + (2 * 3)) - (4 / x))", astNode.toStringLine())
         }
         RepeatGrammar().apply {
             val source = "* 1 + 2 * 3 * - 4 /"
@@ -148,7 +150,9 @@ class ParserTest {
             val astNode = exp.parse(this, source)
             println("--------------------------------------")
             println(source)
+            println(astNode.toStringLine())
             println(astNode.toStringTree())
+            assertEquals("(((() * 1) + ((2 * 3) * ())) - (4 / ()))", astNode.toStringLine())
         }
     }
 

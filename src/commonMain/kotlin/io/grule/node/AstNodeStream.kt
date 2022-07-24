@@ -2,29 +2,49 @@ package io.grule.node
 
 interface AstNodeStream<T> {
 
-    fun map(mapper: AstNode.Mapper): T
+    fun transform(mapper: AstNode.Mapper): T
 
-    fun flat(predicate: AstNode.Predicate): T {
-        return map(AstNodeFlat(predicate))
+    fun transform(mapper: (AstNode) -> AstNode): T {
+        return transform(AstNode.Mapper(mapper))
+    }
+
+    fun wrapWith(key: Any): T {
+        return transform { AstNode(key).apply { add(it) } }
+    }
+
+    fun flat(predicate: (AstNode) -> Boolean): T {
+        return transform(AstNodeFlat(predicate))
     }
 
     fun flatByKey(key: Any): T {
         return flat { it.key == key }
     }
 
-    fun binary(isOperator: AstNode.Predicate, comparator: Comparator<AstNode>): T {
-        return map(AstNodeBinary(isOperator, comparator))
+    fun binary(isOperator: (AstNode) -> Boolean, comparator: Comparator<AstNode>): T {
+        return transform(AstNodeBinary(isOperator, comparator))
     }
 
-    fun binary(isOperator: AstNode.Predicate): T {
+    fun binary(isOperator: (AstNode) -> Boolean): T {
         return binary(isOperator, AstNode.DefaultComparator)
     }
 
-    fun onEach(consumer: AstNode.Consumer): T {
-        return map(AstNodeOnEach(consumer))
+    fun binary(operator: Any, comparator: Comparator<AstNode> = AstNode.DefaultComparator): T {
+        return binary({ it.key == operator }, comparator)
     }
 
-    fun mapEach(mapper: AstNode.Mapper): T {
-        return map(AstNodeMapEach(mapper))
+    fun forEach(consumer: (AstNode) -> Unit): T {
+        return transform { it.all().forEach(consumer); it }
+    }
+
+    fun forTree(consumer: (AstNode) -> Unit): T {
+        return transform(AstNodeForTree(consumer))
+    }
+
+    fun map(mapper: (AstNode) -> AstNode): T {
+        return transform { AstNode.of(it.key, it.all().map(mapper)) }
+    }
+
+    fun mapTree(mapper: (AstNode) -> AstNode): T {
+        return transform(AstNodeMapTree(mapper))
     }
 }

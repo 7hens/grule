@@ -76,16 +76,12 @@ fun interface Parser : AstNodeStream<Parser> {
         return ParserTest(this)
     }
 
-    override fun map(mapper: AstNode.Mapper): Parser {
-        return ParserMap(this, mapper)
+    override fun transform(mapper: AstNode.Mapper): Parser {
+        return ParserTransform(this, mapper)
     }
 
     fun flat(): Parser {
         return flat { it.key == this }
-    }
-
-    fun binary(operator: Any, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
-        return binary({ it.key == operator }, comparator)
     }
 
     companion object {

@@ -12,7 +12,7 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
 
     open val text: String get() = children.joinToString(" ") { it.text }
 
-    override fun map(mapper: Mapper): AstNode = mapper.map(this)
+    override fun transform(mapper: Mapper): AstNode = mapper.map(this)
 
     val size: Int get() = children.size
     fun isEmpty(): Boolean = children.isEmpty()
@@ -40,6 +40,10 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
             .add(child)
     }
 
+    fun addAll(elements: Iterable<AstNode>) {
+        elements.forEach { add(it) }
+    }
+
     fun remove(child: AstNode) {
         require(!isTerminal)
         if (!groups.containsKey(child.key)) {
@@ -47,6 +51,12 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
         }
         children.remove(child)
         groups.getValue(child.key).remove(child)
+    }
+
+    fun subList(fromIndex: Int, toIndex: Int = size): AstNode {
+        val result = AstNode(key)
+        result.addAll(all().subList(fromIndex, toIndex))
+        return result
     }
 
     fun clear() {
@@ -71,6 +81,16 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
         return "$key ($text)"
     }
 
+    fun toStringLine(): String {
+        if (isTerminal) {
+            return text
+        }
+        if (size == 1) {
+            return first().toStringLine()
+        }
+        return children.joinToString(" ", "(", ")") { it.toStringLine() }
+    }
+
     fun toStringTree(style: TreeStyle = TreeStyle.SOLID): String {
         if (isEmpty()) {
             return toString()
@@ -88,6 +108,16 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
         return result.toString()
     }
 
+    companion object {
+        fun of(key: Any, vararg elements: AstNode): AstNode {
+            return of(key, listOf(*elements))
+        }
+
+        fun of(key: Any, elements: Iterable<AstNode>): AstNode {
+            return AstNode(key).apply { addAll(elements) }
+        }
+    }
+
     internal class Terminal(rule: Any, token: Token) : AstNode(rule) {
         override val isTerminal: Boolean = true
         override val firstToken: Token = token
@@ -95,16 +125,8 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
         override val text: String get() = firstToken.text
     }
 
-    fun interface Consumer {
-        fun consume(node: AstNode)
-    }
-
     fun interface Mapper {
         fun map(node: AstNode): AstNode
-    }
-
-    fun interface Predicate {
-        fun test(node: AstNode): Boolean
     }
 
     object DefaultComparator : Comparator<AstNode> {

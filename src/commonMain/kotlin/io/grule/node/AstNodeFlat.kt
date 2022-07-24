@@ -1,6 +1,6 @@
 package io.grule.node
 
-internal class AstNodeFlat(private val predicate: AstNode.Predicate) : AstNode.Mapper {
+internal class AstNodeFlat(private val predicate: (AstNode) -> Boolean) : AstNode.Mapper {
 
     override fun map(node: AstNode): AstNode {
         flatNode(node)
@@ -11,16 +11,16 @@ internal class AstNodeFlat(private val predicate: AstNode.Predicate) : AstNode.M
         if (node.isEmpty()) {
             return
         }
-        val resultNode = AstNode(node.key)
+        val tempNode = AstNode(node.key)
         node.all().forEach { child ->
             flatNode(child)
-            if (predicate.test(child)) {
-                resultNode.merge(child)
+            if (predicate(child)) {
+                tempNode.merge(child)
             } else {
-                resultNode.add(child)
+                tempNode.add(child)
             }
         }
         node.clear()
-        node.merge(resultNode)
+        node.merge(tempNode)
     }
 }
