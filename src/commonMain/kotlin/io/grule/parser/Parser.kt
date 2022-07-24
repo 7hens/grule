@@ -76,8 +76,8 @@ fun interface Parser : AstNodeStream<Parser> {
         return ParserTest(this)
     }
 
-    override fun transform(mapper: AstNode.Mapper): Parser {
-        return ParserTransform(this, mapper)
+    override fun transform(transformation: AstNode.Transformation): Parser {
+        return ParserTransform(this, transformation)
     }
 
     fun flat(): Parser {

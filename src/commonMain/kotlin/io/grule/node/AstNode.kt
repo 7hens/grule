@@ -12,7 +12,7 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
 
     open val text: String get() = children.joinToString(" ") { it.text }
 
-    override fun transform(mapper: Mapper): AstNode = mapper.map(this)
+    override fun transform(transformation: Transformation): AstNode = transformation.apply(this)
 
     val size: Int get() = children.size
     fun isEmpty(): Boolean = children.isEmpty()
@@ -38,6 +38,13 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
         children.add(child)
         groups.getOrPut(child.key) { mutableListOf() }
             .add(child)
+    }
+
+    fun addHead(child: AstNode) {
+        require(!isTerminal)
+        children.add(0, child)
+        groups.getOrPut(child.key) { mutableListOf() }
+            .add(0, child)
     }
 
     fun addAll(elements: Iterable<AstNode>) {
@@ -125,8 +132,8 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
         override val text: String get() = firstToken.text
     }
 
-    fun interface Mapper {
-        fun map(node: AstNode): AstNode
+    fun interface Transformation {
+        fun apply(node: AstNode): AstNode
     }
 
     object DefaultComparator : Comparator<AstNode> {

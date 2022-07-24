@@ -11,47 +11,47 @@ package io.grule.node
 internal class AstNodeBinary(
     val isOperator: (AstNode) -> Boolean,
     val comparator: Comparator<AstNode>
-) : AstNode.Mapper {
+) : AstNode.Transformation {
 
-    override fun map(node: AstNode): AstNode {
+    override fun apply(node: AstNode): AstNode {
         if (node.isEmpty()) {
             return node
         }
-        val operatorIndex = node.all().indexOfLast(isOperator)
-        if (operatorIndex == -1) {
+        val opIndex = node.all().indexOfLast(isOperator)
+        if (opIndex == -1) {
             if (node.size == 1 && node.contains(node.key)) {
-                return map(node.first())
+                return apply(node.first())
             }
-            return node.map { if (it.key == node.key) map(it) else it }
+            return node.map { if (it.key == node.key) apply(it) else it }
         }
-        val leftNode = node.subList(0, operatorIndex)
-        val opNode = node.all()[operatorIndex]
-        val rightNode = node.subList(operatorIndex + 1)
-        return mergeNode(map(leftNode), opNode, map(rightNode))
+        val left = apply(node.subList(0, opIndex))
+        val op = node[opIndex]
+        val right = apply(node.subList(opIndex + 1))
+        return sort(left, op, right)
     }
 
-    private fun mergeNode(leftNode: AstNode, opNode: AstNode, rightNode: AstNode): AstNode {
-        if (leftNode === rightNode) {
-            return leftNode
+    private fun sort(left: AstNode, op: AstNode, right: AstNode): AstNode {
+        if (left === right) {
+            return left
         }
-        require(leftNode.key == rightNode.key)
+        require(left.key == right.key)
 
-        val parentKey = leftNode.key
-        if (isLeftPriorityGreater(leftNode, opNode)) {
-            return AstNode.of(parentKey, leftNode, opNode, rightNode)
+        val parentKey = left.key
+        if (isPrior(left, op)) {
+            return AstNode.of(parentKey, left, op, right)
         }
-        val prevRightNode = leftNode.last(parentKey)
-        leftNode.remove(prevRightNode)
-        leftNode.add(mergeNode(prevRightNode, opNode, rightNode))
-        return leftNode
+        val leftTail = left.last(parentKey)
+        left.remove(leftTail)
+        left.add(sort(leftTail, op, right))
+        return left
     }
 
-    private fun isLeftPriorityGreater(leftNode: AstNode, opNode: AstNode): Boolean {
-        val opKey = opNode.key
-        if (opKey !in leftNode) {
+    private fun isPrior(element: AstNode, op: AstNode): Boolean {
+        val opKey = op.key
+        if (opKey !in element) {
             return true
         }
-        val prevOpNode = leftNode.first(opKey)
-        return comparator.compare(prevOpNode, opNode) >= 0
+        val prevOpNode = element.first(opKey)
+        return comparator.compare(prevOpNode, op) >= 0
     }
 }

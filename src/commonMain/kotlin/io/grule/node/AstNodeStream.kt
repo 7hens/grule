@@ -2,10 +2,10 @@ package io.grule.node
 
 interface AstNodeStream<T> {
 
-    fun transform(mapper: AstNode.Mapper): T
+    fun transform(transformation: AstNode.Transformation): T
 
     fun transform(mapper: (AstNode) -> AstNode): T {
-        return transform(AstNode.Mapper(mapper))
+        return transform(AstNode.Transformation(mapper))
     }
 
     fun wrapWith(key: Any): T {

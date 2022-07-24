@@ -1,8 +1,8 @@
 package io.grule.node
 
-internal class AstNodeFlat(private val predicate: (AstNode) -> Boolean) : AstNode.Mapper {
+internal class AstNodeFlat(private val predicate: (AstNode) -> Boolean) : AstNode.Transformation {
 
-    override fun map(node: AstNode): AstNode {
+    override fun apply(node: AstNode): AstNode {
         flatNode(node)
         return node
     }

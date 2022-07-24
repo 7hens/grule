@@ -1,10 +1,10 @@
 package io.grule.node
 
-internal class AstNodeForTree(val consumer: (AstNode) -> Unit) : AstNode.Mapper {
+internal class AstNodeForTree(val consumer: (AstNode) -> Unit) : AstNode.Transformation {
 
-    override fun map(node: AstNode): AstNode {
+    override fun apply(node: AstNode): AstNode {
         consumer(node)
-        node.all().forEach { map(it) }
+        node.all().forEach { apply(it) }
         return node
     }
 }
