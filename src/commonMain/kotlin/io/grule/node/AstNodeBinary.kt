@@ -5,7 +5,7 @@ package io.grule.node
  * | ----------------- | ------------------- | ------------------- |
  * | Normal            | `1 + 2 * 3 - 4`     | `(1 + (2 * 3)) - 4` |
  * | Missing operators | `1   2   3 - 4`     | `(1    2   3)  - 4` |
- * | Missing elements  | `  + 2 *   - 4`     | `(_ + (2 * _)) - 4` |
+ * | Missing elements  | `  + 2 *   - 4`     | `(@ + (2 * @)) - 4` |
  * | Structured tree   | `(1 + 2) * (3 - 4)` | `(1 + (2 * 3)) - 4` |
  */
 internal class AstNodeBinary(
