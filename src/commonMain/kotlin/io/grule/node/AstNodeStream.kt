@@ -9,7 +9,7 @@ interface AstNodeStream<T> {
     }
 
     fun wrapWith(key: Any): T {
-        return transform { AstNode(key).apply { add(it) } }
+        return transform { AstNode.of(key, it) }
     }
 
     fun flat(predicate: (AstNode) -> Boolean): T {
@@ -17,7 +17,7 @@ interface AstNodeStream<T> {
     }
 
     fun flatByKey(key: Any): T {
-        return flat { it.key == key }
+        return flat { it.keyEquals(key) }
     }
 
     fun binary(isOperator: (AstNode) -> Boolean, comparator: Comparator<AstNode>): T {
@@ -29,7 +29,7 @@ interface AstNodeStream<T> {
     }
 
     fun binary(operator: Any, comparator: Comparator<AstNode> = AstNode.DefaultComparator): T {
-        return binary({ it.key == operator }, comparator)
+        return binary({ it.keyEquals(operator) }, comparator)
     }
 
     fun forEach(consumer: (AstNode) -> Unit): T {

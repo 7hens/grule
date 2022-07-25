@@ -1,6 +1,7 @@
 package io.grule.node
 
 import io.grule.lexer.Token
+import io.grule.node.KeyProvider.Companion.keyOf
 
 open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
     private val groups = mutableMapOf<Any, MutableList<AstNode>>()
@@ -123,10 +124,6 @@ open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
 
         fun of(key: Any, elements: Iterable<AstNode>): AstNode {
             return AstNode(key).apply { addAll(elements) }
-        }
-
-        private fun keyOf(value: Any): Any {
-            return (value as? KeyProvider)?.key ?: value
         }
     }
 

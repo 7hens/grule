@@ -31,18 +31,25 @@ internal class AstNodeBinary(
     }
 
     private fun sort(left: AstNode, op: AstNode, right: AstNode): AstNode {
+        if (right.all().any(isOperator)) {
+            val (rightLeft, rightOp, rightRight) = right.all()
+            return sort(exp(left, op, rightLeft), rightOp, rightRight)
+        }
+        return sortLeft(left, op, right)
+    }
+
+    private fun sortLeft(left: AstNode, op: AstNode, right: AstNode): AstNode {
         if (left === right) {
             return left
         }
         require(left.key == right.key)
 
-        val parentKey = left.key
         if (isPrior(left, op)) {
-            return AstNode.of(parentKey, left, op, right)
+            return exp(left, op, right)
         }
-        val leftTail = left.last(parentKey)
+        val leftTail = left.last(left.key)
         left.remove(leftTail)
-        left.add(sort(leftTail, op, right))
+        left.add(sortLeft(leftTail, op, right))
         return left
     }
 
@@ -53,5 +60,9 @@ internal class AstNodeBinary(
         }
         val prevOpNode = element.first(opKey)
         return comparator.compare(prevOpNode, op) >= 0
+    }
+
+    private fun exp(left: AstNode, op: AstNode, right: AstNode): AstNode {
+        return AstNode.of(left.key, left, op, right)
     }
 }
