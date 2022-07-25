@@ -2,9 +2,10 @@ package io.grule.node
 
 import io.grule.lexer.Token
 
-open class AstNode(val key: Any) : AstNodeStream<AstNode> {
+open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
     private val groups = mutableMapOf<Any, MutableList<AstNode>>()
     private val children = mutableListOf<AstNode>()
+    override val key = keyOf(keyProvider)
 
     open val isTerminal: Boolean = false
     open val firstToken: Token get() = children.first().firstToken
@@ -122,6 +123,10 @@ open class AstNode(val key: Any) : AstNodeStream<AstNode> {
 
         fun of(key: Any, elements: Iterable<AstNode>): AstNode {
             return AstNode(key).apply { addAll(elements) }
+        }
+
+        private fun keyOf(value: Any): Any {
+            return (value as? KeyProvider)?.key ?: value
         }
     }
 

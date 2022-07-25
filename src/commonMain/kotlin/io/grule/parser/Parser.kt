@@ -5,8 +5,9 @@ import io.grule.lexer.TokenStream
 import io.grule.matcher.CharStream
 import io.grule.node.AstNode
 import io.grule.node.AstNodeStream
+import io.grule.node.KeyProvider
 
-fun interface Parser : AstNodeStream<Parser> {
+fun interface Parser : AstNodeStream<Parser>, KeyProvider {
 
     fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int
 
@@ -25,6 +26,8 @@ fun interface Parser : AstNodeStream<Parser> {
     fun parse(lexer: Lexer, text: String): AstNode {
         return parse(lexer, CharStream.fromString(text))
     }
+
+    override val key: Any get() = this
 
     fun not(): Parser {
         return ParserNot(this)

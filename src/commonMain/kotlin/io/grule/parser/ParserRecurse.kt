@@ -4,7 +4,7 @@ import io.grule.lexer.TokenStream
 import io.grule.node.AstNode
 
 // val parser by p { v or it + x + it }
-internal class ParserRecurse(private val parentKey: Any, val fn: (Parser) -> Parser) : Parser {
+internal class ParserRecurse(override val key: Any, val fn: (Parser) -> Parser) : Parser {
     private val primitiveParsers = mutableListOf<Parser>()
     private val recursiveParsers = mutableListOf<Parser>()
     private val lazyInit by lazy { init() }
@@ -71,7 +71,7 @@ internal class ParserRecurse(private val parentKey: Any, val fn: (Parser) -> Par
         var error: Throwable? = null
         for (parser in primitiveParsers) {
             try {
-                val node = AstNode(parentKey)
+                val node = AstNode(key)
                 result += parser.parse(tokenStream, node, offset + result)
                 parentNode.add(node)
                 result += parseRecursive(tokenStream, offset + result, parentNode)
@@ -97,7 +97,7 @@ internal class ParserRecurse(private val parentKey: Any, val fn: (Parser) -> Par
 
     private fun isMatchedSelf(parentNode: AstNode): Boolean {
         if (parentNode.isNotEmpty()) {
-            return parentNode.all().last().key == parentKey
+            return parentNode.all().last().key == key
         }
         return false
     }
@@ -106,7 +106,7 @@ internal class ParserRecurse(private val parentKey: Any, val fn: (Parser) -> Par
         var result = 0
         for (parser in recursiveParsers) {
             try {
-                val node = AstNode(parentKey)
+                val node = AstNode(key)
                 val lastChild = parentNode.all().last()
                 node.add(lastChild)
                 result += parser.parse(tokenStream, node, offset + result)
@@ -123,6 +123,6 @@ internal class ParserRecurse(private val parentKey: Any, val fn: (Parser) -> Par
     private inner class RecurseBuilder : ParserBuilder()
 
     override fun toString(): String {
-        return parentKey.toString()
+        return key.toString()
     }
 }
