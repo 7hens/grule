@@ -9,8 +9,14 @@ open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
     override val key = keyOf(keyProvider)
 
     open val isTerminal: Boolean = false
-    open val firstToken: Token get() = children.first().firstToken
-    open val lastToken: Token get() = children.last().lastToken
+    open val firstToken: Token?
+        get() {
+            return children.asSequence().map { it.firstToken }.firstOrNull { it != null }
+        }
+    open val lastToken: Token?
+        get() {
+            return children.reversed().asSequence().map { it.lastToken }.firstOrNull { it != null }
+        }
 
     open val text: String get() = children.joinToString(" ") { it.text }
 
@@ -140,8 +146,8 @@ open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
 
     object DefaultComparator : Comparator<AstNode> {
         override fun compare(a: AstNode, b: AstNode): Int {
-            val firstPriority = OperatorPriority.of(a.firstToken.text)
-            val secondPriority = OperatorPriority.of(b.firstToken.text)
+            val firstPriority = OperatorPriority.of(a.firstToken!!.text)
+            val secondPriority = OperatorPriority.of(b.firstToken!!.text)
             return firstPriority.ordinal - secondPriority.ordinal
         }
     }
