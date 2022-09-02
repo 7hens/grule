@@ -98,7 +98,7 @@ open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
 
     fun toStringLine(): String {
         if (isTerminal) {
-            return text
+            return text.replace("(", "\\(").replace(")", "\\)").replace("\n", "\\n")
         }
         if (size == 1) {
             return first().toStringLine()
@@ -108,7 +108,7 @@ open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
 
     fun toStringTree(style: TreeStyle = TreeStyle.SOLID): String {
         if (isEmpty()) {
-            return toString()
+            return toString().replace("\n", "\\n")
         }
         val result = StringBuilder(key.toString())
         val childSize = children.size
