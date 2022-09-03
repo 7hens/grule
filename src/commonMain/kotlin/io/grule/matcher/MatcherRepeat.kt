@@ -27,7 +27,7 @@ internal class MatcherRepeat(val matcher: Matcher, val minTimes: Int, val maxTim
     }
 
     override fun toString(): String {
-        val maxText = if (maxTimes == Int.MAX_VALUE) "$maxTimes" else ""
-        return "{$matcher|$minTimes,$maxText}"
+        val maxText = if (maxTimes != Int.MAX_VALUE) "$maxTimes" else ""
+        return "{$matcher |$minTimes,$maxText}"
     }
 }

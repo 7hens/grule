@@ -1,21 +1,9 @@
 package io.grule.parser
 
-import io.grule.Grammar
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class ParserBinaryTest {
-
-    private class RepeatGrammar : Grammar() {
-        val Num by lexer { DIGIT.repeat(1) }
-        val Op by lexer { X - "+-*/%><=!" }
-
-        init {
-            lexer.skip { WRAP or SPACE }
-            lexer.token { X + "x" }
-        }
-    }
-
     @Test
     fun simple() {
         RepeatGrammar().apply {
@@ -69,7 +57,7 @@ class ParserBinaryTest {
         RepeatGrammar().apply {
             val source = "1 + 2 * 3 + 4"
             val exp by parser { X + Num or it + "+" + it or it + "*" + it }
-            val main by parser { X + exp.binary { it.firstToken.text in listOf("*", "+") } }
+            val main by parser { X + exp.binary { it.firstToken!!.text in listOf("*", "+") } }
 
             val astNode = main.parse(this, source)
             println("--------------------------------------")

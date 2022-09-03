@@ -11,6 +11,10 @@ fun interface Parser : AstNodeStream<Parser>, KeyProvider {
 
     fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int
 
+    fun composable(): Parser {
+        return ParserComposable(this)
+    }
+
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = this + Lexer.EOF
         val node = AstNode("<ROOT>")

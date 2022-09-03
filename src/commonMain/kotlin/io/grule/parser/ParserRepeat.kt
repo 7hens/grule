@@ -29,4 +29,8 @@ internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes:
         return result
     }
 
+    override fun toString(): String {
+        val maxText = if (maxTimes != Int.MAX_VALUE) "$maxTimes" else ""
+        return "{$parser |$minTimes,$maxText}"
+    }
 }
