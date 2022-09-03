@@ -79,7 +79,6 @@ internal class ParserRecurse(override val key: Any, val fn: (Parser) -> Parser) 
         for (parser in primitiveParsers) {
             try {
                 val node = AstNode(key)
-//                val node = parentNode
                 result += parser.parse(tokenStream, node, offset + result)
                 parentNode.add(node)
                 result += parseRecursive(tokenStream, offset + result, parentNode)
@@ -96,13 +95,7 @@ internal class ParserRecurse(override val key: Any, val fn: (Parser) -> Parser) 
         var result = 0
         for (parser in recursiveParsers) {
             try {
-                val node = AstNode(key)
-//                val node = parentNode
-                val lastChild = parentNode.all().last()
-                node.add(lastChild)
-                result += parser.parse(tokenStream, node, offset + result)
-                parentNode.remove(lastChild)
-                parentNode.add(node)
+                result += parserRecursiveRight(parser, tokenStream, offset + result, parentNode)
                 result += parseRecursive(tokenStream, offset + result, parentNode)
                 return result
             } catch (_: ParserException) {
@@ -111,14 +104,35 @@ internal class ParserRecurse(override val key: Any, val fn: (Parser) -> Parser) 
         return result
     }
 
+    private fun parserRecursiveRight(parser: Parser, tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+        val node = AstNode(key)
+        val lastChild = parentNode.all().last()
+        node.add(lastChild)
+        val result = parser.parse(tokenStream, node, offset)
+        parentNode.remove(lastChild)
+        parentNode.add(node)
+        return result
+    }
+
+    private fun parserRecursiveLeft(parser: Parser, tokenStream: TokenStream, offset: Int, parentNode: AstNode): Int {
+        val node = AstNode(key)
+        node.add(parentNode.copy())
+        val result = parser.parse(tokenStream, node, offset)
+        parentNode.clear()
+        parentNode.merge(node)
+        return result
+    }
+
     private fun flatSingleChildNode(node: AstNode) {
-        if (node.isEmpty()) {
+        if (node.isEmpty() || node.key != key) {
             return
         }
         val firstChild = node.all().first()
         if (node.size == 1 && firstChild.key == node.key) {
             node.remove(firstChild)
             node.merge(firstChild)
+        } else {
+            node.forEach { flatSingleChildNode(it) }
         }
     }
 
@@ -129,22 +143,39 @@ internal class ParserRecurse(override val key: Any, val fn: (Parser) -> Parser) 
         return parentNode.key == key
     }
 
-    private inner class RecurseBuilder : ParserBuilder()
+    override fun toString(): String {
+        return key.toString()
+    }
 
-    private inner class NonRecurseParserWrapper : Parser {
+    private inner class RecurseBuilder : ParserBuilder() {
+        override fun plus(parser: Parser): Parser {
+            if (delegate is NonRecurseParserWrapper && parser == this@ParserRecurse) {
+                return super.plus(PrimitiveParser())
+            }
+            return super.plus(parser)
+        }
+    }
+
+    private inner class NonRecurseParserWrapper : ParserWrapper() {
+        override val base: Parser = this@ParserRecurse
+
         override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
             if (isMatchedSelf(parentNode)) {
                 return 0
             }
             return parsePrimitives(tokenStream, parentNode, offset)
         }
-
-        override fun toString(): String {
-            return this@ParserRecurse.toString()
-        }
     }
 
-    override fun toString(): String {
-        return key.toString()
+    private inner class PrimitiveParser : ParserWrapper() {
+        override val base: Parser = this@ParserRecurse
+        private val parser by lazy { ParserPlus(primitiveParsers) }
+
+        override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
+            val node = AstNode(key)
+            val result = parser.parse(tokenStream, node, offset)
+            parentNode.add(node)
+            return result
+        }
     }
 }

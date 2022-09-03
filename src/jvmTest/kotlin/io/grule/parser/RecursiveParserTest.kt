@@ -1,6 +1,7 @@
 package io.grule.parser
 
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class RecursiveParserTest {
 
@@ -50,13 +51,29 @@ class RecursiveParserTest {
     @Test
     fun recursiveSelf() {
         RepeatGrammar().apply {
-            val source = "0 * 1 + 2  3  4"
-            val exp by parser { X + Num or X + "x" or it + Op + it or it + X + it }
+            val source = "0 1 2 3"
+            val exp by parser { X + Num or it + it }
 
             val astNode = exp.parse(this, source)
             println("================")
             println(source)
+            println("================")
+            println(astNode.toStringLine())
             println(astNode.toStringTree())
+            assertEquals("(0 (1 (2 3)))", astNode.toStringLine())
+        }
+
+        RepeatGrammar().apply {
+            val source = "0 1 2 3"
+            val exp by parser { X + Num or it + X + it }
+
+            val astNode = exp.parse(this, source)
+            println("================")
+            println(source)
+            println("================")
+            println(astNode.toStringLine())
+            println(astNode.toStringTree())
+            assertEquals("(((0 1) 2) 3)", astNode.toStringLine())
         }
     }
 }

@@ -89,6 +89,10 @@ open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
         }
     }
 
+    fun copy(): AstNode {
+        return subList(0)
+    }
+
     override fun toString(): String {
         if (key is String) {
             return "($key)"
