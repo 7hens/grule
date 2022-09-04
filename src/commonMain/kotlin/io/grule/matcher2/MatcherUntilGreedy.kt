@@ -23,7 +23,7 @@ internal class MatcherUntilGreedy<T>(
                 result = matcher.match(result)
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
-                    throw MatcherException(result.toString())
+                    throw MatcherException("limit out of range $maxTimes")
                 }
             } catch (matcherException: MatcherException) {
                 require(repeatTimes >= minTimes, matcherException)

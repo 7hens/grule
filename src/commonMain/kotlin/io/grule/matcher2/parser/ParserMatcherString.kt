@@ -1,6 +1,5 @@
 package io.grule.matcher2.parser
 
-import io.grule.matcher2.MatcherException
 import io.grule.node.AstNode
 
 internal class ParserMatcherString(val text: String) : ParserMatcher {
@@ -10,7 +9,7 @@ internal class ParserMatcherString(val text: String) : ParserMatcher {
         if (token.text == text) {
             return status.next(AstNode.of(text, token))
         }
-        throw MatcherException(status)
+        status.panic(text)
     }
 
     override fun toString(): String {

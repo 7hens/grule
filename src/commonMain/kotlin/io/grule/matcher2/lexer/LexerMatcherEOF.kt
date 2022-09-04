@@ -1,11 +1,9 @@
 package io.grule.matcher2.lexer
 
-import io.grule.matcher2.MatcherException
-
 internal object LexerMatcherEOF : LexerMatcher {
     override fun match(status: LexerMatcherContext): LexerMatcherContext {
         status.peek() ?: return status
-        throw MatcherException(status)
+        status.panic(this)
     }
 
     override fun toString(): String {

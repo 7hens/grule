@@ -1,15 +1,13 @@
 package io.grule.matcher2.lexer
 
-import io.grule.matcher2.MatcherException
-
 internal class LexerMatcherCharSet(val set: Iterable<Char>) : LexerMatcher {
 
     override fun match(status: LexerMatcherContext): LexerMatcherContext {
-        val c = status.peek() ?: throw MatcherException(status)
+        val c = status.peek() ?: status.panic(LexerMatcherEOF)
         if (c in set) {
             return status.next()
         }
-        throw MatcherException(status)
+        status.panic(this)
     }
 
     override fun toString(): String {

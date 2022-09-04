@@ -2,10 +2,10 @@ package io.grule.matcher2.parser
 
 import io.grule.lexer.Lexer
 
-object ParserDsl {
+object ParserMatcherDsl {
     val X = Builder()
 
-    operator fun <T> invoke(fn: ParserDsl.() -> T): T = run(fn)
+    operator fun <T> invoke(fn: ParserMatcherDsl.() -> T): T = run(fn)
 
     class Builder {
         operator fun plus(matcher: ParserMatcher): ParserMatcher {

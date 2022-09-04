@@ -13,6 +13,10 @@ interface LexerMatcherContext {
         return Next(this, count)
     }
 
+    fun panic(rule: Any): Nothing {
+        throw LexerMatcherException(this, rule)
+    }
+
     companion object {
         fun from(context: MatcherContext, position: Int = 0): LexerMatcherContext {
             return Impl(context, position)

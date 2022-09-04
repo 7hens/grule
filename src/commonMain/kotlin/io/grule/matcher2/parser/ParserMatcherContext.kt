@@ -13,7 +13,15 @@ interface ParserMatcherContext {
 
     fun next(childNode: AstNode): ParserMatcherContext {
         node.add(childNode)
-        return Next(this, 1)
+        return Delegate(this, 1, node)
+    }
+
+    fun withNode(node: AstNode): ParserMatcherContext {
+        return Delegate(this, 0, node)
+    }
+
+    fun panic(rule: Any): Nothing {
+        throw ParserMatcherException(this, rule)
     }
 
     companion object {
@@ -22,8 +30,8 @@ interface ParserMatcherContext {
         }
     }
 
-    private class Next(val prev: ParserMatcherContext, val count: Int) : ParserMatcherContext {
-        override val node: AstNode get() = prev.node
+    private class Delegate(val prev: ParserMatcherContext, val count: Int, override val node: AstNode) :
+        ParserMatcherContext {
         override val position: Int get() = prev.position + count
 
         override fun peek(offset: Int): Token {

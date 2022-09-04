@@ -7,11 +7,11 @@ import org.junit.Test
  * LexerMatcherKtTest.
  * @author huangzhenzi
  */
-internal class LexerDslTest {
+internal class LexerMatcherDslTest {
 
     @Test
     fun plus() {
-        val lexer = LexerDsl { X + "A" or X + "BC" self { me + it } }
+        val lexer = LexerMatcherDsl { X + "A" or X + "BC" self { me + it } }
         val result = lexer.match("ABCABCABC")
         println(result)
     }

@@ -1,19 +1,17 @@
 package io.grule.matcher2.lexer
 
-import io.grule.matcher2.MatcherException
-
 internal class LexerMatcherString(private val text: String) : LexerMatcher {
 
     override fun match(status: LexerMatcherContext): LexerMatcherContext {
         status.peek(text.length)
         if (status.peek() == null) {
-            throw MatcherException(status)
+            status.panic(LexerMatcherEOF)
         }
         val actualText = status.getText(text.length)
         if (actualText == text) {
             return status.next(text.length)
         }
-        throw MatcherException(status)
+        status.panic(this)
     }
 
     override fun toString(): String {

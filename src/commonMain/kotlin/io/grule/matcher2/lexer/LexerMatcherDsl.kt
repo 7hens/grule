@@ -1,6 +1,6 @@
 package io.grule.matcher2.lexer
 
-object LexerDsl {
+object LexerMatcherDsl {
     val X = Builder()
     val any = X + LexerMatcherCharSet.ANY
     val eof = X + LexerMatcherEOF
@@ -21,7 +21,7 @@ object LexerDsl {
     val space = X - "\t\r\n\u0085\u000B\u000C "
     val wrap = X + "\r\n" or X - "\r\n"
 
-    operator fun <T> invoke(fn: LexerDsl.() -> T): T = run(fn)
+    operator fun <T> invoke(fn: LexerMatcherDsl.() -> T): T = run(fn)
 
     class Builder {
         operator fun plus(matcher: LexerMatcher): LexerMatcher {
