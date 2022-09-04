@@ -4,34 +4,35 @@ package io.grule.matcher2
  * greedy: a*b
  */
 internal class MatcherUntilGreedy<T>(
-    val matcher: Matcher<T>, val terminal: Matcher<T>, val minTimes: Int, val maxTimes: Int) : Matcher<T>{
+    val matcher: Matcher<T>, val terminal: Matcher<T>,
+    val minTimes: Int, val maxTimes: Int
+) : Matcher<T> {
 
     init {
         require(minTimes >= 0)
         require(maxTimes >= minTimes)
     }
 
-    override fun match(context: T, offset: Int): Int {
+    override fun match(status: T): T {
+        var result = status
+        var lastResult = status
         var repeatTimes = 0
-        var result = 0
-        var lastResult = 0
         while (true) {
             try {
                 lastResult = result
-                result += matcher.match(context, offset + result)
+                result = matcher.match(result)
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
-                    throw MatcherException(context, offset)
+                    throw MatcherException(result.toString())
                 }
             } catch (matcherException: MatcherException) {
                 require(repeatTimes >= minTimes, matcherException)
-                try {
-                    result += terminal.match(context, offset + result)
+                return try {
+                    terminal.match(result)
                 } catch (terminalError: MatcherException) {
                     require(repeatTimes - 1 >= minTimes, terminalError)
-                    result = lastResult + terminal.match(context, offset + lastResult)
+                    terminal.match(lastResult)
                 }
-                return result
             }
         }
     }
@@ -43,7 +44,7 @@ internal class MatcherUntilGreedy<T>(
     }
 
     override fun toString(): String {
-        val maxText = if (maxTimes == Int.MAX_VALUE) "$maxTimes" else ""
-        return "{$matcher|$minTimes,$maxText*$terminal}"
+        val maxText = if (maxTimes != Int.MAX_VALUE) "$maxTimes" else ""
+        return "{$matcher * $terminal |$minTimes,$maxText}"
     }
 }

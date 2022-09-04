@@ -1,19 +1,15 @@
 package io.grule.matcher2
 
-internal class MatcherPlus<T>(val matchers: List<Matcher<T>>) : Matcher<T> {
-    init {
-        require(matchers.isNotEmpty())
-    }
+internal class MatcherPlus<T>(
+    val first: Matcher<T>,
+    val second: Matcher<T>
+) : Matcher<T> {
 
-    override fun match(context: T, offset: Int): Int {
-        var result = 0
-        for (lexer in matchers) {
-            result += lexer.match(context, offset + result)
-        }
-        return result
+    override fun match(status: T): T {
+        return second.match(first.match(status))
     }
 
     override fun toString(): String {
-        return matchers.joinToString(" + ")
+        return "$first + $second"
     }
 }

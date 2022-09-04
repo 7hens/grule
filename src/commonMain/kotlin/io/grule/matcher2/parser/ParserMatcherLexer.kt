@@ -5,12 +5,12 @@ import io.grule.matcher2.MatcherException
 
 internal class ParserMatcherLexer(private val lexer: Lexer) : ParserMatcher {
 
-    override fun match(context: ParserMatcherContext, offset: Int): Int {
-        val token = context.peek(offset)
+    override fun match(status: ParserMatcherContext): ParserMatcherContext {
+        val token = status.peek()
         if (token.lexer == lexer) {
-            return 1
+            return status.next()
         }
-        throw MatcherException(context, offset)
+        throw MatcherException(status)
     }
 
     override fun toString(): String {

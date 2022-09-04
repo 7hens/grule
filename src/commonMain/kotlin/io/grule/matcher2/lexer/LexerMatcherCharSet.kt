@@ -4,12 +4,12 @@ import io.grule.matcher2.MatcherException
 
 internal class LexerMatcherCharSet(val set: Iterable<Char>) : LexerMatcher {
 
-    override fun match(context: LexerMatcherContext, offset: Int): Int {
-        val c = context.peek(offset) ?: throw MatcherException(context, offset)
+    override fun match(status: LexerMatcherContext): LexerMatcherContext {
+        val c = status.peek() ?: throw MatcherException(status)
         if (c in set) {
-            return 1
+            return status.next()
         }
-        throw MatcherException(context, offset)
+        throw MatcherException(status)
     }
 
     override fun toString(): String {

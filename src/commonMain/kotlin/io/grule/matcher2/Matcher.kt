@@ -2,9 +2,8 @@ package io.grule.matcher2
 
 @Suppress("MemberVisibilityCanBePrivate")
 fun interface Matcher<T> {
-    fun match(context: T, offset: Int): Int
 
-    fun match(context: T) = match(context, 0)
+    fun match(status: T): T
 
     fun not(): Matcher<T> {
         return MatcherNot(this)
@@ -17,7 +16,7 @@ fun interface Matcher<T> {
     fun join(separator: Matcher<T>, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Matcher<T> {
         val min = maxOf(minTimes - 1, 0)
         val max = maxOf(maxTimes - 1, 0)
-        return (builder() + this + separator).untilGreedy(this, min, max)
+        return (this + separator).untilGreedy(this, min, max)
     }
 
     fun optional(): Matcher<T> {
@@ -25,7 +24,7 @@ fun interface Matcher<T> {
     }
 
     fun interlace(separator: Matcher<T>): Matcher<T> {
-        return builder() + separator.optional() + join(separator) + separator.optional()
+        return separator.optional() + join(separator) + separator.optional()
     }
 
     fun untilGreedy(terminal: Matcher<T>, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Matcher<T> {
@@ -40,7 +39,11 @@ fun interface Matcher<T> {
         return MatcherTest(this)
     }
 
-    private fun <R : MatcherBuilder<T, R>> builder(): MatcherBuilder<T, R> {
-        return MatcherBuilder()
+    operator fun plus(matcher: Matcher<T>): Matcher<T> {
+        return MatcherPlus(this, matcher)
+    }
+
+    infix fun or(matcher: Matcher<T>): Matcher<T> {
+        return MatcherOr(this, matcher)
     }
 }

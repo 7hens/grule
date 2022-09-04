@@ -1,22 +1,17 @@
 package io.grule.matcher2
 
-internal class MatcherOr<T>(val matchers: List<Matcher<T>>) : Matcher<T> {
-    init {
-        require(matchers.isNotEmpty())
+internal class MatcherOr<T>(val primary: Matcher<T>, val secondary: Matcher<T>) : Matcher<T> {
+
+    override fun match(status: T): T {
+        return try {
+            primary.match(status)
+        } catch (_: MatcherException) {
+            secondary.match(status)
+        }
+
     }
 
-    override fun match(context: T, offset: Int): Int {
-        for (lexer in matchers) {
-            try {
-                return lexer.match(context, offset)
-            } catch (_: MatcherException) {
-                continue
-            }
-        }
-        throw MatcherException(context, offset)
-    }
-    
     override fun toString(): String {
-        return matchers.joinToString(" | ")
+        return "$primary | $secondary"
     }
 }

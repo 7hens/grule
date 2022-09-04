@@ -3,13 +3,13 @@ package io.grule.matcher2.parser
 import io.grule.matcher2.MatcherException
 
 internal class ParserMatcherString(val text: String) : ParserMatcher {
-    
-    override fun match(context: ParserMatcherContext, offset: Int): Int {
-        val token = context.peek(offset)
+
+    override fun match(status: ParserMatcherContext): ParserMatcherContext {
+        val token = status.peek()
         if (token.text == text) {
-            return 1
+            return status.next()
         }
-        throw MatcherException(context, offset)
+        throw MatcherException(status)
     }
 
     override fun toString(): String {
