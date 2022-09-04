@@ -110,8 +110,8 @@ class ParserTest {
 
     @Test
     fun untilGreedy() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
         RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
             val exp by parser { (X + Num + Op).untilGreedy(X + "x") }
 
             val astNode = exp.parse(this, source)
@@ -121,63 +121,11 @@ class ParserTest {
 
     @Test
     fun untilReluctant() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
         RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
             val exp by parser { (X + Num + Op).untilNonGreedy(X + "x") }
 
             val astNode = exp.parse(this, source)
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
-    fun binary() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
-        RepeatGrammar().apply {
-            val exp by parser { (X + Num + Op).untilNonGreedy(X + "x").binary(Op) }
-
-            val astNode = exp.parse(this, source)
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
-    fun recursiveError() {
-
-    }
-
-    @Test(expected = ParserException::class)
-    fun recursiveLeft() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
-        RepeatGrammar().apply {
-            val exp by parser { X + it + "x" or it + Num or it + Op }
-
-            val astNode = exp.parse(this, source)
-            println("================")
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
-    fun recursiveRight() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
-        RepeatGrammar().apply {
-            val exp by parser { X + Num + Op + it or X + "x" or X + Num }
-
-            val astNode = exp.parse(this, source)
-            println("================")
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
-    fun recursiveBinary() {
-        val source = "0 * 1 + 2 * 3 - 4 / x"
-        RepeatGrammar().apply {
-            val exp by parser { X + Num or X + "x" or it + Op + it }
-
-            val astNode = exp.parse(this, source)
-            println("================")
             println(astNode.toStringTree())
         }
     }

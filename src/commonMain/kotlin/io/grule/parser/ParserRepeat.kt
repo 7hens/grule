@@ -1,6 +1,7 @@
 package io.grule.parser
 
 import io.grule.lexer.TokenStream
+import io.grule.node.AstNode
 
 internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes: Int) : Parser {
     init {
@@ -28,4 +29,8 @@ internal class ParserRepeat(val parser: Parser, val minTimes: Int, val maxTimes:
         return result
     }
 
+    override fun toString(): String {
+        val maxText = if (maxTimes != Int.MAX_VALUE) "$maxTimes" else ""
+        return "{$parser |$minTimes,$maxText}"
+    }
 }

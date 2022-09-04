@@ -1,6 +1,7 @@
 package io.grule.parser
 
 import io.grule.lexer.TokenStream
+import io.grule.node.AstNode
 
 open class ParserBuilder : Parser {
     internal var delegate: Parser = ParserShadow()

@@ -1,6 +1,6 @@
 package io.grule.matcher
 
-import io.grule.parser.AstNode
+import io.grule.node.AstNode
 
 @Suppress("MoveVariableDeclarationIntoWhen")
 internal class MatcherRegex(private val pattern: String) : Matcher {

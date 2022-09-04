@@ -85,7 +85,16 @@ fun interface Matcher {
         val LOWER = X - ('a'..'z')
         val LETTER = UPPER or LOWER
         val WORD = LETTER or DIGIT or X + '_'
+        val WORD_HEAD = LETTER or X + '_'
+        val WORD_LIST = WORD_HEAD + WORD.repeat()
+        val DWORD = WORD or X + '$'
+        val DWORD_HEAD = LETTER or X - "_$"
+        val DWORD_LIST = DWORD_HEAD + DWORD.repeat()
         val SPACE = X - "\t\r\n\u0085\u000B\u000C "
         val WRAP = X + "\r\n" or X - "\r\n"
+
+        operator fun div(fn: Companion.() -> Matcher): Matcher {
+            return fn(Matcher)
+        }
     }
 }

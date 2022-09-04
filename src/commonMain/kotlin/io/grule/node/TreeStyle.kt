@@ -1,4 +1,4 @@
-package io.grule.parser
+package io.grule.node
 
 @Suppress("MemberVisibilityCanBePrivate")
 class TreeStyle(

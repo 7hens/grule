@@ -7,10 +7,10 @@ group = "com.github.7hens.grule"
 version = "-SNAPSHOT"
 
 repositories {
+    mavenLocal()
+    mavenCentral()
     maven("https://maven.aliyun.com/repository/public")
     maven("https://jitpack.io")
-    mavenCentral()
-    mavenLocal()
 }
 
 kotlin {

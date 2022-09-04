@@ -3,10 +3,17 @@ package io.grule.parser
 import io.grule.lexer.Lexer
 import io.grule.lexer.TokenStream
 import io.grule.matcher.CharStream
+import io.grule.node.AstNode
+import io.grule.node.AstNodeStream
+import io.grule.node.KeyProvider
 
-fun interface Parser {
+fun interface Parser : AstNodeStream<Parser>, KeyProvider {
 
     fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int
+
+    fun composable(): Parser {
+        return ParserComposable(this)
+    }
 
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = this + Lexer.EOF
@@ -23,6 +30,8 @@ fun interface Parser {
     fun parse(lexer: Lexer, text: String): AstNode {
         return parse(lexer, CharStream.fromString(text))
     }
+
+    override val key: Any get() = this
 
     fun not(): Parser {
         return ParserNot(this)
@@ -74,8 +83,12 @@ fun interface Parser {
         return ParserTest(this)
     }
 
-    fun binary(operator: Any, comparator: Comparator<AstNode> = AstNode.DefaultComparator): Parser {
-        return ParserBinary(this, operator, comparator)
+    override fun transform(transformation: AstNode.Transformation): Parser {
+        return ParserTransform(this, transformation)
+    }
+
+    fun flat(): Parser {
+        return flat { it.key == this }
     }
 
     companion object {
