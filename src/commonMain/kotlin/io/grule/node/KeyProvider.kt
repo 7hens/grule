@@ -9,7 +9,13 @@ interface KeyProvider {
 
     companion object {
         fun keyOf(value: Any): Any {
-            return (value as? KeyProvider)?.key ?: value
+            return invoke(value).key
+        }
+
+        operator fun invoke(value: Any): KeyProvider {
+            return (value as? KeyProvider) ?: Impl(value)
         }
     }
+
+    private class Impl(override val key: Any) : KeyProvider
 }

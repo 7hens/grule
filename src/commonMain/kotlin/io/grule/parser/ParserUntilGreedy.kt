@@ -4,7 +4,8 @@ import io.grule.lexer.TokenStream
 import io.grule.node.AstNode
 
 internal class ParserUntilGreedy(
-    val parser: Parser, val terminal: Parser, val minTimes: Int, val maxTimes: Int) : Parser {
+    val parser: Parser, val terminal: Parser, val minTimes: Int, val maxTimes: Int
+) : Parser {
     init {
         require(minTimes >= 0)
         require(maxTimes >= minTimes)
@@ -14,7 +15,7 @@ internal class ParserUntilGreedy(
         var repeatTimes = 0
         var result = 0
         var lastResult = 0
-        val parserNode = AstNode(parentNode.key)
+        val parserNode = AstNode.of(parentNode)
         while (true) {
             try {
                 lastResult = result
@@ -26,13 +27,13 @@ internal class ParserUntilGreedy(
             } catch (parserException: ParserException) {
                 require(repeatTimes >= minTimes, parserException)
                 try {
-                    val terminalNode = AstNode(parentNode.key)
+                    val terminalNode = AstNode.of(parentNode)
                     result += terminal.parse(tokenStream, terminalNode, offset + result)
                     parentNode.merge(parserNode)
                     parentNode.merge(terminalNode)
                 } catch (terminalException: ParserException) {
                     require(repeatTimes - 1 >= minTimes, parserException)
-                    val terminalNode = AstNode(parentNode.key)
+                    val terminalNode = AstNode.of(parentNode)
                     result = lastResult + terminal.parse(tokenStream, terminalNode, offset + lastResult)
                     parentNode.merge(parserNode)
                     parentNode.merge(terminalNode)

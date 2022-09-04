@@ -21,7 +21,7 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
     }
 
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
-        val node = AstNode(this)
+        val node = AstNode.of(this)
         val result = lazyParser.parse(tokenStream, node, offset)
         parentNode.add(node)
         return result

@@ -5,7 +5,7 @@ import io.grule.node.AstNode
 
 internal class ParserNot(val parser: Parser) : Parser {
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
-        val node = AstNode(parentNode.key)
+        val node = AstNode.of(parentNode)
         try {
             parser.parse(tokenStream, node, offset)
         } catch (_: ParserException) {

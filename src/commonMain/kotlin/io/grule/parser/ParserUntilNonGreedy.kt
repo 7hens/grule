@@ -14,11 +14,11 @@ internal class ParserUntilNonGreedy(
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         var repeatTimes = 0
         var result = 0
-        val parserNode = AstNode(parentNode.key)
+        val parserNode = AstNode.of(parentNode)
         while (true) {
             if (repeatTimes >= minTimes) {
                 try {
-                    val terminalNode = AstNode(parentNode.key)
+                    val terminalNode = AstNode.of(parentNode)
                     result += terminal.parse(tokenStream, terminalNode, offset + result)
                     parentNode.merge(parserNode)
                     parentNode.merge(terminalNode)

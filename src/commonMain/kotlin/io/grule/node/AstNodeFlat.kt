@@ -11,7 +11,7 @@ internal class AstNodeFlat(private val predicate: (AstNode) -> Boolean) : AstNod
         if (node.isEmpty()) {
             return
         }
-        val tempNode = AstNode(node.key)
+        val tempNode = AstNode.of(node)
         node.all().forEach { child ->
             flatNode(child)
             if (predicate(child)) {

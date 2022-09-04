@@ -2,24 +2,24 @@ package io.grule.matcher2.lexer
 
 object LexerDsl {
     val X = Builder()
-    val ANY = X + LexerMatcherCharSet.ANY
-    val EOF = X + LexerMatcherEOF
+    val any = X + LexerMatcherCharSet.ANY
+    val eof = X + LexerMatcherEOF
 
-    val DIGIT = X - ('0'..'9')
-    val BIT = X - "01"
-    val OCTAL = X - ('0'..'7')
-    val HEX = X - "0123456789ABCDEFabcdef"
+    val digit = X - ('0'..'9')
+    val bit = X - "01"
+    val octal = X - ('0'..'7')
+    val hex = X - "0123456789ABCDEFabcdef"
 
-    val UPPER = X - ('A'..'Z')
-    val LOWER = X - ('a'..'z')
-    val LETTER = UPPER or LOWER
+    val upper = X - ('A'..'Z')
+    val lower = X - ('a'..'z')
+    val letter = upper or lower
 
-    val WORD = LETTER or DIGIT or X - "_"
-    val WORD_HEAD = LETTER or X - "_"
-    val WORD_LIST = WORD_HEAD + WORD.repeat()
+    val word = letter or digit or X - "_"
+    val wordHead = letter or X - "_"
+    val worldList = wordHead + word.repeat()
 
-    val SPACE = X - "\t\r\n\u0085\u000B\u000C "
-    val WRAP = X + "\r\n" or X - "\r\n"
+    val space = X - "\t\r\n\u0085\u000B\u000C "
+    val wrap = X + "\r\n" or X - "\r\n"
 
     operator fun <T> invoke(fn: LexerDsl.() -> T): T = run(fn)
 

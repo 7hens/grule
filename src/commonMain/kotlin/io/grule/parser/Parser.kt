@@ -17,7 +17,7 @@ fun interface Parser : AstNodeStream<Parser>, KeyProvider {
 
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = this + Lexer.EOF
-        val node = AstNode("<ROOT>")
+        val node = AstNode.of("<ROOT>")
         mainParser.parse(tokenStream, node, 0)
 //        println(node.toStringTree())
         return node.first(this)

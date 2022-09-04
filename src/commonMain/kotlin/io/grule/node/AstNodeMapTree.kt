@@ -6,7 +6,7 @@ internal class AstNodeMapTree(val mapper: (AstNode) -> AstNode) : AstNode.Transf
         if (node.isTerminal) {
             return mapper(node)
         }
-        val result = AstNode(node.key)
+        val result = AstNode.of(node)
         node.all().forEach { result.add(apply(it)) }
         return mapper(result)
     }

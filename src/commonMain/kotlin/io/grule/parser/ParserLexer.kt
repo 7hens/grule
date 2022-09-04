@@ -9,7 +9,7 @@ internal class ParserLexer(private val lexer: Lexer) : Parser {
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         val token = tokenStream.peek(offset)
         if (token.lexer == lexer) {
-            parentNode.add(AstNode.Terminal(lexer, token))
+            parentNode.add(AstNode.of(lexer, token))
             return 1
         }
         throw ParserException("Unmatched <$lexer> in ${parentNode.key}, actual is $token")

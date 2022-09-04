@@ -1,12 +1,10 @@
 package io.grule.node
 
 import io.grule.lexer.Token
-import io.grule.node.KeyProvider.Companion.keyOf
 
-open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
+open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream<AstNode>, KeyProvider by keyProvider {
     private val groups = mutableMapOf<Any, MutableList<AstNode>>()
     private val children = mutableListOf<AstNode>()
-    override val key = keyOf(keyProvider)
 
     open val isTerminal: Boolean = false
     open val firstToken: Token?
@@ -69,7 +67,7 @@ open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
     }
 
     fun subList(fromIndex: Int, toIndex: Int = size): AstNode {
-        val result = AstNode(key)
+        val result = AstNode(this)
         result.addAll(all().subList(fromIndex, toIndex))
         return result
     }
@@ -128,16 +126,24 @@ open class AstNode(keyProvider: Any) : AstNodeStream<AstNode>, KeyProvider {
     }
 
     companion object {
+        fun of(key: Any): AstNode {
+            return AstNode(KeyProvider(key))
+        }
+
+        fun of(key: Any, token: Token): AstNode {
+            return Terminal(KeyProvider(key), token)
+        }
+
         fun of(key: Any, vararg elements: AstNode): AstNode {
             return of(key, listOf(*elements))
         }
 
         fun of(key: Any, elements: Iterable<AstNode>): AstNode {
-            return AstNode(key).apply { addAll(elements) }
+            return of(key).apply { addAll(elements) }
         }
     }
 
-    internal class Terminal(rule: Any, token: Token) : AstNode(rule) {
+    private class Terminal(rule: KeyProvider, token: Token) : AstNode(rule) {
         override val isTerminal: Boolean = true
         override val firstToken: Token = token
         override val lastToken: Token = token

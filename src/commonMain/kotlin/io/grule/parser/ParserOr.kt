@@ -7,12 +7,12 @@ internal class ParserOr(val parsers: List<Parser>) : Parser {
     init {
         require(parsers.isNotEmpty())
     }
-    
+
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         var error: Throwable? = null
         for (parser in parsers) {
             try {
-                val node = AstNode(parentNode.key)
+                val node = AstNode.of(parentNode)
                 val result = parser.parse(tokenStream, node, offset)
                 parentNode.merge(node)
                 return result
