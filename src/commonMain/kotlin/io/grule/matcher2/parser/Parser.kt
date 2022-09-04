@@ -11,6 +11,6 @@ interface Parser : ParserMatcher, KeyProvider {
         val node = AstNode.of(this)
         val status = ParserMatcherContext.from(tokenStream, node)
         mainParser.match(status)
-        return node
+        return node.first()
     }
 }

@@ -17,6 +17,20 @@ internal class TokenStreamImpl(charStream: CharStream, val lexer: Lexer) : Token
         return requireNotNull(eof)
     }
 
+    override fun all(): List<Token> {
+        val list = mutableListOf<Token>()
+        var i = 0
+        while (true) {
+            val token = peek(i)
+            list.add(token)
+            if (token.lexer == Lexer.EOF) {
+                break
+            }
+            i++
+        }
+        return list
+    }
+
     override fun moveNext(count: Int) {
         if (count == 0) {
             return
@@ -42,19 +56,5 @@ internal class TokenStreamImpl(charStream: CharStream, val lexer: Lexer) : Token
         if (token.lexer == Matcher.EOF) {
             eof = token
         }
-    }
-
-    override fun toString(): String {
-        val builder = StringBuilder()
-        var i = 0
-        while (true) {
-            val token = peek(i)
-            builder.append(token).append("\n")
-            if (token.lexer == Lexer.EOF) {
-                break
-            }
-            i++
-        }
-        return builder.toString()
     }
 }

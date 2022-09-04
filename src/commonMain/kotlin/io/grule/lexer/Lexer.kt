@@ -11,6 +11,10 @@ fun interface Lexer {
         return TokenStreamImpl(charStream, this)
     }
 
+    fun tokenStream(text: String): TokenStream {
+        return tokenStream(CharStream.fromString(text))
+    }
+
     companion object {
         val EOF: Lexer = LexerEOF
 

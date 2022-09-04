@@ -1,13 +1,13 @@
 package io.grule.lexer
 
 import io.grule.matcher.Matcher
-import io.grule.matcher.MatcherException
 import io.grule.matcher.MatcherSupplier
+import io.grule.matcher2.MatcherException
 import io.grule.matcher2.lexer.LexerMatcher
 import io.grule.matcher2.lexer.LexerMatcherDsl
 import kotlin.properties.ReadOnlyProperty
 
-class LexerFactory internal constructor() : Lexer {
+class LexerFactory2 internal constructor() : Lexer {
     private val lexers = mutableListOf<Lexer>()
 
     override fun lex(context: LexerContext) {
@@ -33,7 +33,7 @@ class LexerFactory internal constructor() : Lexer {
         return LexerProperty2 { fn(LexerMatcherDsl) }.also { lexers.add(it) }
     }
 
-    fun skip2(fn: LexerMatcherDsl.() -> LexerMatcher): Lexer {
+    fun skip(fn: LexerMatcherDsl.() -> LexerMatcher): Lexer {
         return add(LexerMatcher2(fn(LexerMatcherDsl), false))
     }
 
@@ -47,10 +47,6 @@ class LexerFactory internal constructor() : Lexer {
 
     fun token(fn: MatcherSupplier): Lexer {
         return add(Lexer.of(fn(Matcher), true))
-    }
-
-    fun skip(fn: MatcherSupplier): Lexer {
-        return add(Lexer.of(fn(Matcher), false))
     }
 
     fun add(lexer: Lexer): Lexer {

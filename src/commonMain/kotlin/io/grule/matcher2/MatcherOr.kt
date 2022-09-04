@@ -8,7 +8,6 @@ internal class MatcherOr<T>(val primary: Matcher<T>, val secondary: Matcher<T>) 
         } catch (_: MatcherException) {
             secondary.match(status)
         }
-
     }
 
     override fun toString(): String {
