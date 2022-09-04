@@ -4,7 +4,7 @@ import io.grule.lexer.Lexer
 import io.grule.lexer.LexerContext
 import io.grule.parser.Parser
 
-@Suppress("PropertyName", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
+@Suppress("MemberVisibilityCanBePrivate")
 open class Grammar : Lexer {
     val lexer = Lexer.factory()
     val parser = Parser.factory()

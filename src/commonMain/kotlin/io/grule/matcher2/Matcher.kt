@@ -46,4 +46,13 @@ fun interface Matcher<T> {
     infix fun or(matcher: Matcher<T>): Matcher<T> {
         return MatcherOr(this, matcher)
     }
+
+    infix fun self(fn: Self<T>.() -> Matcher<T>): Matcher<T> {
+        return MatcherSelf(this, fn)
+    }
+
+    interface Self<T> {
+        val me: Matcher<T>
+        val it: Matcher<T>
+    }
 }

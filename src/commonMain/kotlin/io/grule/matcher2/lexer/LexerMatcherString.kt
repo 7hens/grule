@@ -4,16 +4,16 @@ import io.grule.matcher2.MatcherException
 
 internal class LexerMatcherString(private val text: String) : LexerMatcher {
 
-    override fun match(context: LexerMatcherContext): LexerMatcherContext {
-        context.peek(text.length)
-        if (context.peek() == null) {
-            throw MatcherException(context)
+    override fun match(status: LexerMatcherContext): LexerMatcherContext {
+        status.peek(text.length)
+        if (status.peek() == null) {
+            throw MatcherException(status)
         }
-        val actualText = context.getText(text.length)
+        val actualText = status.getText(text.length)
         if (actualText == text) {
-            return context.next(text.length)
+            return status.next(text.length)
         }
-        throw MatcherException(context)
+        throw MatcherException(status)
     }
 
     override fun toString(): String {
