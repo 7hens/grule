@@ -6,6 +6,7 @@ import io.grule.matcher2.Matcher
 class LexerMatcherStatus(
     val data: MatcherContext,
     val position: Int = 0,
+    override var lastMatcher: Matcher<LexerMatcherStatus>? = null
 ) : Matcher.Status<LexerMatcherStatus> {
 
     fun peek(offset: Int = 0): Char? {
@@ -17,15 +18,12 @@ class LexerMatcherStatus(
     }
 
     fun next(count: Int): LexerMatcherStatus {
-        return LexerMatcherStatus(data, position + count)
+        return LexerMatcherStatus(data, position + count, lastMatcher)
     }
 
     fun panic(rule: Any): Nothing {
         throw LexerMatcherException(this, rule)
     }
-
-    override var lastMatcher: Matcher<LexerMatcherStatus>? = null
-        private set
 
     override fun next(): LexerMatcherStatus {
         return next(1)

@@ -8,7 +8,8 @@ import io.grule.node.AstNode
 class ParserMatcherStatus(
     val data: TokenStream,
     val position: Int,
-    val node: AstNode
+    val node: AstNode,
+    override var lastMatcher: Matcher<ParserMatcherStatus>? = null
 ) : Matcher.Status<ParserMatcherStatus> {
 
     fun peek(offset: Int = 0): Token {
@@ -28,11 +29,8 @@ class ParserMatcherStatus(
         throw ParserMatcherException(this, rule)
     }
 
-    override var lastMatcher: Matcher<ParserMatcherStatus>? = null
-        private set
-
     override fun next(): ParserMatcherStatus {
-        return ParserMatcherStatus(data, position + 1, node)
+        return ParserMatcherStatus(data, position + 1, node, lastMatcher)
     }
 
     override fun apply(matcher: Matcher<ParserMatcherStatus>): ParserMatcherStatus {
