@@ -4,27 +4,43 @@ package io.grule.matcher2
 internal class MatcherSelf<T : Matcher.Status<T>>(
     val primary: Matcher<T>, fn: Matcher.Self<T>.() -> Matcher<T>
 ) : Matcher<T> {
-    private val selfMatcher by lazy { fn(SelfImpl(NonRecursiveMatcher(primary), NonRecursiveMatcher(this))) }
+    private val selfMatcher by lazy { fn(SelfImpl(ItMatcher(), MeMatcher())) }
 
     override fun match(status: T): T {
         var result = status.apply(primary)
         while (true) {
             try {
-                result = status.apply(selfMatcher)
-            } catch (_: Exception) {
+                result = result.apply(selfMatcher)
+            } catch (_: MatcherException) {
                 return result
             }
         }
     }
 
+    override fun toString(): String {
+        return "$primary : $selfMatcher"
+    }
+
     class SelfImpl<T : Matcher.Status<T>>(override val it: Matcher<T>, override val me: Matcher<T>) : Matcher.Self<T>
 
-    private class NonRecursiveMatcher<T : Matcher.Status<T>>(val matcher: Matcher<T>) : Matcher<T> {
+    inner class ItMatcher : Matcher<T> {
         override fun match(status: T): T {
-            if (status.lastMatcher === matcher) {
-                return status
-            }
-            return status.apply(matcher)
+            return if (status.lastMatcher === primary) status else status.apply(primary)
+        }
+
+        override fun toString(): String {
+            return "\$it"
+        }
+    }
+
+    inner class MeMatcher : Matcher<T> {
+        override fun match(status: T): T {
+            val self = this@MatcherSelf
+            return if (status.lastMatcher === primary || status.lastMatcher === self) status else status.apply(self)
+        }
+
+        override fun toString(): String {
+            return "\$me"
         }
     }
 }

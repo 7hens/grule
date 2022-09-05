@@ -37,7 +37,7 @@ class ParserMatcherStatus(
 
     override fun apply(matcher: Matcher<ParserMatcherStatus>): ParserMatcherStatus {
         val result = matcher.match(this)
-        lastMatcher = matcher
+        result.lastMatcher = matcher
         return result
     }
 }

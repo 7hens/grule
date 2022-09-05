@@ -10,6 +10,6 @@ internal class MatcherPlus<T : Matcher.Status<T>>(
     }
 
     override fun toString(): String {
-        return "$first + $second"
+        return "$first $second"
     }
 }

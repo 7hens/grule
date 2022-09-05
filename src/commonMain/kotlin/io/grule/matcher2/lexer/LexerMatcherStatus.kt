@@ -33,7 +33,7 @@ class LexerMatcherStatus(
 
     override fun apply(matcher: Matcher<LexerMatcherStatus>): LexerMatcherStatus {
         val result = matcher.match(this)
-        lastMatcher = matcher
+        result.lastMatcher = matcher
         return result
     }
 }
