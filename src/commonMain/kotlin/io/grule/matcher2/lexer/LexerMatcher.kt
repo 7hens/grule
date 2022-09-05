@@ -2,7 +2,7 @@ package io.grule.matcher2.lexer
 
 import io.grule.matcher2.Matcher
 
-typealias LexerMatcher = Matcher<LexerMatcherContext>
+typealias LexerMatcher = Matcher<LexerMatcherStatus>
 
 operator fun LexerMatcher.plus(text: String): LexerMatcher {
     return plus(LexerMatcherString(text))

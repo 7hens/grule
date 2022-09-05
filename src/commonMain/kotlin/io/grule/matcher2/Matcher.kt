@@ -1,7 +1,7 @@
 package io.grule.matcher2
 
 @Suppress("MemberVisibilityCanBePrivate")
-fun interface Matcher<T> {
+fun interface Matcher<T : Matcher.Status<T>> {
 
     fun match(status: T): T
 
@@ -51,7 +51,15 @@ fun interface Matcher<T> {
         return MatcherSelf(this, fn)
     }
 
-    interface Self<T> {
+    interface Status<T : Status<T>> {
+        val lastMatcher: Matcher<T>?
+
+        fun apply(matcher: Matcher<T>): T
+
+        fun next(): T
+    }
+
+    interface Self<T : Status<T>> {
         val me: Matcher<T>
         val it: Matcher<T>
     }

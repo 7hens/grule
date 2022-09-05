@@ -3,7 +3,7 @@ package io.grule.matcher2
 /**
  * non-greedy: a*?b
  */
-internal class MatcherUntilNonGreedy<T>(
+internal class MatcherUntilNonGreedy<T : Matcher.Status<T>>(
     val matcher: Matcher<T>, val terminal: Matcher<T>,
     val minTimes: Int, val maxTimes: Int
 ) : Matcher<T> {
@@ -19,11 +19,11 @@ internal class MatcherUntilNonGreedy<T>(
         while (true) {
             if (repeatTimes >= minTimes) {
                 try {
-                    return terminal.match(result)
+                    return result.apply(terminal)
                 } catch (_: MatcherException) {
                 }
             }
-            result = matcher.match(result)
+            result = result.apply(matcher)
             repeatTimes++
             if (repeatTimes > maxTimes) {
                 throw MatcherException("limit out of range $maxTimes")

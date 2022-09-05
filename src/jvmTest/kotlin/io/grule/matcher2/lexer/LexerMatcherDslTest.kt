@@ -12,10 +12,10 @@ import kotlin.test.assertEquals
  */
 internal class LexerMatcherDslTest {
 
-    private fun LexerMatcher.match(text: String): LexerMatcherContext {
+    private fun LexerMatcher.match(text: String): LexerMatcherStatus {
         val charStream = CharStream.fromString(text)
-        val context = LexerMatcherContext.from(charStream)
-        return match(context)
+        val status = LexerMatcherStatus(charStream)
+        return status.apply(this)
     }
 
     @Test

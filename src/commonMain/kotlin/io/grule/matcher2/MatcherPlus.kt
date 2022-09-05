@@ -1,12 +1,12 @@
 package io.grule.matcher2
 
-internal class MatcherPlus<T>(
+internal class MatcherPlus<T : Matcher.Status<T>>(
     val first: Matcher<T>,
     val second: Matcher<T>
 ) : Matcher<T> {
 
     override fun match(status: T): T {
-        return second.match(first.match(status))
+        return status.apply(first).apply(second)
     }
 
     override fun toString(): String {

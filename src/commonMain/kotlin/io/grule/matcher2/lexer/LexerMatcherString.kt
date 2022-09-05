@@ -2,7 +2,7 @@ package io.grule.matcher2.lexer
 
 internal class LexerMatcherString(private val text: String) : LexerMatcher {
 
-    override fun match(status: LexerMatcherContext): LexerMatcherContext {
+    override fun match(status: LexerMatcherStatus): LexerMatcherStatus {
         status.peek(text.length)
         if (status.peek() == null) {
             status.panic(LexerMatcherEOF)

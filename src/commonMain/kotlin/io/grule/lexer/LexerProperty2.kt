@@ -1,7 +1,7 @@
 package io.grule.lexer
 
 import io.grule.matcher2.lexer.LexerMatcher
-import io.grule.matcher2.lexer.LexerMatcherContext
+import io.grule.matcher2.lexer.LexerMatcherStatus
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -15,7 +15,7 @@ internal abstract class LexerProperty2 : Lexer, ReadOnlyProperty<Any?, Lexer> {
     }
 
     override fun lex(context: LexerContext) {
-        val status = matcher.match(LexerMatcherContext.from(context))
+        val status = LexerMatcherStatus(context).apply(matcher)
         val matchNum = status.position
         context.emit(this, matchNum)
         context.moveNext(matchNum)

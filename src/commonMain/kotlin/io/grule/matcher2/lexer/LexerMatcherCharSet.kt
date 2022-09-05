@@ -2,7 +2,7 @@ package io.grule.matcher2.lexer
 
 internal class LexerMatcherCharSet(val set: Iterable<Char>) : LexerMatcher {
 
-    override fun match(status: LexerMatcherContext): LexerMatcherContext {
+    override fun match(status: LexerMatcherStatus): LexerMatcherStatus {
         val c = status.peek() ?: status.panic(LexerMatcherEOF)
         if (c in set) {
             return status.next()

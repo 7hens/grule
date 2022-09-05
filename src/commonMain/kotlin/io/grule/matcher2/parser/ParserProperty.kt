@@ -17,10 +17,10 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
         return name
     }
 
-    override fun match(status: ParserMatcherContext): ParserMatcherContext {
+    override fun match(status: ParserMatcherStatus): ParserMatcherStatus {
         val childNode = AstNode.of(this)
         val childStatus = status.withNode(childNode)
-        val result = matcher.match(childStatus)
+        val result = childStatus.apply(matcher)
 
         val resultNode = status.node
         resultNode.add(result.node)

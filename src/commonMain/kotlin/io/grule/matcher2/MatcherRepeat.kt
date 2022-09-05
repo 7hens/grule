@@ -1,6 +1,8 @@
 package io.grule.matcher2
 
-internal class MatcherRepeat<T>(val matcher: Matcher<T>, val minTimes: Int, val maxTimes: Int) : Matcher<T> {
+internal class MatcherRepeat<T : Matcher.Status<T>>(
+    val matcher: Matcher<T>, val minTimes: Int, val maxTimes: Int
+) : Matcher<T> {
 
     init {
         require(minTimes >= 0)
@@ -12,7 +14,7 @@ internal class MatcherRepeat<T>(val matcher: Matcher<T>, val minTimes: Int, val 
         var repeatTimes = 0
         while (true) {
             try {
-                result = matcher.match(result)
+                result = result.apply(matcher)
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
                     return result

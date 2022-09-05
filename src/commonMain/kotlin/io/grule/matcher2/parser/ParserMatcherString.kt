@@ -4,7 +4,7 @@ import io.grule.node.AstNode
 
 internal class ParserMatcherString(val text: String) : ParserMatcher {
 
-    override fun match(status: ParserMatcherContext): ParserMatcherContext {
+    override fun match(status: ParserMatcherStatus): ParserMatcherStatus {
         val token = status.peek()
         if (token.text == text) {
             return status.next(AstNode.of(text, token))
