@@ -29,6 +29,10 @@ class LexerMatcherStatus(
         return next(1)
     }
 
+    override fun self(): LexerMatcherStatus {
+        return this
+    }
+
     override fun apply(matcher: Matcher<LexerMatcherStatus>): LexerMatcherStatus {
         val result = matcher.match(this)
         result.lastMatcher = matcher

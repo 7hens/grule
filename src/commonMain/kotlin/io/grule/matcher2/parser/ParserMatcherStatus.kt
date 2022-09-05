@@ -18,11 +18,11 @@ class ParserMatcherStatus(
 
     fun next(childNode: AstNode): ParserMatcherStatus {
         node.add(childNode)
-        return ParserMatcherStatus(data, position + 1, node)
+        return ParserMatcherStatus(data, position + 1, node, lastMatcher)
     }
 
     fun withNode(node: AstNode): ParserMatcherStatus {
-        return ParserMatcherStatus(data, position, node)
+        return ParserMatcherStatus(data, position, node, lastMatcher)
     }
 
     fun panic(rule: Any): Nothing {
@@ -31,6 +31,12 @@ class ParserMatcherStatus(
 
     override fun next(): ParserMatcherStatus {
         return ParserMatcherStatus(data, position + 1, node, lastMatcher)
+    }
+
+    override fun self(): ParserMatcherStatus {
+        val parentNode = AstNode.of(node)
+        parentNode.add(node)
+        return withNode(parentNode)
     }
 
     override fun apply(matcher: Matcher<ParserMatcherStatus>): ParserMatcherStatus {

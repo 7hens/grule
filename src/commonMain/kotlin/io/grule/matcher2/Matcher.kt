@@ -57,6 +57,8 @@ fun interface Matcher<T : Matcher.Status<T>> {
         fun apply(matcher: Matcher<T>): T
 
         fun next(): T
+
+        fun self(): T
     }
 
     interface Self<T : Status<T>> {
