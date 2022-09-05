@@ -25,7 +25,8 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
 
     inner class ItMatcher : Matcher<T> {
         override fun match(status: T): T {
-            return if (status.lastMatcher === primary) status else status.apply(primary)
+            val isSelf = status.lastMatcher === primary
+            return if (isSelf) status else status.apply(primary)
         }
 
         override fun toString(): String {
@@ -36,7 +37,8 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
     inner class MeMatcher : Matcher<T> {
         override fun match(status: T): T {
             val self = this@MatcherSelf
-            return if (status.lastMatcher === primary || status.lastMatcher === self) status else status.apply(self)
+            val isSelf = status.lastMatcher === primary || status.lastMatcher === selfMatcher
+            return if (isSelf) status else status.apply(self)
         }
 
         override fun toString(): String {
