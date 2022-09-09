@@ -19,12 +19,11 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
 
     override fun match(status: ParserMatcherStatus): ParserMatcherStatus {
         val childNode = AstNode.of(this)
-        val childStatus = status.withNode(childNode)
-        val result = childStatus.apply(matcher)
+        val newStatus = status.withNode(childNode).apply(matcher)
 
-        val resultNode = status.node
-        resultNode.add(result.node)
-        return result.withNode(resultNode)
+        val oldNode = status.lastNode
+        oldNode.add(newStatus.lastNode)
+        return newStatus.withNode(oldNode)
     }
 
     override val key: Any get() = this

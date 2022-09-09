@@ -8,7 +8,8 @@ import io.grule.node.AstNode
 class ParserMatcherStatus(
     val data: TokenStream,
     val position: Int,
-    val node: AstNode,
+    val rootNode: AstNode,
+    val lastNode: AstNode,
     override var lastMatcher: Matcher<ParserMatcherStatus>? = null
 ) : Matcher.Status<ParserMatcherStatus> {
 
@@ -17,12 +18,12 @@ class ParserMatcherStatus(
     }
 
     fun next(childNode: AstNode): ParserMatcherStatus {
-        node.add(childNode)
-        return ParserMatcherStatus(data, position + 1, node, lastMatcher)
+        lastNode.add(childNode)
+        return ParserMatcherStatus(data, position + 1, rootNode, lastNode, lastMatcher)
     }
 
     fun withNode(node: AstNode): ParserMatcherStatus {
-        return ParserMatcherStatus(data, position, node, lastMatcher)
+        return ParserMatcherStatus(data, position, rootNode, node, lastMatcher)
     }
 
     fun panic(rule: Any): Nothing {
@@ -30,18 +31,31 @@ class ParserMatcherStatus(
     }
 
     override fun next(): ParserMatcherStatus {
-        return ParserMatcherStatus(data, position + 1, node, lastMatcher)
+        return ParserMatcherStatus(data, position + 1, rootNode, lastNode, lastMatcher)
     }
 
-    override fun self(): ParserMatcherStatus {
-        val parentNode = AstNode.of(node)
-        parentNode.add(node)
-        return withNode(parentNode)
+    override fun self(isMe: Boolean): ParserMatcherStatus {
+        if (isMe) {
+            val parentNode = AstNode.of(lastNode)
+            parentNode.add(lastNode)
+            return withNode(parentNode)
+        }
+
+        val childNode = AstNode.of(lastNode)
+        lastNode.add(childNode)
+        if (rootNode !== lastNode) {
+            rootNode.add(childNode)
+        }
+        return withNode(childNode)
     }
 
     override fun apply(matcher: Matcher<ParserMatcherStatus>): ParserMatcherStatus {
         val result = matcher.match(this)
         result.lastMatcher = matcher
         return result
+    }
+
+    override fun toString(): String {
+        return "$lastNode, $lastMatcher #$position"
     }
 }

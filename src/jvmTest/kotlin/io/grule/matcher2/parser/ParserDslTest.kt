@@ -10,7 +10,7 @@ import org.junit.Test
  */
 class ParserDslTest {
     @Test
-    fun test() {
+    fun selfLeft() {
         val lexer = LexerFactory2()
         val num by lexer.m2 { digit }
         val op by lexer.m2 { X - "+-*/" }
@@ -21,6 +21,23 @@ class ParserDslTest {
 
         val parser = ParserFactory2()
         val exp by parser { X + num self { me + op + it } }
+        val astNode = exp.parse(tokenStream)
+
+        println(astNode.toStringTree())
+    }
+
+    @Test
+    fun selfRight() {
+        val lexer = LexerFactory2()
+        val num by lexer.m2 { digit }
+        val op by lexer.m2 { X - "+-*/" }
+        lexer.skip { wrap or space }
+
+        val charStream = CharStream.fromString("1 + 2 - 3 * 4")
+        val tokenStream = lexer.tokenStream(charStream)
+
+        val parser = ParserFactory2()
+        val exp by parser { X + num self { it + op + me } }
         val astNode = exp.parse(tokenStream)
 
         println(astNode.toStringTree())

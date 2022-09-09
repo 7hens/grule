@@ -29,7 +29,7 @@ class LexerMatcherStatus(
         return next(1)
     }
 
-    override fun self(): LexerMatcherStatus {
+    override fun self(isMe: Boolean): LexerMatcherStatus {
         return this
     }
 
