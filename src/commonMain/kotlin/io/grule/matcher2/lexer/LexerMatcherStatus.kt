@@ -6,7 +6,7 @@ import io.grule.matcher2.Matcher
 class LexerMatcherStatus(
     val data: MatcherContext,
     val position: Int = 0,
-    override var lastMatcher: Matcher<LexerMatcherStatus>? = null
+    override val lastMatcher: Matcher<LexerMatcherStatus>? = null
 ) : Matcher.Status<LexerMatcherStatus> {
 
     fun peek(offset: Int = 0): Char? {
@@ -33,9 +33,11 @@ class LexerMatcherStatus(
         return this
     }
 
+    override fun withMatcher(matcher: Matcher<LexerMatcherStatus>): LexerMatcherStatus {
+        return LexerMatcherStatus(data, position, matcher)
+    }
+
     override fun apply(matcher: Matcher<LexerMatcherStatus>): LexerMatcherStatus {
-        val result = matcher.match(this)
-        result.lastMatcher = matcher
-        return result
+        return matcher.match(this).withMatcher(matcher)
     }
 }

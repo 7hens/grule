@@ -1,7 +1,6 @@
 package io.grule.matcher2.parser
 
 import io.grule.lexer.LexerFactory2
-import io.grule.matcher.CharStream
 import org.junit.Test
 
 /**
@@ -10,35 +9,41 @@ import org.junit.Test
  */
 class ParserDslTest {
     @Test
-    fun selfLeft() {
-        val lexer = LexerFactory2()
-        val num by lexer.m2 { digit }
-        val op by lexer.m2 { X - "+-*/" }
-        lexer.skip { wrap or space }
+    fun jso() {
+    }
 
-        val charStream = CharStream.fromString("1 + 2 - 3 * 4")
-        val tokenStream = lexer.tokenStream(charStream)
+    @Test
+    fun selfLeft() {
+        val source = "1 + 2 - 3 * 4"
+        println(source)
+        println("X + num self { me + op + it }")
+
+        val lexer = LexerFactory2()
+        val num by lexer { digit }
+        val op by lexer { X - "+-*/" }
+        lexer.skip { wrap or space }
 
         val parser = ParserFactory2()
         val exp by parser { X + num self { me + op + it } }
-        val astNode = exp.parse(tokenStream)
+        val astNode = exp.parse(lexer.tokenStream(source))
 
         println(astNode.toStringTree())
     }
 
     @Test
     fun selfRight() {
-        val lexer = LexerFactory2()
-        val num by lexer.m2 { digit }
-        val op by lexer.m2 { X - "+-*/" }
-        lexer.skip { wrap or space }
+        val source = "1 + 2 - 3 * 4"
+        println(source)
+        println("X + num self { it + op + me }")
 
-        val charStream = CharStream.fromString("1 + 2 - 3 * 4")
-        val tokenStream = lexer.tokenStream(charStream)
+        val lexer = LexerFactory2()
+        val num by lexer { digit }
+        val op by lexer { X - "+-*/" }
+        lexer.skip { wrap or space }
 
         val parser = ParserFactory2()
         val exp by parser { X + num self { it + op + me } }
-        val astNode = exp.parse(tokenStream)
+        val astNode = exp.parse(lexer.tokenStream(source))
 
         println(astNode.toStringTree())
     }

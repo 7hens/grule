@@ -21,7 +21,7 @@ internal class LexerMatcherDslTest {
     @Test
     fun tokenStream() {
         val lexer = LexerFactory2()
-        val abc by lexer.m2 { X + "A" or X + "BC" }
+        val abc by lexer { X + "A" or X + "BC" }
         val tokenStream = lexer.tokenStream("ABCABCABC")
 
         println(abc)
@@ -34,7 +34,7 @@ internal class LexerMatcherDslTest {
     @Test
     fun selfRight() {
         val lexer = LexerFactory2()
-        val abc by lexer.m2 { X + "A" or X + "BC" self { it + "-" + me } }
+        val abc by lexer { X + "A" or X + "BC" self { it + "-" + me } }
         val tokenStream = lexer.tokenStream("A-BC-A-BC-A-BC")
 
         println(abc)
@@ -46,7 +46,7 @@ internal class LexerMatcherDslTest {
     @Test
     fun selfLeft() {
         val lexer = LexerFactory2()
-        val abc by lexer.m2 { X + "A" or X + "BC" self { me + "-" + it } }
+        val abc by lexer { X + "A" or X + "BC" self { me + "-" + it } }
         val tokenStream = lexer.tokenStream("A-BC-A-BC-A-BC")
 
         println(abc)

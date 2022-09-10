@@ -59,6 +59,8 @@ fun interface Matcher<T : Matcher.Status<T>> {
         fun next(): T
 
         fun self(isMe: Boolean): T
+
+        fun withMatcher(matcher: Matcher<T>): T
     }
 
     interface Self<T : Status<T>> {

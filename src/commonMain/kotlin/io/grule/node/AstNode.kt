@@ -40,7 +40,7 @@ open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream
     fun lastOrNull(rule: Any): AstNode? = all(rule).lastOrNull()
 
     fun add(child: AstNode) {
-        require(!isTerminal)
+        require(!isTerminal) { "Cannot add child to terminal node (${toStringLine()})" }
         children.add(child)
         groups.getOrPut(child.key) { mutableListOf() }
             .add(child)
