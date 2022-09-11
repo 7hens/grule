@@ -1,23 +1,16 @@
 package io.grule.matcher
 
-import io.grule.token.MatcherContext
+internal class MatcherShadow<T : Matcher.Status<T>> : Matcher<T> {
 
-class MatcherShadow : Matcher {
-    private val error = UnsupportedOperationException("shadow matcher")
-
-    override fun match(context: MatcherContext, offset: Int): Int {
-        throw error
+    override fun plus(matcher: Matcher<T>): Matcher<T> {
+        return matcher
     }
 
-    override fun plus(matcher: Matcher): Matcher {
-        return MatcherPlus(listOf(matcher))
+    override fun or(matcher: Matcher<T>): Matcher<T> {
+        return matcher
     }
 
-    override fun or(matcher: Matcher): Matcher {
-        return MatcherOr(listOf(matcher))
-    }
-
-    override fun toString(): String {
-        return "<X>"
+    override fun match(status: T): T {
+        throw MatcherException(status)
     }
 }

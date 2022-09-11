@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-import io.grule.matcher2.MatcherException
+import io.grule.matcher.MatcherException
 
 
 class LexerMatcherException(val status: LexerMatcherStatus, val rule: Any) :

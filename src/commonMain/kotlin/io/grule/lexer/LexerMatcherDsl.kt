@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-import io.grule.matcher2.Matcher
+import io.grule.matcher.Matcher
 
 object LexerMatcherDsl {
     val X: LexerMatcher = Matcher.shadow()

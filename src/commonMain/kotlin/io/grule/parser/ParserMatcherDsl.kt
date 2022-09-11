@@ -1,7 +1,7 @@
 package io.grule.parser
 
 import io.grule.lexer.Lexer
-import io.grule.matcher2.Matcher
+import io.grule.matcher.Matcher
 
 object ParserMatcherDsl {
     val X: ParserMatcher = Matcher.shadow()

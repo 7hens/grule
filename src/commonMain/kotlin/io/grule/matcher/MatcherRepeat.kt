@@ -1,20 +1,20 @@
 package io.grule.matcher
 
-import io.grule.token.MatcherContext
-
-internal class MatcherRepeat(val matcher: Matcher, val minTimes: Int, val maxTimes: Int) : Matcher {
+internal class MatcherRepeat<T : Matcher.Status<T>>(
+    val matcher: Matcher<T>, val minTimes: Int, val maxTimes: Int
+) : Matcher<T> {
 
     init {
         require(minTimes >= 0)
         require(maxTimes >= minTimes)
     }
 
-    override fun match(context: MatcherContext, offset: Int): Int {
+    override fun match(status: T): T {
+        var result = status
         var repeatTimes = 0
-        var result = 0
         while (true) {
             try {
-                result += matcher.match(context, offset + result)
+                result = result.apply(matcher)
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
                     return result
@@ -30,6 +30,6 @@ internal class MatcherRepeat(val matcher: Matcher, val minTimes: Int, val maxTim
 
     override fun toString(): String {
         val maxText = if (maxTimes != Int.MAX_VALUE) "$maxTimes" else ""
-        return "{$matcher |$minTimes,$maxText}"
+        return "{$matcher * |$minTimes,$maxText}"
     }
 }

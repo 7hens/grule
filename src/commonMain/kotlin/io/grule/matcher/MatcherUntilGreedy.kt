@@ -1,40 +1,38 @@
 package io.grule.matcher
 
-import io.grule.token.MatcherContext
-
 /**
  * greedy: a*b
  */
-internal class MatcherUntilGreedy(
-    val matcher: Matcher, val terminal: Matcher, val minTimes: Int, val maxTimes: Int
-) : Matcher {
+internal class MatcherUntilGreedy<T : Matcher.Status<T>>(
+    val matcher: Matcher<T>, val terminal: Matcher<T>,
+    val minTimes: Int, val maxTimes: Int
+) : Matcher<T> {
 
     init {
         require(minTimes >= 0)
         require(maxTimes >= minTimes)
     }
 
-    override fun match(context: MatcherContext, offset: Int): Int {
+    override fun match(status: T): T {
+        var result = status
+        var lastResult = status
         var repeatTimes = 0
-        var result = 0
-        var lastResult = 0
         while (true) {
             try {
                 lastResult = result
-                result += matcher.match(context, offset + result)
+                result = result.apply(matcher)
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
-                    throw MatcherException()
+                    throw MatcherException("limit out of range $maxTimes")
                 }
             } catch (matcherException: MatcherException) {
                 require(repeatTimes >= minTimes, matcherException)
-                try {
-                    result += terminal.match(context, offset + result)
+                return try {
+                    result.apply(terminal)
                 } catch (terminalError: MatcherException) {
                     require(repeatTimes - 1 >= minTimes, terminalError)
-                    result = lastResult + terminal.match(context, offset + lastResult)
+                    lastResult.apply(terminal)
                 }
-                return result
             }
         }
     }
@@ -46,7 +44,7 @@ internal class MatcherUntilGreedy(
     }
 
     override fun toString(): String {
-        val maxText = if (maxTimes == Int.MAX_VALUE) "$maxTimes" else ""
-        return "{$matcher|$minTimes,$maxText*$terminal}"
+        val maxText = if (maxTimes != Int.MAX_VALUE) "$maxTimes" else ""
+        return "{$matcher * $terminal |$minTimes,$maxText}"
     }
 }

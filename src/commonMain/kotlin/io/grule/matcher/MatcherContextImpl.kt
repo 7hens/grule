@@ -1,4 +1,4 @@
-package io.grule.matcher2
+package io.grule.matcher
 
 internal class MatcherContextImpl : Matcher.Context {
     private val map = mutableMapOf<String, Any?>()

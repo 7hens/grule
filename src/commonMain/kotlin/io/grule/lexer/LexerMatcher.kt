@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-import io.grule.matcher2.Matcher
+import io.grule.matcher.Matcher
 
 typealias LexerMatcher = Matcher<LexerMatcherStatus>
 

@@ -1,4 +1,4 @@
-package io.grule.matcher2
+package io.grule.matcher
 
 // exp self { me + it or it + me }
 internal class MatcherSelf<T : Matcher.Status<T>>(

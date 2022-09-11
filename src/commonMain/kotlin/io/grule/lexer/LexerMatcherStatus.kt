@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-import io.grule.matcher2.Matcher
+import io.grule.matcher.Matcher
 import io.grule.token.MatcherContext
 
 class LexerMatcherStatus private constructor(

@@ -1,21 +1,17 @@
 package io.grule.matcher
 
-import io.grule.token.MatcherContext
+internal class MatcherNot<T : Matcher.Status<T>>(private val matcher: Matcher<T>) : Matcher<T> {
 
-internal class MatcherNot(private val matcher: Matcher) : Matcher {
-
-    override fun match(context: MatcherContext, offset: Int): Int {
-        context.peek(offset)
-            ?: throw MatcherException(context, matcher, Matcher.EOF)
+    override fun match(status: T): T {
         try {
-            matcher.match(context, offset)
+            status.apply(matcher)
         } catch (e: MatcherException) {
-            return 1
+            return status.next()
         }
-        throw MatcherException()
+        throw MatcherException(status.toString())
     }
 
-    override fun not(): Matcher {
+    override fun not(): Matcher<T> {
         return matcher
     }
 

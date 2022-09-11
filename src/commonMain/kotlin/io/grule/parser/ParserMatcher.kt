@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.matcher2.Matcher
+import io.grule.matcher.Matcher
 
 typealias ParserMatcher = Matcher<ParserMatcherStatus>
 

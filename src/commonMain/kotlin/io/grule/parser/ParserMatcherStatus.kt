@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.matcher2.Matcher
+import io.grule.matcher.Matcher
 import io.grule.node.AstNode
 import io.grule.node.AstNodeChain
 import io.grule.token.Token

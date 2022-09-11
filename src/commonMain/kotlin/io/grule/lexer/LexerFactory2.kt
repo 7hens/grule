@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-import io.grule.matcher2.MatcherException
+import io.grule.matcher.MatcherException
 import kotlin.properties.ReadOnlyProperty
 
 class LexerFactory2 internal constructor() : Lexer {

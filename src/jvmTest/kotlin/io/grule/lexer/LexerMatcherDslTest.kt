@@ -1,9 +1,5 @@
-package io.grule.matcher2.lexer
+package io.grule.lexer
 
-import io.grule.lexer.Lexer
-import io.grule.lexer.LexerFactory2
-import io.grule.lexer.LexerMatcher
-import io.grule.lexer.LexerMatcherStatus
 import io.grule.token.CharStream
 import org.junit.Test
 import kotlin.test.assertEquals

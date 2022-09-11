@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.matcher2.MatcherException
+import io.grule.matcher.MatcherException
 
 
 class ParserMatcherException(val status: ParserMatcherStatus, val rule: Any) :
