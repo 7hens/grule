@@ -51,16 +51,38 @@ fun interface Matcher<T : Matcher.Status<T>> {
         return MatcherSelf(this, fn)
     }
 
-    interface Status<T : Status<T>> {
-        val lastMatcher: Matcher<T>?
+    companion object {
+        fun context(): Context {
+            return MatcherContextImpl()
+        }
+    }
 
+    interface Status<T : Status<T>> : ContextOwner {
         fun apply(matcher: Matcher<T>): T
 
         fun next(): T
 
         fun self(isMe: Boolean): T
 
-        fun withMatcher(matcher: Matcher<T>): T
+        val lastMatcher: Prop<Matcher<T>> get() = prop("lastMatcher")
+
+        val parentMatcher: Prop<Matcher<T>> get() = prop("parentMatcher")
+    }
+
+    interface Context {
+        fun <V> prop(key: String): Prop<V>
+    }
+
+    interface ContextOwner : Context {
+        val context: Context
+
+        override fun <V> prop(key: String): Prop<V> = context.prop(key)
+    }
+
+    interface Prop<T> {
+        val key: String
+        fun get(): T?
+        fun set(value: T)
     }
 
     interface Self<T : Status<T>> {

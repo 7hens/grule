@@ -15,7 +15,7 @@ internal abstract class LexerProperty2 : Lexer, ReadOnlyProperty<Any?, Lexer> {
     }
 
     override fun lex(context: LexerContext) {
-        val status = LexerMatcherStatus(context).apply(matcher)
+        val status = LexerMatcherStatus.from(context).apply(matcher)
         val matchNum = status.position
         context.emit(this, matchNum)
         context.moveNext(matchNum)

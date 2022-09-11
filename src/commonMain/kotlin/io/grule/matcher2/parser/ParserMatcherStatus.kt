@@ -6,13 +6,19 @@ import io.grule.matcher2.Matcher
 import io.grule.node.AstNode
 import io.grule.node.AstNodeChain
 
-open class ParserMatcherStatus(
-    val data: TokenStream,
+open class ParserMatcherStatus private constructor(
+    override val context: Matcher.Context,
     val position: Int,
-    val contextNodes: AstNodeChain,
-    val node: AstNode,
-    override val lastMatcher: Matcher<ParserMatcherStatus>? = null
+    val node: AstNode
 ) : Matcher.Status<ParserMatcherStatus> {
+
+    val tokenStreamProp: Matcher.Prop<TokenStream> get() = prop("tokenStream")
+
+    val data: TokenStream get() = tokenStreamProp.get()!!
+
+    val prevNode: Matcher.Prop<AstNode> get() = prop("prevNode")
+
+    val nodeChainProp: Matcher.Prop<AstNodeChain> get() = prop("nodeChain")
 
     fun peek(offset: Int = 0): Token {
         return data.peek(position + offset)
@@ -20,15 +26,11 @@ open class ParserMatcherStatus(
 
     fun next(childNode: AstNode): ParserMatcherStatus {
         node.add(childNode)
-        return ParserMatcherStatus(data, position + 1, contextNodes, node, lastMatcher)
+        return ParserMatcherStatus(context, position + 1, node)
     }
 
     fun withNode(node: AstNode): ParserMatcherStatus {
-        return ParserMatcherStatus(data, position, contextNodes, node, lastMatcher)
-    }
-
-    override fun withMatcher(matcher: Matcher<ParserMatcherStatus>): ParserMatcherStatus {
-        return ParserMatcherStatus(data, position, contextNodes, node, matcher)
+        return ParserMatcherStatus(context, position, node)
     }
 
     fun panic(rule: Any): Nothing {
@@ -36,27 +38,37 @@ open class ParserMatcherStatus(
     }
 
     override fun next(): ParserMatcherStatus {
-        return ParserMatcherStatus(data, position + 1, contextNodes, node, lastMatcher)
+        return ParserMatcherStatus(context, position + 1, node)
     }
 
     override fun self(isMe: Boolean): ParserMatcherStatus {
-        val parentNode = AstNode.of(contextNodes.me)
-        println("#self: nodeChain: $contextNodes")
+        val nodeChain = nodeChainProp.get()!!
+        val parentNode = AstNode.of(nodeChain.me)
+        println("#self: nodeChain: $nodeChain")
         if (isMe) {
-            parentNode.add(contextNodes.root)
+            parentNode.add(nodeChain.root)
             return withNode(parentNode)
         }
         return withNode(parentNode)
     }
 
     override fun apply(matcher: Matcher<ParserMatcherStatus>): ParserMatcherStatus {
-        val isolatedNode = AstNode.of(contextNodes.me)
+        val isolatedNode = AstNode.of(node)
         val result = matcher.match(withNode(isolatedNode))
         node.merge(isolatedNode)
-        return result.withNode(node).withMatcher(matcher)
+        lastMatcher.set(matcher)
+        return result.withNode(node)
     }
 
     override fun toString(): String {
-        return "${contextNodes}, $lastMatcher #$position"
+        return "$lastMatcher #$position"
+    }
+
+    companion object {
+        fun from(tokenStream: TokenStream, node: AstNode): ParserMatcherStatus {
+            val instance = ParserMatcherStatus(Matcher.context(), 0, node)
+            instance.tokenStreamProp.set(tokenStream)
+            return instance
+        }
     }
 }

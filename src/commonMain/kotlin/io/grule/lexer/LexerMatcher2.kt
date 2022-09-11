@@ -7,7 +7,7 @@ internal class LexerMatcher2(private val matcher: LexerMatcher, val emitsToken: 
     private var lexer: Lexer = this
 
     override fun lex(context: LexerContext) {
-        val status = LexerMatcherStatus(context).apply(matcher)
+        val status = LexerMatcherStatus.from(context).apply(matcher)
         val matchNum = status.position
         if (emitsToken) {
             context.emit(lexer, matchNum)

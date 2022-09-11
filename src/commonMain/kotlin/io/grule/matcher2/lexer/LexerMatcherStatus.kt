@@ -3,11 +3,14 @@ package io.grule.matcher2.lexer
 import io.grule.matcher.MatcherContext
 import io.grule.matcher2.Matcher
 
-class LexerMatcherStatus(
-    val data: MatcherContext,
+class LexerMatcherStatus private constructor(
+    override val context: Matcher.Context,
     val position: Int = 0,
-    override val lastMatcher: Matcher<LexerMatcherStatus>? = null
 ) : Matcher.Status<LexerMatcherStatus> {
+
+    private val matcherContext: Matcher.Prop<MatcherContext> get() = prop("matcherContext")
+
+    val data: MatcherContext get() = matcherContext.get()!!
 
     fun peek(offset: Int = 0): Char? {
         return data.peek(position + offset)
@@ -18,7 +21,7 @@ class LexerMatcherStatus(
     }
 
     fun next(count: Int): LexerMatcherStatus {
-        return LexerMatcherStatus(data, position + count, lastMatcher)
+        return LexerMatcherStatus(context, position + count)
     }
 
     fun panic(rule: Any): Nothing {
@@ -33,11 +36,17 @@ class LexerMatcherStatus(
         return this
     }
 
-    override fun withMatcher(matcher: Matcher<LexerMatcherStatus>): LexerMatcherStatus {
-        return LexerMatcherStatus(data, position, matcher)
+    override fun apply(matcher: Matcher<LexerMatcherStatus>): LexerMatcherStatus {
+        val result = matcher.match(this)
+        lastMatcher.set(matcher)
+        return result
     }
 
-    override fun apply(matcher: Matcher<LexerMatcherStatus>): LexerMatcherStatus {
-        return matcher.match(this).withMatcher(matcher)
+    companion object {
+        fun from(matcherContext: MatcherContext): LexerMatcherStatus {
+            val instance = LexerMatcherStatus(Matcher.context())
+            instance.matcherContext.set(matcherContext)
+            return instance
+        }
     }
 }

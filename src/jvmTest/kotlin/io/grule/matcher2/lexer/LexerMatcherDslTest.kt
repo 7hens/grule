@@ -13,7 +13,7 @@ internal class LexerMatcherDslTest {
 
     private fun LexerMatcher.match(text: String): LexerMatcherStatus {
         val charStream = CharStream.fromString(text)
-        val status = LexerMatcherStatus(charStream)
+        val status = LexerMatcherStatus.from(charStream)
         return status.apply(this)
     }
 
