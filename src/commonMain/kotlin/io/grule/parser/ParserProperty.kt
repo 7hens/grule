@@ -1,15 +1,12 @@
 package io.grule.parser
 
-import io.grule.token.TokenStream
 import io.grule.node.AstNode
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> {
+    abstract val matcher: ParserMatcher
     private lateinit var name: String
-    private val lazyParser by lazy { getParser() }
-
-    abstract fun getParser(): Parser
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         name = property.name
@@ -20,10 +17,28 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
         return name
     }
 
-    override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
-        val node = AstNode.of(this)
-        val result = lazyParser.parse(tokenStream, node, offset)
-        parentNode.add(node)
-        return result
+    override fun match(status: ParserMatcherStatus): ParserMatcherStatus {
+        val nodeChain = status.nodeChainProp.get()!!
+        val parentMatcher = status.parentMatcher.get()
+        val isolatedNode = AstNode.of(this)
+        try {
+            status.parentMatcher.set(this)
+            val result = status.withNode(isolatedNode).apply(matcher)
+            status.node.add(isolatedNode)
+            status.parentMatcher.set(parentMatcher)
+            return result.withNode(status.node)
+        } finally {
+            status.nodeChainProp.set(nodeChain)
+        }
+    }
+
+    override val key: Any get() = this
+
+    companion object {
+        operator fun invoke(fn: () -> ParserMatcher): ParserProperty {
+            return object : ParserProperty() {
+                override val matcher: ParserMatcher by lazy(fn)
+            }
+        }
     }
 }

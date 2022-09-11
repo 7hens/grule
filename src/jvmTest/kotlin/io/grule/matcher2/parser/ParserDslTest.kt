@@ -1,6 +1,7 @@
 package io.grule.matcher2.parser
 
 import io.grule.lexer.LexerFactory2
+import io.grule.parser.ParserFactory2
 import org.junit.Test
 
 /**

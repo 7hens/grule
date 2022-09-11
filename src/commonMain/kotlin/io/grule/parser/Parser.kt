@@ -4,87 +4,19 @@ import io.grule.lexer.Lexer
 import io.grule.node.AstNode
 import io.grule.node.AstNodeStream
 import io.grule.node.KeyProvider
-import io.grule.token.CharStream
 import io.grule.token.TokenStream
 
-fun interface Parser : AstNodeStream<Parser>, KeyProvider {
-
-    fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int
-
-    fun composable(): Parser {
-        return ParserComposable(this)
-    }
-
+interface Parser : ParserMatcher, KeyProvider, AstNodeStream<Parser> {
     fun parse(tokenStream: TokenStream): AstNode {
-        val mainParser = this + Lexer.EOF
-        val node = AstNode.of("<ROOT>")
-        mainParser.parse(tokenStream, node, 0)
-//        println(node.toStringTree())
-        return node.first(this)
-    }
-
-    fun parse(lexer: Lexer, charStream: CharStream): AstNode {
-        return parse(lexer.tokenStream(charStream))
-    }
-
-    fun parse(lexer: Lexer, text: String): AstNode {
-        return parse(lexer, CharStream.fromString(text))
-    }
-
-    override val key: Any get() = this
-
-    fun not(): Parser {
-        return ParserNot(this)
-    }
-
-    operator fun plus(parser: Parser): Parser {
-        return ParserPlus(mutableListOf(this, parser))
-    }
-
-    operator fun plus(lexer: Lexer): Parser {
-        return plus(ParserLexer(lexer))
-    }
-
-    operator fun plus(text: String): Parser {
-        return plus(ParserString(text))
-    }
-
-    infix fun or(parser: Parser): Parser {
-        return ParserOr(mutableListOf(this, parser))
-    }
-
-    fun repeat(minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
-        return ParserRepeat(this, minTimes, maxTimes)
-    }
-
-    fun join(separator: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
-        val min = maxOf(minTimes - 1, 0)
-        val max = maxOf(maxTimes - 1, 0)
-        return (this + separator).untilGreedy(this, min, max)
-    }
-
-    fun optional(): Parser {
-        return repeat(0, 1)
-    }
-
-    fun interlace(separator: Parser): Parser {
-        return separator.optional() + join(separator) + separator.optional()
-    }
-
-    fun untilGreedy(terminal: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
-        return ParserUntilGreedy(this, terminal, minTimes, maxTimes)
-    }
-
-    fun untilNonGreedy(terminal: Parser, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Parser {
-        return ParserUntilNonGreedy(this, terminal, minTimes, maxTimes)
-    }
-
-    fun test(): Parser {
-        return ParserTest(this)
+        val mainParser = ParserMatcherDsl.run { this@Parser + Lexer.EOF }
+        val node = AstNode.of(this)
+        val status = ParserMatcherStatus.from(tokenStream, node)
+        status.apply(mainParser)
+        return node.first()
     }
 
     override fun transform(transformation: AstNode.Transformation): Parser {
-        return ParserTransform(this, transformation)
+        return ParserMatcherTransform(this, transformation)
     }
 
     fun flat(): Parser {
@@ -92,10 +24,9 @@ fun interface Parser : AstNodeStream<Parser>, KeyProvider {
     }
 
     companion object {
-        val X: Parser get() = ParserShadow()
 
-        fun factory(): ParserFactory {
-            return ParserFactory()
+        fun factory(): ParserFactory2 {
+            return ParserFactory2()
         }
     }
 }

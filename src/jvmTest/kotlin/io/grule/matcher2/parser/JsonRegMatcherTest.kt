@@ -1,6 +1,7 @@
 package io.grule.matcher2.parser
 
 import io.grule.Grammar
+import io.grule.parser.Parser
 import org.junit.Test
 
 class JsonRegMatcherTest : Grammar() {

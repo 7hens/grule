@@ -1,7 +1,7 @@
 package io.grule.lexer
 
 import io.grule.Grammar
-import io.grule.matcher2.parser.Parser
+import io.grule.parser.Parser
 
 @Suppress("PropertyName", "MemberVisibilityCanBePrivate")
 class RegexGrammar : Grammar() {

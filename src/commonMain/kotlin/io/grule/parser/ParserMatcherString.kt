@@ -1,4 +1,4 @@
-package io.grule.matcher2.parser
+package io.grule.parser
 
 import io.grule.node.AstNode
 
