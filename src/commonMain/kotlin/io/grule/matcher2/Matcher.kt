@@ -57,6 +57,10 @@ fun interface Matcher<T : Matcher.Status<T>> {
         fun context(): Context {
             return MatcherContextImpl()
         }
+
+        fun <T : Status<T>> shadow(): Matcher<T> {
+            return MatcherShadow()
+        }
     }
 
     interface Status<T : Status<T>> : ContextOwner {

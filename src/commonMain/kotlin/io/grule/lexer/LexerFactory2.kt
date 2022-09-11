@@ -1,8 +1,6 @@
 package io.grule.lexer
 
 import io.grule.matcher2.MatcherException
-import io.grule.matcher2.lexer.LexerMatcher
-import io.grule.matcher2.lexer.LexerMatcherDsl
 import kotlin.properties.ReadOnlyProperty
 
 class LexerFactory2 internal constructor() : Lexer {
@@ -27,16 +25,12 @@ class LexerFactory2 internal constructor() : Lexer {
         }
     }
 
-    fun m2(fn: LexerMatcherDsl.() -> LexerMatcher): ReadOnlyProperty<Any?, Lexer> {
-        return LexerProperty2 { fn(LexerMatcherDsl) }.also { lexers.add(it) }
-    }
-
     operator fun invoke(fn: LexerMatcherDsl.() -> LexerMatcher): ReadOnlyProperty<Any?, Lexer> {
         return LexerProperty2 { fn(LexerMatcherDsl) }.also { lexers.add(it) }
     }
 
     operator fun invoke(): ReadOnlyProperty<Any?, Lexer> {
-        return LexerProperty { X }
+        return invoke { ANY.not() }
     }
 
     fun token(fn: LexerMatcherDsl.() -> LexerMatcher): Lexer {

@@ -1,20 +1,20 @@
-package io.grule.parser
+package io.grule.matcher2.parser
 
 import io.grule.Grammar
 import org.junit.Test
 
-class JsonTest : Grammar() {
-    val string by lexer { X + '"' + ANY.untilNonGreedy(X + '"') }
-    val number by lexer { X + DIGIT.repeat(1) + (X + "." + DIGIT.repeat(1)).optional() }
-    val bool by lexer { X + "true" or X + "false" }
-    val nil by lexer { X + "null" }
+class JsonRegMatcherTest : Grammar() {
+    val string by lexer { X / """(".*?")""" }
+    val number by lexer { X / "\\d+(\\.\\d+)?" }
+    val bool by lexer { X / "true|false" }
+    val nil by lexer { X / "null" }
 
     init {
         lexer.token { X - "{}[]:," }
-        lexer.skip { SPACE }
+        lexer.skip { SPACE or WRAP }
     }
 
-    val jObject: Parser by parser { X + jString or jNumber or jBool or jNil or jArray or jDict }
+    val jObject: Parser by parser { jString or jNumber or jBool or jNil or jArray or jDict }
     val jString by parser { X + string }
     val jNumber by parser { X + number }
     val jBool by parser { X + bool }
@@ -29,8 +29,7 @@ class JsonTest : Grammar() {
         println(source)
         println("-----------------")
 
-        println(jObject)
-        val astNode = jObject.parse(this, source)
+        val astNode = jObject.parse(tokenStream(source))
         println(astNode.toStringTree())
     }
 }

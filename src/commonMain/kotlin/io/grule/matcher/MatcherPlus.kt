@@ -1,5 +1,7 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 internal class MatcherPlus(private val matchers: List<Matcher>) : Matcher {
     init {
         require(matchers.isNotEmpty())

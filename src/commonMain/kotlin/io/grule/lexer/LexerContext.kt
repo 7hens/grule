@@ -1,6 +1,7 @@
 package io.grule.lexer
 
-import io.grule.matcher.CharStream
+import io.grule.token.CharStream
+import io.grule.token.Token
 
 interface LexerContext : CharStream {
     fun emit(token: Token)

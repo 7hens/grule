@@ -1,4 +1,4 @@
-package io.grule.matcher
+package io.grule.token
 
 fun interface CharReader {
     fun read(buffer: CharArray, offset: Int, length: Int): Int
@@ -45,7 +45,8 @@ fun interface CharReader {
     private class ByteArrayReader(
         private val data: CharArray,
         startIndex: Int,
-        private val endIndex: Int) : CharReader {
+        private val endIndex: Int
+    ) : CharReader {
         private var position = startIndex
 
         override fun read(buffer: CharArray, offset: Int, length: Int): Int {

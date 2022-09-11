@@ -1,4 +1,4 @@
-package io.grule.lexer
+package io.grule.token
 
 interface TokenStream {
 

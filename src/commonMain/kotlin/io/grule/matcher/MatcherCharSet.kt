@@ -1,5 +1,7 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 internal class MatcherCharSet(val set: Iterable<Char>) : Matcher {
     override fun match(context: MatcherContext, offset: Int): Int {
         val c = context.peek(offset)

@@ -1,5 +1,7 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 internal class MatcherRepeat(val matcher: Matcher, val minTimes: Int, val maxTimes: Int) : Matcher {
 
     init {

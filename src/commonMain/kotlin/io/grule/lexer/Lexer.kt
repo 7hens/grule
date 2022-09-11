@@ -1,10 +1,11 @@
 package io.grule.lexer
 
-import io.grule.matcher.CharStream
-import io.grule.matcher.Matcher
+import io.grule.token.CharStream
+import io.grule.token.TokenStream
+import io.grule.token.TokenStreamImpl
 
-@Suppress("PropertyName", "MemberVisibilityCanBePrivate")
-fun interface Lexer {
+@Suppress("MemberVisibilityCanBePrivate")
+interface Lexer {
     fun lex(context: LexerContext)
 
     fun tokenStream(charStream: CharStream): TokenStream {
@@ -18,16 +19,12 @@ fun interface Lexer {
     companion object {
         val EOF: Lexer = LexerEOF
 
-        fun of(matcher: Matcher, emitsToken: Boolean = true): Lexer {
-            return LexerMatcher(matcher, emitsToken)
-        }
-
         fun indent(newLine: Lexer, indent: Lexer, dedent: Lexer): Lexer {
             return LexerIndent(newLine, indent, dedent)
         }
 
-        fun factory(): LexerFactory {
-            return LexerFactory()
+        fun factory(): LexerFactory2 {
+            return LexerFactory2()
         }
     }
 }

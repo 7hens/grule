@@ -7,7 +7,15 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
     private val selfMatcher by lazy { fn(SelfImpl(ItMatcher(), MeMatcher())) }
 
     override fun match(status: T): T {
-        var result = status.apply(primary)
+        return try {
+            match(status, selfMatcher)
+        } catch (e: Throwable) {
+            match(status, primary)
+        }
+    }
+
+    private fun match(status: T, primitiveMatcher: Matcher<T>): T {
+        var result = status.apply(primitiveMatcher)
         while (true) {
             try {
                 result = result.apply(selfMatcher)

@@ -1,4 +1,4 @@
-package io.grule.matcher2.lexer
+package io.grule.lexer
 
 internal class LexerMatcherString(private val text: String) : LexerMatcher {
 

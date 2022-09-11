@@ -1,7 +1,7 @@
-package io.grule.matcher2.lexer
+package io.grule.lexer
 
-import io.grule.matcher.MatcherContext
 import io.grule.matcher2.Matcher
+import io.grule.token.MatcherContext
 
 class LexerMatcherStatus private constructor(
     override val context: Matcher.Context,
@@ -21,6 +21,9 @@ class LexerMatcherStatus private constructor(
     }
 
     fun next(count: Int): LexerMatcherStatus {
+        if (peek() == null) {
+            throw LexerMatcherException(this, "EOF")
+        }
         return LexerMatcherStatus(context, position + count)
     }
 

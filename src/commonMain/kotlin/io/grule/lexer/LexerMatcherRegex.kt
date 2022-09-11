@@ -1,18 +1,18 @@
-package io.grule.matcher
+package io.grule.lexer
 
 import io.grule.node.AstNode
 
 @Suppress("MoveVariableDeclarationIntoWhen")
-internal class MatcherRegex(private val pattern: String) : Matcher {
+internal class LexerMatcherRegex(private val pattern: String) : LexerMatcher {
     private val g = RegexGrammar()
     private val lexer = parseRegex(pattern)
 
-    override fun match(context: MatcherContext, offset: Int): Int {
-        return lexer.match(context, offset)
+    override fun match(status: LexerMatcherStatus): LexerMatcherStatus {
+        return lexer.match(status)
     }
 
-    private fun parseRegex(pattern: String): Matcher {
-        val astNode = g.regex.parse(g, pattern)
+    private fun parseRegex(pattern: String): LexerMatcher {
+        val astNode = g.regex.parse(g.tokenStream(pattern))
         return parseRegex(astNode)
     }
 
@@ -20,27 +20,28 @@ internal class MatcherRegex(private val pattern: String) : Matcher {
         return pattern
     }
 
-    private fun parseRegex(regex: AstNode): Matcher {
+    private fun parseRegex(regex: AstNode): LexerMatcher {
         return regex.all(g.branch).lexerOr { parseBranch(it) }
     }
 
-    private fun parseBranch(branch: AstNode): Matcher {
+    private fun parseBranch(branch: AstNode): LexerMatcher {
         return branch.all(g.piece).lexerPlus { parsePiece(it) }
     }
 
-    private fun parsePiece(piece: AstNode): Matcher {
+    private fun parsePiece(piece: AstNode): LexerMatcher {
         val firstAtom = parseAtom(piece.first(g.atom))
         return when {
             piece.contains(g.quantifier) -> {
                 val lastAtom = piece.lastOrNull(g.branch)?.let { parseBranch(it) }
                 parseQuantifier(piece.first(g.quantifier), firstAtom, lastAtom)
             }
+
             piece.contains("?") -> firstAtom.optional()
             else -> firstAtom
         }
     }
 
-    private fun parseQuantifier(quantifier: AstNode, matcher: Matcher, terminal: Matcher?): Matcher {
+    private fun parseQuantifier(quantifier: AstNode, matcher: LexerMatcher, terminal: LexerMatcher?): LexerMatcher {
         val isGreedy = !quantifier.contains("?")
         var minTimes = 0
         var maxTimes = Int.MAX_VALUE
@@ -52,6 +53,7 @@ internal class MatcherRegex(private val pattern: String) : Matcher {
                 minTimes = digits.first().text.toInt()
                 maxTimes = digits.last().text.toInt()
             }
+
             quantifier.contains("+") -> minTimes = 1
             else -> Unit
         }
@@ -62,7 +64,7 @@ internal class MatcherRegex(private val pattern: String) : Matcher {
         }
     }
 
-    private fun parseAtom(atom: AstNode): Matcher {
+    private fun parseAtom(atom: AstNode): LexerMatcher {
         atom.firstOrNull(g.char)?.let { return parseChar(it) }
         atom.firstOrNull(g.regex)?.let {
             val regex = parseRegex(it)
@@ -77,15 +79,15 @@ internal class MatcherRegex(private val pattern: String) : Matcher {
         }
     }
 
-    private fun parseChar(char: AstNode): Matcher {
-        char.firstOrNull(g.specChar)?.let { return MatcherString("" + parseSpecChar(it)) }
+    private fun parseChar(char: AstNode): LexerMatcher {
+        char.firstOrNull(g.specChar)?.let { return LexerMatcherString("" + parseSpecChar(it)) }
         return parseClassChar(char.first(g.CharClass))
     }
 
-    private fun parseItem(item: AstNode): Matcher {
+    private fun parseItem(item: AstNode): LexerMatcher {
         item.firstOrNull(g.char)?.let { return parseChar(it) }
         val singleChars = item.all(g.specChar).map { parseSpecChar(it) }
-        return MatcherCharSet(singleChars[0]..singleChars[1])
+        return LexerMatcherCharSet(singleChars[0]..singleChars[1])
     }
 
     private fun parseSpecChar(singleChar: AstNode): Char {
@@ -118,24 +120,24 @@ internal class MatcherRegex(private val pattern: String) : Matcher {
         }
     }
 
-    private fun parseClassChar(classChar: AstNode): Matcher {
+    private fun parseClassChar(classChar: AstNode): LexerMatcher {
         val text = classChar.text
         return when (text) {
-            "\\S" -> Matcher.SPACE.not()
-            "\\s" -> Matcher.SPACE
-            "\\D" -> Matcher.DIGIT.not()
-            "\\d" -> Matcher.DIGIT
-            "\\W" -> Matcher.WORD.not()
-            "\\w" -> Matcher.WORD
-            else -> Matcher.ANY
+            "\\S" -> LexerMatcherDsl.SPACE.not()
+            "\\s" -> LexerMatcherDsl.SPACE
+            "\\D" -> LexerMatcherDsl.DIGIT.not()
+            "\\d" -> LexerMatcherDsl.DIGIT
+            "\\W" -> LexerMatcherDsl.WORD.not()
+            "\\w" -> LexerMatcherDsl.WORD
+            else -> LexerMatcherDsl.ANY
         }
     }
 
-    private fun <T> List<T>.lexerOr(fn: (T) -> Matcher): Matcher {
-        return fold(Matcher.X) { acc, node -> acc.or(fn(node)) }
+    private fun <T> List<T>.lexerOr(fn: (T) -> LexerMatcher): LexerMatcher {
+        return fold(LexerMatcherDsl.X) { acc, node -> acc.or(fn(node)) }
     }
 
-    private fun <T> List<T>.lexerPlus(fn: (T) -> Matcher): Matcher {
-        return fold(Matcher.X) { acc, node -> acc.plus(fn(node)) }
+    private fun <T> List<T>.lexerPlus(fn: (T) -> LexerMatcher): LexerMatcher {
+        return fold(LexerMatcherDsl.X) { acc, node -> acc.plus(fn(node)) }
     }
 }

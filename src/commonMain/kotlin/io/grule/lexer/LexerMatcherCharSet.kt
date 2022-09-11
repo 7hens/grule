@@ -1,4 +1,4 @@
-package io.grule.matcher2.lexer
+package io.grule.lexer
 
 internal class LexerMatcherCharSet(val set: Iterable<Char>) : LexerMatcher {
 

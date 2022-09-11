@@ -1,5 +1,7 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 open class MatcherException : RuntimeException {
     constructor() : super()
 

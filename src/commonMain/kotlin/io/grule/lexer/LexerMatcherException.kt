@@ -1,4 +1,4 @@
-package io.grule.matcher2.lexer
+package io.grule.lexer
 
 import io.grule.matcher2.MatcherException
 

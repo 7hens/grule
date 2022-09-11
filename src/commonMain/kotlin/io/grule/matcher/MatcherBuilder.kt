@@ -1,5 +1,7 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 internal open class MatcherBuilder : Matcher {
     private var delegate: Matcher = MatcherShadow()
 

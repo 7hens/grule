@@ -8,8 +8,6 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
     abstract val matcher: ParserMatcher
     private lateinit var name: String
 
-    override val isNode: Boolean = true
-
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         name = property.name
         return this
@@ -26,7 +24,7 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
         try {
             status.parentMatcher.set(this)
             val result = status.withNode(isolatedNode).apply(matcher)
-            status.node.merge(isolatedNode)
+            status.node.add(isolatedNode)
             status.parentMatcher.set(parentMatcher)
             return result.withNode(status.node)
         } finally {

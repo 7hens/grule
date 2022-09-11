@@ -1,6 +1,6 @@
 package io.grule.node
 
-import io.grule.lexer.Token
+import io.grule.token.Token
 
 open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream<AstNode>, KeyProvider by keyProvider {
     private val groups = mutableMapOf<Any, MutableList<AstNode>>()
@@ -98,14 +98,18 @@ open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream
         return "$key ($text)"
     }
 
-    fun toStringLine(): String {
+    fun toStringLine(includesKey: Boolean = false): String {
+        val prefix = if (includesKey) "$key" else ""
         if (isTerminal) {
             return text.replace("(", "\\(")
                 .replace(")", "\\)")
                 .replace("\n", "\\n")
-                .let { "$key($it)" }
+                .let { if (includesKey) "$prefix($it)" else it }
         }
-        return children.joinToString(" ", "$key(", ")") { it.toStringLine() }
+        if (size == 1 && !includesKey) {
+            return first().toStringLine(includesKey)
+        }
+        return children.joinToString(" ", "$prefix(", ")") { it.toStringLine() }
     }
 
     fun toStringTree(style: TreeStyle = TreeStyle.SOLID): String {

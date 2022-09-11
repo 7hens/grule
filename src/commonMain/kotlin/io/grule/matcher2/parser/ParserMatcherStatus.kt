@@ -1,10 +1,10 @@
 package io.grule.matcher2.parser
 
-import io.grule.lexer.Token
-import io.grule.lexer.TokenStream
 import io.grule.matcher2.Matcher
 import io.grule.node.AstNode
 import io.grule.node.AstNodeChain
+import io.grule.token.Token
+import io.grule.token.TokenStream
 
 open class ParserMatcherStatus private constructor(
     override val context: Matcher.Context,

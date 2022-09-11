@@ -1,7 +1,8 @@
-package io.grule.lexer
+package io.grule.token
 
-import io.grule.matcher.CharStream
 import io.grule.matcher.Matcher
+import io.grule.lexer.Lexer
+import io.grule.lexer.LexerContextImpl
 
 internal class TokenStreamImpl(charStream: CharStream, val lexer: Lexer) : TokenStream {
     private val buffer = mutableListOf<Token>()

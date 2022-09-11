@@ -1,11 +1,11 @@
 package io.grule.parser
 
-import io.grule.lexer.TokenStream
+import io.grule.token.TokenStream
 import io.grule.node.AstNode
 
 internal open class ParserShadow : Parser {
     private val error = UnsupportedOperationException("shadow parser")
-    
+
     override fun parse(tokenStream: TokenStream, parentNode: AstNode, offset: Int): Int {
         throw error
     }

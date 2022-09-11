@@ -1,5 +1,7 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 class MatcherShadow : Matcher {
     private val error = UnsupportedOperationException("shadow matcher")
 

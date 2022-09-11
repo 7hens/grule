@@ -1,18 +1,25 @@
 package io.grule.matcher
 
+import io.grule.lexer.LexerMatcherRegex
+import io.grule.lexer.LexerMatcherStatus
+import io.grule.token.CharStream
 import org.junit.Test
 import kotlin.test.assertEquals
 
-internal class MatcherRegexTest {
+internal class LexerMatcherRegexTest {
     private val text = "0123456789ABCDEF{*你好\uD83D\uDE04\u0000\r\n\t "
 
     private fun match(pattern: String): Int {
+        println("---------------------------")
+        println(text)
+        println(pattern)
         val charStream = CharStream.fromString(text)
-        val lexerRegex = MatcherRegex(pattern)
-        val offset = lexerRegex.not().untilNonGreedy(lexerRegex.test()).match(charStream, 0)
-        return lexerRegex.match(charStream, offset)
+        val lexerRegex = LexerMatcherRegex(pattern)
+        val status = LexerMatcherStatus.from(charStream)
+        val result = lexerRegex.not().untilNonGreedy(lexerRegex.test()).match(status)
+        return lexerRegex.match(result).position - result.position
     }
-    
+
     @Test
     fun plainText() {
         assertEquals(1, match("0"))

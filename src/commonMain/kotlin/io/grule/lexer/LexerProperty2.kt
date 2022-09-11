@@ -1,7 +1,5 @@
 package io.grule.lexer
 
-import io.grule.matcher2.lexer.LexerMatcher
-import io.grule.matcher2.lexer.LexerMatcherStatus
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 

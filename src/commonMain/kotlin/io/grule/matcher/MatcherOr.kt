@@ -1,10 +1,12 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 internal class MatcherOr(private val matchers: List<Matcher>) : Matcher {
     init {
         require(matchers.isNotEmpty())
     }
-    
+
     override fun match(context: MatcherContext, offset: Int): Int {
         for (lexer in matchers) {
             try {

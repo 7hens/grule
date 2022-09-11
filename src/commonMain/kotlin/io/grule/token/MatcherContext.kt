@@ -1,4 +1,4 @@
-package io.grule.matcher
+package io.grule.token
 
 interface MatcherContext {
     val position: TextPosition

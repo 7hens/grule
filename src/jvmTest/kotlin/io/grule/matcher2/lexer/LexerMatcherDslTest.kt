@@ -2,7 +2,9 @@ package io.grule.matcher2.lexer
 
 import io.grule.lexer.Lexer
 import io.grule.lexer.LexerFactory2
-import io.grule.matcher.CharStream
+import io.grule.lexer.LexerMatcher
+import io.grule.lexer.LexerMatcherStatus
+import io.grule.token.CharStream
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -13,7 +15,7 @@ internal class LexerMatcherDslTest {
 
     private fun LexerMatcher.match(text: String): LexerMatcherStatus {
         val charStream = CharStream.fromString(text)
-        val status = LexerMatcherStatus.from(charStream)
+        val status = io.grule.lexer.LexerMatcherStatus.from(charStream)
         return status.apply(this)
     }
 

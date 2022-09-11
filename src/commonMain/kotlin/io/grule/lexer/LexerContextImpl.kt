@@ -1,6 +1,8 @@
 package io.grule.lexer
 
-import io.grule.matcher.CharStream
+import io.grule.token.CharStream
+import io.grule.token.Token
+import io.grule.token.TokenStream
 
 internal class LexerContextImpl(
     private val charStream: CharStream,

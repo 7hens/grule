@@ -1,10 +1,13 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 /**
  * greedy: a*b
  */
 internal class MatcherUntilGreedy(
-    val matcher: Matcher, val terminal: Matcher, val minTimes: Int, val maxTimes: Int) : Matcher {
+    val matcher: Matcher, val terminal: Matcher, val minTimes: Int, val maxTimes: Int
+) : Matcher {
 
     init {
         require(minTimes >= 0)

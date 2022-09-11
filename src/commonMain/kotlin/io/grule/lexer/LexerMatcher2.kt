@@ -1,8 +1,5 @@
 package io.grule.lexer
 
-import io.grule.matcher2.lexer.LexerMatcher
-import io.grule.matcher2.lexer.LexerMatcherStatus
-
 internal class LexerMatcher2(private val matcher: LexerMatcher, val emitsToken: Boolean) : Lexer {
     private var lexer: Lexer = this
 

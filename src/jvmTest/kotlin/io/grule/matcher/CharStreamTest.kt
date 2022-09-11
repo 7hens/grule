@@ -1,5 +1,6 @@
 package io.grule.matcher
 
+import io.grule.token.CharReader
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.test.assertNull

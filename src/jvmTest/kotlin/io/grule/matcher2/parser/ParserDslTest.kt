@@ -14,9 +14,9 @@ class ParserDslTest {
         println("X + num self { me + op + it }")
 
         val lexer = LexerFactory2()
-        val num by lexer { digit }
+        val num by lexer { DIGIT }
         val op by lexer { X - "+-*/" }
-        lexer.skip { wrap or space }
+        lexer.skip { WRAP or SPACE }
 
         val parser = ParserFactory2()
         val exp by parser { X + num self { me + op + it } }
@@ -32,9 +32,9 @@ class ParserDslTest {
         println("X + num self { it + op + me }")
 
         val lexer = LexerFactory2()
-        val num by lexer { digit }
+        val num by lexer { DIGIT }
         val op by lexer { X - "+-*/" }
-        lexer.skip { wrap or space }
+        lexer.skip { WRAP or SPACE }
 
         val parser = ParserFactory2()
         val exp by parser { X + num self { it + op + me } }

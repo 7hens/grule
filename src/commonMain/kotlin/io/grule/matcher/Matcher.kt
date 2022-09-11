@@ -1,5 +1,7 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 @Suppress("MemberVisibilityCanBePrivate")
 fun interface Matcher {
     fun match(context: MatcherContext, offset: Int): Int
@@ -33,10 +35,10 @@ fun interface Matcher {
     operator fun minus(text: String): Matcher {
         return minus(text.toList())
     }
-
-    operator fun div(text: String): Matcher {
-        return plus(MatcherRegex(text))
-    }
+//
+//    operator fun div(text: String): Matcher {
+//        return plus(LexerMatcherRegex(text))
+//    }
 
     infix fun or(matcher: Matcher): Matcher {
         return MatcherOr(mutableListOf(this, matcher))

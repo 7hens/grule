@@ -1,7 +1,7 @@
 package io.grule.parser
 
 import io.grule.lexer.Lexer
-import io.grule.lexer.TokenStream
+import io.grule.token.TokenStream
 import io.grule.node.AstNode
 
 internal class ParserLexer(private val lexer: Lexer) : Parser {

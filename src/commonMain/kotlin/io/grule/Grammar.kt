@@ -2,7 +2,7 @@ package io.grule
 
 import io.grule.lexer.Lexer
 import io.grule.lexer.LexerContext
-import io.grule.parser.Parser
+import io.grule.matcher2.parser.Parser
 
 @Suppress("MemberVisibilityCanBePrivate")
 open class Grammar : Lexer {

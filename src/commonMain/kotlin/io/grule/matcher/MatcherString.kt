@@ -1,5 +1,7 @@
 package io.grule.matcher
 
+import io.grule.token.MatcherContext
+
 internal class MatcherString(private val text: String) : Matcher {
 
     override fun match(context: MatcherContext, offset: Int): Int {

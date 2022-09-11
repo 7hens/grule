@@ -1,11 +1,11 @@
 package io.grule.parser
 
 import io.grule.lexer.Lexer
-import io.grule.lexer.TokenStream
-import io.grule.matcher.CharStream
 import io.grule.node.AstNode
 import io.grule.node.AstNodeStream
 import io.grule.node.KeyProvider
+import io.grule.token.CharStream
+import io.grule.token.TokenStream
 
 fun interface Parser : AstNodeStream<Parser>, KeyProvider {
 

@@ -1,4 +1,4 @@
-package io.grule.matcher
+package io.grule.token
 
 internal class CharStreamImpl(private val reader: CharReader, private val chunkSize: Int) : CharStream {
     private var buffer = CharArray(chunkSize)
@@ -22,7 +22,7 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
         require(isReadOver)
         return null
     }
-    
+
     override fun moveNext(count: Int) {
         require(count >= 0)
         if (count == 0) {

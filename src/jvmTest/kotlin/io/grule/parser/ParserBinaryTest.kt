@@ -11,7 +11,7 @@ class ParserBinaryTest {
             val exp by parser { (X + Num + Op).untilNonGreedy(X + "x") }
             val main by parser { X + exp.binary(Op) }
 
-            val astNode = main.parse(this, source)
+            val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
             println(astNode.toStringLine())
@@ -27,7 +27,7 @@ class ParserBinaryTest {
             val exp by parser { (X + Op).repeat(1).join(X + Num) }
             val main by parser { X + exp.binary(Op) }
 
-            val astNode = main.parse(this, source)
+            val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
             println(astNode.toStringLine())
@@ -43,7 +43,7 @@ class ParserBinaryTest {
             val exp by parser { (X + (X + Num).repeat(1) + Op).untilNonGreedy(X + "x") }
             val main by parser { X + exp.binary(Op) }
 
-            val astNode = main.parse(this, source)
+            val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
             println(astNode.toStringLine())
@@ -55,16 +55,16 @@ class ParserBinaryTest {
     @Test
     fun tree() {
         RepeatGrammar().apply {
-            val source = "1 + 2 * 3 + 4"
-            val exp by parser { X + Num or it + "+" + it or it + "*" + it }
-            val main by parser { X + exp.binary { it.firstToken!!.text in listOf("*", "+") } }
+            val source = "1 + 2 * 3 * 4 + 5"
+            val exp by parser { X + Num self { me + "*" + it } self { me + "+" + it } }
+            val main by parser { X + exp }
 
-            val astNode = main.parse(this, source)
+            val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
             println(astNode.toStringLine())
             println(astNode.toStringTree())
-            assertEquals("((1 + (2 * 3)) + 4)", astNode.toStringLine())
+            assertEquals("((1 + ((2 * 3) * 4)) + 5)", astNode.toStringLine())
         }
     }
 }
