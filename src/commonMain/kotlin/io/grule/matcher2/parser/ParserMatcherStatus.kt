@@ -16,9 +16,11 @@ open class ParserMatcherStatus private constructor(
 
     val data: TokenStream get() = tokenStreamProp.get()!!
 
-    val prevNode: Matcher.Prop<AstNode> get() = prop("prevNode")
+    val lastNode: Matcher.Prop<AstNode> get() = prop("lastNode")
 
     val nodeChainProp: Matcher.Prop<AstNodeChain> get() = prop("nodeChain")
+
+    val lastNodeChainProp: Matcher.Prop<AstNodeChain> get() = prop("lastNodeChain")
 
     fun peek(offset: Int = 0): Token {
         return data.peek(position + offset)
@@ -41,33 +43,42 @@ open class ParserMatcherStatus private constructor(
         return ParserMatcherStatus(context, position + 1, node)
     }
 
-    override fun self(isMe: Boolean): ParserMatcherStatus {
-        val nodeChain = nodeChainProp.get()!!
-        val parentNode = AstNode.of(nodeChain.me)
-        println("#self: nodeChain: $nodeChain")
-        if (isMe) {
-            parentNode.add(nodeChain.root)
-            return withNode(parentNode)
-        }
-        return withNode(parentNode)
+    override fun self(): ParserMatcherStatus {
+        val lastNode = this.lastNode.get()!!
+        val parentNode = AstNode.of(node)
+        parentNode.merge(lastNode)
+        lastNode.clear()
+        lastNode.add(parentNode)
+        return this
     }
 
     override fun apply(matcher: Matcher<ParserMatcherStatus>): ParserMatcherStatus {
         val isolatedNode = AstNode.of(node)
+        lastNodeChainProp.set { it.addChild(isolatedNode) }
         val result = matcher.match(withNode(isolatedNode))
-        node.merge(isolatedNode)
+        if (matcher.isNode) {
+            if (isolatedNode.isNotEmpty()) {
+                node.add(isolatedNode)
+            }
+        } else {
+            node.merge(isolatedNode)
+        }
         lastMatcher.set(matcher)
+        lastNode.set(node)
+        lastNodeChainProp.set { it.pop() }
         return result.withNode(node)
     }
 
     override fun toString(): String {
-        return "$lastMatcher #$position"
+        return "${lastMatcher.get()} #$position"
     }
 
     companion object {
         fun from(tokenStream: TokenStream, node: AstNode): ParserMatcherStatus {
             val instance = ParserMatcherStatus(Matcher.context(), 0, node)
             instance.tokenStreamProp.set(tokenStream)
+            instance.nodeChainProp.set(AstNodeChain.of(node))
+            instance.lastNodeChainProp.set(AstNodeChain.of(node))
             return instance
         }
     }

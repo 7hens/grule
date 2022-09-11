@@ -8,10 +8,6 @@ import org.junit.Test
  */
 class ParserDslTest {
     @Test
-    fun jso() {
-    }
-
-    @Test
     fun selfLeft() {
         val source = "1 + 2 - 3 * 4"
         println(source)

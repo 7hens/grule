@@ -26,10 +26,12 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
     interface Interface
 
     inner class ItMatcher : Matcher<T>, Interface {
+        override val isNode: Boolean = true
+
         override fun match(status: T): T {
-            val isSelf = status.lastMatcher === primary
-            println("\$it: isSelf: $isSelf, status: $status")
-            return if (isSelf) status.self(false) else status.apply(primary)
+            val lastMatcher = status.lastMatcher.get()!!
+            val isSelf = lastMatcher === primary
+            return if (isSelf) status.self() else status.apply(primary)
         }
 
         override fun toString(): String {
@@ -38,11 +40,13 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
     }
 
     inner class MeMatcher : Matcher<T>, Interface {
+        override val isNode: Boolean = true
+
         override fun match(status: T): T {
             val self = this@MatcherSelf
-            val isSelf = status.lastMatcher === primary || status.lastMatcher === selfMatcher
-            println("\$me: isSelf: $isSelf, status: $status")
-            return if (isSelf) status.self(true) else status.apply(self)
+            val lastMatcher = status.lastMatcher.get()!!
+            val isSelf = lastMatcher === primary || lastMatcher === selfMatcher
+            return if (isSelf) status.self() else status.apply(self)
         }
 
         override fun toString(): String {

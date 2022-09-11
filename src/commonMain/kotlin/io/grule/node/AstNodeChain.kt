@@ -11,21 +11,8 @@ class AstNodeChain private constructor(private val chain: List<AstNode>) {
         return AstNodeChain(chain.subList(0, chain.size - count))
     }
 
-    fun add(child: AstNode): AstNodeChain {
-        me.add(child)
+    fun addChild(child: AstNode): AstNodeChain {
         return AstNodeChain(chain + child)
-    }
-
-    fun addHead(child: AstNode): AstNodeChain {
-        me.addHead(child)
-        return AstNodeChain(chain + child)
-    }
-
-    fun addParent(newNode: AstNode): AstNodeChain {
-        newNode.add(me)
-        parent.remove(me)
-        parent.add(newNode)
-        return AstNodeChain(pop().chain + newNode)
     }
 
     fun toFirstChild(): AstNodeChain {

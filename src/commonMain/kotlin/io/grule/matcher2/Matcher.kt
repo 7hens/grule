@@ -3,6 +3,8 @@ package io.grule.matcher2
 @Suppress("MemberVisibilityCanBePrivate")
 fun interface Matcher<T : Matcher.Status<T>> {
 
+    val isNode: Boolean get() = false
+
     fun match(status: T): T
 
     fun not(): Matcher<T> {
@@ -62,7 +64,7 @@ fun interface Matcher<T : Matcher.Status<T>> {
 
         fun next(): T
 
-        fun self(isMe: Boolean): T
+        fun self(): T
 
         val lastMatcher: Prop<Matcher<T>> get() = prop("lastMatcher")
 
@@ -82,7 +84,10 @@ fun interface Matcher<T : Matcher.Status<T>> {
     interface Prop<T> {
         val key: String
         fun get(): T?
-        fun set(value: T)
+        fun set(value: T?)
+        fun set(fn: (T) -> T) {
+            set(fn(get()!!))
+        }
     }
 
     interface Self<T : Status<T>> {

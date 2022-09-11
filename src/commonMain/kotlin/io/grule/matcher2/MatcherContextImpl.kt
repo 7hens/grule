@@ -1,7 +1,7 @@
 package io.grule.matcher2
 
 internal class MatcherContextImpl : Matcher.Context {
-    private val map = mutableMapOf<String, Any>()
+    private val map = mutableMapOf<String, Any?>()
 
     override fun <V> prop(key: String): Matcher.Prop<V> {
         return PropImpl(key)
@@ -14,8 +14,8 @@ internal class MatcherContextImpl : Matcher.Context {
             return map[key] as? V
         }
 
-        override fun set(value: V) {
-            map[key] = value as Any
+        override fun set(value: V?) {
+            map[key] = value as? Any
         }
     }
 }
