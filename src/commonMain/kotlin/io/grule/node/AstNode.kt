@@ -100,12 +100,12 @@ open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream
 
     fun toStringLine(): String {
         if (isTerminal) {
-            return text.replace("(", "\\(").replace(")", "\\)").replace("\n", "\\n")
+            return text.replace("(", "\\(")
+                .replace(")", "\\)")
+                .replace("\n", "\\n")
+                .let { "$key($it)" }
         }
-        if (size == 1) {
-            return first().toStringLine()
-        }
-        return children.joinToString(" ", "(", ")") { it.toStringLine() }
+        return children.joinToString(" ", "$key(", ")") { it.toStringLine() }
     }
 
     fun toStringTree(style: TreeStyle = TreeStyle.SOLID): String {

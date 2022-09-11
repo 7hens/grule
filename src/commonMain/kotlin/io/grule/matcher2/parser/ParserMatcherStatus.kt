@@ -58,7 +58,12 @@ open class ParserMatcherStatus private constructor(
         val result = matcher.match(withNode(isolatedNode))
         if (matcher.isNode) {
             if (isolatedNode.isNotEmpty()) {
-                node.add(isolatedNode)
+                val firstChild = isolatedNode.first()
+                if (isolatedNode.size == 1 && firstChild.key == node.key) {
+                    node.add(firstChild)
+                } else {
+                    node.add(isolatedNode)
+                }
             }
         } else {
             node.merge(isolatedNode)
