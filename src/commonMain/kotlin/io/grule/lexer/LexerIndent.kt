@@ -8,11 +8,11 @@ internal class LexerIndent(val newLine: Lexer, val indent: Lexer, val dedent: Le
 
     override fun lex(context: LexerContext) {
         try {
-            LexerMatcherDsl.EOF.match(context)
+            LexerDsl.EOF.match(context)
             onIndent(context, -1)
         } catch (_: MatcherException) {
-            val offset = LexerMatcherDsl.WRAP.match(context)
-            val spaceNum = LexerMatcherDsl.run { (X + "    ").repeat() }.match(context, offset)
+            val offset = LexerDsl.WRAP.match(context)
+            val spaceNum = LexerDsl { (X + "    ").repeat() }.match(context, offset)
             onIndent(context, spaceNum)
             context.moveNext(offset + spaceNum)
         }

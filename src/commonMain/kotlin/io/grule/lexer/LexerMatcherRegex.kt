@@ -123,21 +123,21 @@ internal class LexerMatcherRegex(private val pattern: String) : LexerMatcher {
     private fun parseClassChar(classChar: AstNode): LexerMatcher {
         val text = classChar.text
         return when (text) {
-            "\\S" -> LexerMatcherDsl.SPACE.not()
-            "\\s" -> LexerMatcherDsl.SPACE
-            "\\D" -> LexerMatcherDsl.DIGIT.not()
-            "\\d" -> LexerMatcherDsl.DIGIT
-            "\\W" -> LexerMatcherDsl.WORD.not()
-            "\\w" -> LexerMatcherDsl.WORD
-            else -> LexerMatcherDsl.ANY
+            "\\S" -> LexerDsl.SPACE.not()
+            "\\s" -> LexerDsl.SPACE
+            "\\D" -> LexerDsl.DIGIT.not()
+            "\\d" -> LexerDsl.DIGIT
+            "\\W" -> LexerDsl.WORD.not()
+            "\\w" -> LexerDsl.WORD
+            else -> LexerDsl.ANY
         }
     }
 
     private fun <T> List<T>.lexerOr(fn: (T) -> LexerMatcher): LexerMatcher {
-        return fold(LexerMatcherDsl.X) { acc, node -> acc.or(fn(node)) }
+        return fold(LexerDsl.X) { acc, node -> acc.or(fn(node)) }
     }
 
     private fun <T> List<T>.lexerPlus(fn: (T) -> LexerMatcher): LexerMatcher {
-        return fold(LexerMatcherDsl.X) { acc, node -> acc.plus(fn(node)) }
+        return fold(LexerDsl.X) { acc, node -> acc.plus(fn(node)) }
     }
 }

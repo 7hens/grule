@@ -8,7 +8,7 @@ import io.grule.token.TokenStream
 
 interface Parser : ParserMatcher, KeyProvider, AstNodeStream<Parser> {
     fun parse(tokenStream: TokenStream): AstNode {
-        val mainParser = ParserMatcherDsl.run { this@Parser + Lexer.EOF }
+        val mainParser = ParserDsl.run { this@Parser + Lexer.EOF }
         val node = AstNode.of(this)
         val status = ParserMatcherStatus.from(tokenStream, node)
         status.apply(mainParser)
@@ -25,8 +25,8 @@ interface Parser : ParserMatcher, KeyProvider, AstNodeStream<Parser> {
 
     companion object {
 
-        fun factory(): ParserFactory2 {
-            return ParserFactory2()
+        fun factory(): ParserFactory {
+            return ParserFactory()
         }
     }
 }

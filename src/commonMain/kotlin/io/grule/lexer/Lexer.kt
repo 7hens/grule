@@ -23,8 +23,8 @@ interface Lexer {
             return LexerIndent(newLine, indent, dedent)
         }
 
-        fun factory(): LexerFactory2 {
-            return LexerFactory2()
+        fun factory(): LexerFactory {
+            return LexerFactory()
         }
     }
 }

@@ -1,8 +1,8 @@
 package io.grule.matcher
 
 import io.grule.lexer.Lexer
+import io.grule.lexer.LexerDsl
 import io.grule.lexer.LexerMatcher
-import io.grule.lexer.LexerMatcherDsl
 import io.grule.lexer.LexerMatcherStatus
 import io.grule.token.CharReader
 import io.grule.token.CharStream
@@ -19,7 +19,7 @@ class MatcherSimpleTest {
             val status = LexerMatcherStatus.from(charStream).next(offset)
             return status.apply(this).position - offset
         }
-        LexerMatcherDsl.run {
+        LexerDsl {
             assertEquals(4, (X + "0123").match(charStream, 0))
             assertEquals(10, (DIGIT).repeat().match(charStream, 0))
             assertEquals(1, (WORD).match(charStream, 0))

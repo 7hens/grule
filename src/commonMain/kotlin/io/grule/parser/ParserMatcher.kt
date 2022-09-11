@@ -4,4 +4,4 @@ import io.grule.matcher.Matcher
 
 typealias ParserMatcher = Matcher<ParserMatcherStatus>
 
-typealias ParserSupplier = ParserMatcherDsl.() -> ParserMatcher
+typealias ParserSupplier = ParserDsl.() -> ParserMatcher

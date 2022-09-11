@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-internal class LexerMatcher2(private val matcher: LexerMatcher, val emitsToken: Boolean) : Lexer {
+internal class LexerImpl(private val matcher: LexerMatcher, val emitsToken: Boolean) : Lexer {
     private var lexer: Lexer = this
 
     override fun lex(context: LexerContext) {

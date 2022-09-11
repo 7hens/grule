@@ -2,7 +2,7 @@ package io.grule.lexer
 
 import io.grule.matcher.Matcher
 
-object LexerMatcherDsl {
+object LexerDsl {
     val X: LexerMatcher = Matcher.shadow()
     val ANY = X + LexerMatcherCharSet.ANY
     val EOF = X + LexerMatcherEOF
@@ -23,7 +23,7 @@ object LexerMatcherDsl {
     val SPACE = X - "\t\r\n\u0085\u000B\u000C "
     val WRAP = X + "\r\n" or X - "\r\n"
 
-    operator fun <T> invoke(fn: LexerMatcherDsl.() -> T): T = run(fn)
+    operator fun <T> invoke(fn: LexerDsl.() -> T): T = run(fn)
 
     operator fun LexerMatcher.plus(text: String): LexerMatcher {
         return plus(LexerMatcherString(text))

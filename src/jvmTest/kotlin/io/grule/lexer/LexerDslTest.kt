@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 /**
  * LexerMatcherKtTest.
  */
-internal class LexerMatcherDslTest {
+internal class LexerDslTest {
 
     private fun LexerMatcher.match(text: String): LexerMatcherStatus {
         val charStream = CharStream.fromString(text)
@@ -17,7 +17,7 @@ internal class LexerMatcherDslTest {
 
     @Test
     fun tokenStream() {
-        val lexer = LexerFactory2()
+        val lexer = LexerFactory()
         val abc by lexer { X + "A" or X + "BC" }
         val tokenStream = lexer.tokenStream("ABCABCABC")
 
@@ -30,7 +30,7 @@ internal class LexerMatcherDslTest {
 
     @Test
     fun selfRight() {
-        val lexer = LexerFactory2()
+        val lexer = LexerFactory()
         val abc by lexer { X + "A" or X + "BC" self { it + "-" + me } }
         val tokenStream = lexer.tokenStream("A-BC-A-BC-A-BC")
 
@@ -42,7 +42,7 @@ internal class LexerMatcherDslTest {
 
     @Test
     fun selfLeft() {
-        val lexer = LexerFactory2()
+        val lexer = LexerFactory()
         val abc by lexer { X + "A" or X + "BC" self { me + "-" + it } }
         val tokenStream = lexer.tokenStream("A-BC-A-BC-A-BC")
 
