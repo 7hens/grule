@@ -5,7 +5,6 @@ import org.junit.Test
 
 /**
  * ParserDslTest.
- * @author huangzhenzi
  */
 class ParserDslTest {
     @Test

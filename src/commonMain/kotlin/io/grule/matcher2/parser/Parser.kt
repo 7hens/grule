@@ -10,7 +10,7 @@ interface Parser : ParserMatcher, KeyProvider {
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = this + Lexer.EOF
         val node = AstNode.of(this)
-        val status = ParserMatcherStatus(tokenStream, 0, AstNodeChain.of(node))
+        val status = ParserMatcherStatus(tokenStream, 0, AstNodeChain.of(node), node)
         val newStatus = status.apply(mainParser)
         return node.first()
     }

@@ -8,7 +8,6 @@ import kotlin.test.assertEquals
 
 /**
  * LexerMatcherKtTest.
- * @author huangzhenzi
  */
 internal class LexerMatcherDslTest {
 
