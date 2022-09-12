@@ -36,13 +36,13 @@ open class ParserMatcherStatus private constructor(
         return ParserMatcherStatus(context, position, node)
     }
 
-    fun panic(rule: Any): Nothing {
+    override fun panic(rule: Any): Nothing {
         throw ParserMatcherException(this, rule)
     }
 
     override fun next(): ParserMatcherStatus {
         if (data.peek() == Lexer.EOF) {
-            throw ParserMatcherException(this, "EOF")
+            panic(Lexer.EOF)
         }
         return ParserMatcherStatus(context, position + 1, node)
     }

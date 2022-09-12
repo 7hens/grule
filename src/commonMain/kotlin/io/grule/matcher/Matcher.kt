@@ -70,6 +70,8 @@ fun interface Matcher<T : Matcher.Status<T>> {
 
         fun self(): T
 
+        fun panic(rule: Any): Nothing
+
         val lastMatcher: Prop<Matcher<T>> get() = prop("lastMatcher")
 
         val parentMatcher: Prop<Matcher<T>> get() = prop("parentMatcher")

@@ -25,12 +25,12 @@ class LexerMatcherStatus private constructor(
             return this
         }
         if (peek() == null) {
-            throw LexerMatcherException(this, "EOF")
+            panic(Lexer.EOF)
         }
         return LexerMatcherStatus(context, position + count)
     }
 
-    fun panic(rule: Any): Nothing {
+    override fun panic(rule: Any): Nothing {
         throw LexerMatcherException(this, rule)
     }
 

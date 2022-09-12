@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-object LexerEOF : Lexer {
+internal object LexerEOF : Lexer {
     override fun lex(context: LexerContext) {
         LexerDsl.EOF.match(context)
         context.emit(this)
