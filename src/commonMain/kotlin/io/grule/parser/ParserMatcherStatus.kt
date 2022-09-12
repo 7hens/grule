@@ -1,5 +1,6 @@
 package io.grule.parser
 
+import io.grule.lexer.Lexer
 import io.grule.matcher.Matcher
 import io.grule.node.AstNode
 import io.grule.node.AstNodeChain
@@ -40,6 +41,9 @@ open class ParserMatcherStatus private constructor(
     }
 
     override fun next(): ParserMatcherStatus {
+        if (data.peek() == Lexer.EOF) {
+            throw ParserMatcherException(this, "EOF")
+        }
         return ParserMatcherStatus(context, position + 1, node)
     }
 

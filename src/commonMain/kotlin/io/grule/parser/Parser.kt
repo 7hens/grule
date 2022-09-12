@@ -6,7 +6,7 @@ import io.grule.node.AstNodeStream
 import io.grule.node.KeyProvider
 import io.grule.token.TokenStream
 
-interface Parser : ParserMatcher, KeyProvider, AstNodeStream<Parser> {
+interface Parser : ParserMatcher, ParserMatcherExt, KeyProvider, AstNodeStream<Parser> {
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = ParserDsl.run { this@Parser + Lexer.EOF }
         val node = AstNode.of(this)

@@ -5,7 +5,7 @@ import io.grule.token.TokenStream
 import io.grule.token.TokenStreamImpl
 
 @Suppress("MemberVisibilityCanBePrivate")
-interface Lexer {
+interface Lexer : LexerMatcherExt {
     fun lex(context: LexerContext)
 
     fun tokenStream(charStream: CharStream): TokenStream {

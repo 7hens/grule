@@ -2,7 +2,7 @@ package io.grule.token
 
 interface TokenStream {
 
-    fun peek(offset: Int): Token
+    fun peek(offset: Int = 0): Token
 
     fun all(): List<Token>
 

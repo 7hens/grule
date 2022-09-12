@@ -21,7 +21,7 @@ class LexerFactory internal constructor() : Lexer {
                 context.emitEOF()
                 return
             }
-            throw MatcherException(context)
+            throw MatcherException("Unmatched item with [ " + lexers.joinToString(" | ") + " ] at ${context.position}")
         }
     }
 

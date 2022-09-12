@@ -1,7 +1,6 @@
 package io.grule.lexer
 
 import io.grule.matcher.MatcherException
-import io.grule.token.CharStream
 
 internal class LexerIndent(val newLine: Lexer, val indent: Lexer, val dedent: Lexer) : Lexer {
     private var prevTabCount = 0
@@ -12,7 +11,7 @@ internal class LexerIndent(val newLine: Lexer, val indent: Lexer, val dedent: Le
             onIndent(context, -1)
         } catch (_: MatcherException) {
             val offset = LexerDsl.WRAP.match(context)
-            val spaceNum = LexerDsl { (X + "    ").repeat() }.match(context, offset)
+            val spaceNum = (LexerDsl.X + "    ").repeat().match(context, offset)
             onIndent(context, spaceNum)
             context.moveNext(offset + spaceNum)
         }
@@ -36,11 +35,6 @@ internal class LexerIndent(val newLine: Lexer, val indent: Lexer, val dedent: Le
             }
         }
         prevTabCount = tabCount
-    }
-
-    fun LexerMatcher.match(charStream: CharStream, offset: Int = 0): Int {
-        val status = LexerMatcherStatus.from(charStream).next(offset)
-        return status.apply(this).position - offset
     }
 
     override fun toString(): String {

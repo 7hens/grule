@@ -21,6 +21,9 @@ class LexerMatcherStatus private constructor(
     }
 
     fun next(count: Int): LexerMatcherStatus {
+        if (count == 0) {
+            return this
+        }
         if (peek() == null) {
             throw LexerMatcherException(this, "EOF")
         }
@@ -46,8 +49,8 @@ class LexerMatcherStatus private constructor(
     }
 
     companion object {
-        fun from(charStream: CharStream): LexerMatcherStatus {
-            val instance = LexerMatcherStatus(Matcher.context())
+        fun from(charStream: CharStream, position: Int = 0): LexerMatcherStatus {
+            val instance = LexerMatcherStatus(Matcher.context(), position)
             instance.charStreamProp.set(charStream)
             return instance
         }

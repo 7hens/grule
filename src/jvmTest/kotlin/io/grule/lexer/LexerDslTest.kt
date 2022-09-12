@@ -11,7 +11,7 @@ internal class LexerDslTest {
 
     private fun LexerMatcher.match(text: String): LexerMatcherStatus {
         val charStream = CharStream.fromString(text)
-        val status = io.grule.lexer.LexerMatcherStatus.from(charStream)
+        val status = LexerMatcherStatus.from(charStream)
         return status.apply(this)
     }
 
@@ -50,5 +50,27 @@ internal class LexerDslTest {
         println(tokenStream.all().joinToString("\n"))
         assertEquals(abc, tokenStream.peek(0).lexer)
         assertEquals(Lexer.EOF, tokenStream.peek(1).lexer)
+    }
+
+    @Test
+    fun indent() {
+        val lexer = LexerFactory()
+        val indent by lexer { X + "\\{" }
+        val dedent by lexer { X + "\\}" }
+        val newLine by lexer { X }
+        val a by lexer { X + "A" }
+        lexer.add(Lexer.indent(newLine, indent, dedent))
+        val source =
+            """
+            |A
+            |    A
+            |A
+            """.trimMargin()
+        val tokenStream = lexer.tokenStream(source)
+        println(source)
+        a.toString()
+        println(tokenStream.all().joinToString("\n"))
+        assertEquals(a, tokenStream.peek(0).lexer)
+        assertEquals(Lexer.EOF, tokenStream.peek(6).lexer)
     }
 }
