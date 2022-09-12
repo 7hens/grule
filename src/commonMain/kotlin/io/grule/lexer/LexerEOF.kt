@@ -2,7 +2,7 @@ package io.grule.lexer
 
 object LexerEOF : Lexer {
     override fun lex(context: LexerContext) {
-        LexerDsl.EOF.match(LexerMatcherStatus.from(context))
+        LexerDsl.EOF.match(context)
         context.emit(this)
     }
 
