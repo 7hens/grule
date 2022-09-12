@@ -1,6 +1,12 @@
 package io.grule.token
 
-interface CharStream : MatcherContext {
+interface CharStream {
+
+    val position: TextPosition
+
+    fun peek(offset: Int): Char?
+
+    fun getText(start: Int, end: Int): String
 
     fun moveNext(count: Int)
 

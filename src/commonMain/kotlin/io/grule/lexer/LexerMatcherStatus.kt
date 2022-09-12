@@ -1,16 +1,16 @@
 package io.grule.lexer
 
 import io.grule.matcher.Matcher
-import io.grule.token.MatcherContext
+import io.grule.token.CharStream
 
 class LexerMatcherStatus private constructor(
     override val context: Matcher.Context,
     val position: Int = 0,
 ) : Matcher.Status<LexerMatcherStatus> {
 
-    private val matcherContext: Matcher.Prop<MatcherContext> get() = prop("matcherContext")
+    private val charStreamProp: Matcher.Prop<CharStream> get() = prop("charStream")
 
-    val data: MatcherContext get() = matcherContext.get()!!
+    val data: CharStream get() = charStreamProp.get()!!
 
     fun peek(offset: Int = 0): Char? {
         return data.peek(position + offset)
@@ -46,9 +46,9 @@ class LexerMatcherStatus private constructor(
     }
 
     companion object {
-        fun from(matcherContext: MatcherContext): LexerMatcherStatus {
+        fun from(charStream: CharStream): LexerMatcherStatus {
             val instance = LexerMatcherStatus(Matcher.context())
-            instance.matcherContext.set(matcherContext)
+            instance.charStreamProp.set(charStream)
             return instance
         }
     }
