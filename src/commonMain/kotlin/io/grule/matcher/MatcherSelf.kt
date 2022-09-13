@@ -9,7 +9,7 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
     override fun match(status: T): T {
         return try {
             match(status, selfMatcher)
-        } catch (e: Throwable) {
+        } catch (e: MatcherException) {
             match(status, primary)
         }
     }
@@ -61,8 +61,8 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
             if (!isHead) {
                 return status.apply(this@MatcherSelf)
             }
-            val lastMatcher = status.lastMatcher.get()!!
-            val isSelf = lastMatcher === primary || lastMatcher === selfMatcher || lastMatcher is MeMatcher
+            val lastMatcher = status.lastMatcher.get() ?: status.panic(this)
+            val isSelf = lastMatcher.let { it === primary || it === selfMatcher || it is MeMatcher }
             return if (isSelf) status.self() else status.panic(this)
         }
 

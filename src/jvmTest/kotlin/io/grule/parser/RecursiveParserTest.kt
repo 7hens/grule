@@ -37,10 +37,11 @@ class RecursiveParserTest {
             val source = "0 1 2 3"
             val exp by parser { X + Num self { it + me } }
 
-            val astNode = exp.parse(tokenStream(source))
             println("================")
             println(source)
             println("================")
+
+            val astNode = exp.parse(tokenStream(source))
             println(astNode.toStringLine())
             println(astNode.toStringTree())
             assertEquals("(0 (1 (2 3)))", astNode.toStringLine())
@@ -50,10 +51,11 @@ class RecursiveParserTest {
             val source = "0 1 2 3"
             val exp by parser { X + Num self { me + it } }
 
-            val astNode = exp.parse(tokenStream(source))
             println("================")
             println(source)
             println("================")
+
+            val astNode = exp.parse(tokenStream(source))
             println(astNode.toStringLine())
             println(astNode.toStringTree())
             assertEquals("(((0 1) 2) 3)", astNode.toStringLine())
@@ -63,13 +65,15 @@ class RecursiveParserTest {
     @Test
     fun recursiveSelfSelf() {
         RepeatGrammar().apply {
-            val source = "0 + 1 2 3"
+            val source = "0 + 1 - 2 3"
             val exp by parser { X + Num self { me + Op } self { me + Num } }
 
-            val astNode = exp.parse(tokenStream(source))
             println("================")
             println(source)
+            println("X + Num self { me + Op } self { me + Num }")
             println("================")
+
+            val astNode = exp.parse(tokenStream(source))
             println(astNode.toStringLine())
             println(astNode.toStringTree())
             assertEquals("((((0 +) 1) 2) 3)", astNode.toStringLine())
@@ -82,10 +86,11 @@ class RecursiveParserTest {
             val source = "0 + 1 2 - 3"
             val exp by parser { X + Num self { me + it or me + Op } }
 
-            val astNode = exp.parse(tokenStream(source))
             println("================")
             println(source)
             println("================")
+
+            val astNode = exp.parse(tokenStream(source))
             println(astNode.toStringLine())
             println(astNode.toStringTree())
             assertEquals("(((((0 +) 1) 2) -) 3)", astNode.toStringLine())
