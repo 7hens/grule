@@ -99,7 +99,7 @@ class ParserTest {
     }
 
     private class RepeatGrammar : Grammar() {
-        val Num by lexer { DIGIT.repeat(1) }
+        val Num by lexer { DIGIT.more() }
         val Op by lexer { X - "+-*/%><=!" }
 
         init {
@@ -112,7 +112,7 @@ class ParserTest {
     fun untilGreedy() {
         RepeatGrammar().apply {
             val source = "0 * 1 + 2 * 3 - 4 / x"
-            val exp by parser { (X + Num + Op).untilGreedy(X + "x") }
+            val exp by parser { (X + Num + Op).till(X + "x") }
 
             val astNode = exp.parse(tokenStream(source))
             println(astNode.toStringTree())
@@ -123,7 +123,7 @@ class ParserTest {
     fun untilReluctant() {
         RepeatGrammar().apply {
             val source = "0 * 1 + 2 * 3 - 4 / x"
-            val exp by parser { (X + Num + Op).untilNonGreedy(X + "x") }
+            val exp by parser { (X + Num + Op).until(X + "x") }
 
             val astNode = exp.parse(tokenStream(source))
             println(astNode.toStringTree())

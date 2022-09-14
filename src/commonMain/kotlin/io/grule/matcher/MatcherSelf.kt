@@ -40,7 +40,7 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
             if (!isHead) {
                 return status.apply(primary)
             }
-            val lastMatcher = status.lastMatcher.get()!!
+            val lastMatcher = status.lastMatcher.get() ?: status.panic(this)
             val isSelf = lastMatcher === primary
             return if (isSelf) status.self() else status.panic(this)
         }

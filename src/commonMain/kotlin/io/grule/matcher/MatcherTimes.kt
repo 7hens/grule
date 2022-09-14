@@ -1,6 +1,6 @@
 package io.grule.matcher
 
-internal class MatcherRepeat<T : Matcher.Status<T>>(
+internal class MatcherTimes<T : Matcher.Status<T>>(
     val matcher: Matcher<T>, val minTimes: Int, val maxTimes: Int
 ) : Matcher<T> {
 
@@ -31,5 +31,23 @@ internal class MatcherRepeat<T : Matcher.Status<T>>(
     override fun toString(): String {
         val maxText = if (maxTimes != Int.MAX_VALUE) "$maxTimes" else ""
         return "{$matcher * |$minTimes,$maxText}"
+    }
+
+    override fun join(separator: Matcher<T>): Matcher<T> {
+        if (maxTimes == 1) {
+            return this
+        }
+        val min = maxOf(0, minTimes - 1)
+        val max = maxOf(0, maxTimes - 1)
+        val composedMatcher = (matcher + separator).times(min, max).till(matcher)
+        return if (minTimes > 0) composedMatcher else composedMatcher.optional()
+    }
+
+    override fun until(terminal: Matcher<T>): Matcher<T> {
+        return MatcherUntilNonGreedy(matcher, terminal, minTimes, maxTimes)
+    }
+
+    override fun till(terminal: Matcher<T>): Matcher<T> {
+        return MatcherUntilGreedy(matcher, terminal, minTimes, maxTimes)
     }
 }

@@ -8,7 +8,7 @@ class ParserBinaryTest {
     fun simple() {
         RepeatGrammar().apply {
             val source = "0 * 1 + 2 * 3 - 4 / x"
-            val exp by parser { (X + Num + Op).untilNonGreedy(X + "x") }
+            val exp by parser { (X + Num + Op).until(X + "x") }
             val main by parser { X + exp.binary(Op) }
 
             val astNode = main.parse(tokenStream(source))
@@ -24,7 +24,7 @@ class ParserBinaryTest {
     fun missingElements() {
         RepeatGrammar().apply {
             val source = "* 1 + 2 * 3 * - 4 /"
-            val exp by parser { (X + Op).repeat(1).join(X + Num) }
+            val exp by parser { (X + Op).more().repeat().join(X + Num) }
             val main by parser { X + exp.binary(Op) }
 
             val astNode = main.parse(tokenStream(source))
@@ -40,7 +40,7 @@ class ParserBinaryTest {
     fun missingOperators() {
         RepeatGrammar().apply {
             val source = "1 2 3 + 2 * 3 - 4 / x"
-            val exp by parser { (X + (X + Num).repeat(1) + Op).untilNonGreedy(X + "x") }
+            val exp by parser { (X + (X + Num).more() + Op).until(X + "x") }
             val main by parser { X + exp.binary(Op) }
 
             val astNode = main.parse(tokenStream(source))

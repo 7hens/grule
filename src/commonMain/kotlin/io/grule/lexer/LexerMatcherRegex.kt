@@ -58,9 +58,9 @@ internal class LexerMatcherRegex(private val pattern: String) : LexerMatcher {
             else -> Unit
         }
         return when {
-            terminal == null -> matcher.repeat(minTimes, maxTimes)
-            isGreedy -> matcher.untilGreedy(terminal, minTimes, maxTimes)
-            else -> matcher.untilNonGreedy(terminal, minTimes, maxTimes)
+            terminal == null -> matcher.times(minTimes, maxTimes)
+            isGreedy -> matcher.times(minTimes, maxTimes).till(terminal)
+            else -> matcher.times(minTimes, maxTimes).until(terminal)
         }
     }
 

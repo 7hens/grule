@@ -11,30 +11,52 @@ fun interface Matcher<T : Matcher.Status<T>> {
         return MatcherNot(this)
     }
 
-    fun repeat(minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Matcher<T> {
-        return MatcherRepeat(this, minTimes, maxTimes)
+    fun times(minTimes: Int, maxTimes: Int): Matcher<T> {
+        return MatcherTimes(this, minTimes, maxTimes)
     }
 
-    fun join(separator: Matcher<T>, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Matcher<T> {
-        val min = maxOf(minTimes - 1, 0)
-        val max = maxOf(maxTimes - 1, 0)
-        return (this + separator).untilGreedy(this, min, max)
+    operator fun times(times: IntRange): Matcher<T> {
+        return times(times.first, times.last)
+    }
+
+    operator fun times(times: Int): Matcher<T> {
+        return times(times, times)
+    }
+
+    infix fun repeat(maxTimes: Int): Matcher<T> {
+        return times(0, maxTimes)
+    }
+
+    fun repeat(): Matcher<T> {
+        return repeat(Int.MAX_VALUE)
+    }
+
+    infix fun more(minTimes: Int): Matcher<T> {
+        return times(minTimes, Int.MAX_VALUE)
+    }
+
+    fun more(): Matcher<T> {
+        return more(1)
     }
 
     fun optional(): Matcher<T> {
-        return repeat(0, 1)
+        return times(0, 1)
     }
 
-    fun interlace(separator: Matcher<T>): Matcher<T> {
+    infix fun join(separator: Matcher<T>): Matcher<T> {
+        return repeat().join(separator)
+    }
+
+    infix fun interlace(separator: Matcher<T>): Matcher<T> {
         return separator.optional() + join(separator) + separator.optional()
     }
 
-    fun untilGreedy(terminal: Matcher<T>, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Matcher<T> {
-        return MatcherUntilGreedy(this, terminal, minTimes, maxTimes)
+    infix fun until(terminal: Matcher<T>): Matcher<T> {
+        return repeat().until(terminal)
     }
 
-    fun untilNonGreedy(terminal: Matcher<T>, minTimes: Int = 0, maxTimes: Int = Int.MAX_VALUE): Matcher<T> {
-        return MatcherUntilNonGreedy(this, terminal, minTimes, maxTimes)
+    infix fun till(terminal: Matcher<T>): Matcher<T> {
+        return repeat().till(terminal)
     }
 
     fun test(): Matcher<T> {

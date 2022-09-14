@@ -16,7 +16,7 @@ internal class LexerMatcherRegexTest {
         val charStream = CharStream.fromString(text)
         val lexerRegex = LexerMatcherRegex(pattern)
         val status = LexerMatcherStatus.from(charStream)
-        val result = status.apply(lexerRegex.not().untilNonGreedy(lexerRegex.test()))
+        val result = status.apply(lexerRegex.not().until(lexerRegex.test()))
         return result.apply(lexerRegex).position - result.position
     }
 

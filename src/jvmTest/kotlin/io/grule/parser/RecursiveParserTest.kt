@@ -65,7 +65,7 @@ class RecursiveParserTest {
     @Test
     fun recursiveSelfSelf() {
         RepeatGrammar().apply {
-            val source = "0 + 1 - 2 3"
+            val source = "0 + 1 2 3"
             val exp by parser { X + Num self { me + Op } self { me + Num } }
 
             println("================")
