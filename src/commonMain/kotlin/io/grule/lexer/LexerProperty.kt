@@ -20,7 +20,7 @@ internal abstract class LexerProperty : Lexer, ReadOnlyProperty<Any?, Lexer> {
     }
 
     override fun toString(): String {
-        return name ?: super.toString()
+        return name ?: matcher.toString()
     }
 
     companion object {

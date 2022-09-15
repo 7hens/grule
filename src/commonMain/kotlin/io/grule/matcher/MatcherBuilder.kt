@@ -1,7 +1,8 @@
 package io.grule.matcher
 
-internal class MatcherBuilder<T : Matcher.Status<T>> : Matcher<T> {
-    private var delegate: Matcher<T> = MatcherShadow()
+internal open class MatcherBuilder<T : Matcher.Status<T>>(initMatcher: Matcher<T> = MatcherShadow()) : Matcher<T> {
+    var delegate: Matcher<T> = initMatcher
+        private set
 
     override fun match(status: T): T {
         return delegate.match(status)

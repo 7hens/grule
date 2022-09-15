@@ -4,11 +4,11 @@ package io.grule.matcher
 internal class MatcherSelf<T : Matcher.Status<T>>(
     val primary: Matcher<T>, fn: Matcher.Self<T>.() -> Matcher<T>
 ) : Matcher<T> {
-    private val selfMatcher by lazy { fn(SelfImpl(ItMatcher(), MeMatcher())) }
+    private val repeatable by lazy { fn(SelfImpl(ItMatcher(), MeMatcher())) }
 
     override fun match(status: T): T {
         return try {
-            match(status, selfMatcher)
+            match(status, repeatable)
         } catch (e: MatcherException) {
             match(status, primary)
         }
@@ -18,7 +18,7 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
         var result = status.apply(primitiveMatcher)
         while (true) {
             try {
-                result = result.apply(selfMatcher)
+                result = result.apply(repeatable)
             } catch (_: MatcherException) {
                 return result
             }
@@ -26,7 +26,7 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
     }
 
     override fun toString(): String {
-        return "($primary): $selfMatcher"
+        return "($primary): $repeatable"
     }
 
     class SelfImpl<T : Matcher.Status<T>>(override val it: Matcher<T>, override val me: Matcher<T>) : Matcher.Self<T>
@@ -62,7 +62,7 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
                 return status.apply(this@MatcherSelf)
             }
             val lastMatcher = status.lastMatcher.get() ?: status.panic(this)
-            val isSelf = lastMatcher.let { it === primary || it === selfMatcher || it is MeMatcher }
+            val isSelf = lastMatcher.let { it === primary || it === repeatable || it is MeMatcher }
             return if (isSelf) status.self() else status.panic(this)
         }
 
