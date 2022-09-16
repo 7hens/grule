@@ -1,52 +1,78 @@
 package io.grule.matcher
 
+import io.grule.node.KeyProvider
+
 // exp self { me + it or it + me }
 internal class MatcherSelf<T : Matcher.Status<T>>(
-    val primary: Matcher<T>, fn: Matcher.Self<T>.() -> Matcher<T>
+    primary: Matcher<T>, fn: Matcher.Self<T>.() -> Matcher<T>
 ) : Matcher<T> {
-    private val repeatable by lazy { fn(SelfImpl(ItMatcher(), MeMatcher())) }
 
-    override fun match(status: T): T {
-        return try {
-            match(status, repeatable)
-        } catch (e: MatcherException) {
-            match(status, primary)
-        }
+    private var nonRepeatable = recursive()
+    private var repeatable = recursive()
+
+    init {
+        nonRepeatable or primary.key(this)
+        resolve(fn)
     }
 
-    private fun match(status: T, primitiveMatcher: Matcher<T>): T {
-        var result = status.apply(primitiveMatcher)
-        while (true) {
-            try {
-                result = result.apply(repeatable)
-            } catch (_: MatcherException) {
-                return result
-            }
-        }
+    private val selfMatcher by lazy { build() }
+
+    override fun match(status: T): T {
+        println("selfMatcher: $selfMatcher")
+        return status.apply(selfMatcher)
     }
 
     override fun toString(): String {
-        return "($primary): $repeatable"
+        return "($nonRepeatable): $repeatable"
+    }
+
+    override fun self(fn: Matcher.Self<T>.() -> Matcher<T>): Matcher<T> {
+        resolve(fn)
+        return this
+    }
+
+    private fun resolve(fn: Matcher.Self<T>.() -> Matcher<T>) {
+        val result = fn(SelfImpl(ItMatcher(build(), false), MeMatcher(nonRepeatable, false)))
+        if (result is KeyMatcher<T> && result.key == this) {
+            repeatable or result
+        } else {
+            nonRepeatable or result
+        }
+    }
+
+    fun build(): Matcher<T> {
+        if (repeatable.isEmpty) {
+            return recursive() + nonRepeatable
+        }
+        return recursive() + nonRepeatable.key(this) + repeatable.repeat().key(this) or repeatable.more().key(this)
+    }
+
+    fun recursive(): Matcher<T> {
+        return Matcher.shadow<T>().key(this)
+    }
+
+    fun isRecursive(matcher: Matcher<*>): Boolean {
+        return KeyProvider.keyOf(matcher) === this
     }
 
     class SelfImpl<T : Matcher.Status<T>>(override val it: Matcher<T>, override val me: Matcher<T>) : Matcher.Self<T>
 
     interface Interface
 
-    inner class ItMatcher(val isHead: Boolean = false) : Matcher<T>, Interface {
+    inner class ItMatcher(val delegate: Matcher<T>, val isHead: Boolean) : Matcher<T>, Interface {
         override val isNode: Boolean = true
 
         override fun match(status: T): T {
             if (!isHead) {
-                return status.apply(primary)
+                return status.apply(delegate)
             }
             val lastMatcher = status.lastMatcher.get() ?: status.panic(this)
-            val isSelf = lastMatcher === primary
+            val isSelf = isRecursive(lastMatcher)
             return if (isSelf) status.self() else status.panic(this)
         }
 
         override fun plus(matcher: Matcher<T>): Matcher<T> {
-            return MatcherPlus(ItMatcher(true), matcher)
+            return MatcherPlus(ItMatcher(delegate, true), matcher)
         }
 
         override fun toString(): String {
@@ -54,20 +80,21 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
         }
     }
 
-    inner class MeMatcher(val isHead: Boolean = false) : Matcher<T>, Interface {
+    inner class MeMatcher(val delegate: Matcher<T>, val isHead: Boolean) : Matcher<T>, Interface {
         override val isNode: Boolean = true
 
         override fun match(status: T): T {
             if (!isHead) {
-                return status.apply(this@MatcherSelf)
+                return status.apply(delegate)
             }
             val lastMatcher = status.lastMatcher.get() ?: status.panic(this)
-            val isSelf = lastMatcher.let { it === primary || it === repeatable || it is MeMatcher }
+            val isSelf = isRecursive(lastMatcher)
+            println("lastMatcher: $lastMatcher")
             return if (isSelf) status.self() else status.panic(this)
         }
 
         override fun plus(matcher: Matcher<T>): Matcher<T> {
-            return MatcherPlus(MeMatcher(true), matcher)
+            return recursive() + MatcherPlus(MeMatcher(delegate, true), matcher)
         }
 
         override fun toString(): String {

@@ -33,6 +33,6 @@ internal class MatcherUntilNonGreedy<T : Matcher.Status<T>>(
 
     override fun toString(): String {
         val maxText = if (maxTimes == Int.MAX_VALUE) "$maxTimes" else ""
-        return "{$matcher *? $terminal |$minTimes,$maxText}"
+        return "($matcher *|$minTimes,$maxText|? $terminal)"
     }
 }

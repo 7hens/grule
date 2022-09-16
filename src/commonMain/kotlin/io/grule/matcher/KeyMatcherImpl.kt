@@ -1,8 +1,18 @@
 package io.grule.matcher
 
-internal open class MatcherBuilder<T : Matcher.Status<T>>(initMatcher: Matcher<T> = MatcherShadow()) : Matcher<T> {
-    var delegate: Matcher<T> = initMatcher
-        private set
+import io.grule.node.KeyProvider
+
+internal class KeyMatcherImpl<T : Matcher.Status<T>>(
+    keyProvider: KeyProvider,
+    initMatcher: Matcher<T> = MatcherShadow()
+) : KeyMatcher<T>, KeyProvider by keyProvider {
+
+    override val isEmpty: Boolean get() = delegate.isEmpty
+
+    var delegate: Matcher<T> = initMatcher.wrap()
+        private set(value) {
+            field = value.wrap()
+        }
 
     override fun match(status: T): T {
         return delegate.match(status)
@@ -56,5 +66,19 @@ internal open class MatcherBuilder<T : Matcher.Status<T>>(initMatcher: Matcher<T
     override fun self(fn: Matcher.Self<T>.() -> Matcher<T>): Matcher<T> {
         delegate = delegate.self(fn)
         return this
+    }
+
+    private fun <T : Matcher.Status<T>> Matcher<T>.wrap(): Matcher<T> {
+        return if (this is KeyMatcherImpl<T>) Wrapper(this) else this
+    }
+
+    override fun toString(): String {
+        return "$delegate"
+    }
+
+    private class Wrapper<T : Matcher.Status<T>>(val matcher: KeyMatcher<T>) : KeyMatcher<T> by matcher {
+        override fun toString(): String {
+            return matcher.toString()
+        }
     }
 }

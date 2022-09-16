@@ -1,11 +1,19 @@
 package io.grule.matcher
 
+import io.grule.node.KeyProvider
+
 @Suppress("MemberVisibilityCanBePrivate")
 fun interface Matcher<T : Matcher.Status<T>> {
 
     val isNode: Boolean get() = false
 
+    val isEmpty: Boolean get() = false
+
     fun match(status: T): T
+
+    fun key(key: Any): KeyMatcher<T> {
+        return KeyMatcherImpl(KeyProvider(key), this)
+    }
 
     fun not(): Matcher<T> {
         return MatcherNot(this)

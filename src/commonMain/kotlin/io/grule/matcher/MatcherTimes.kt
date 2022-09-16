@@ -30,7 +30,7 @@ internal class MatcherTimes<T : Matcher.Status<T>>(
 
     override fun toString(): String {
         val maxText = if (maxTimes != Int.MAX_VALUE) "$maxTimes" else ""
-        return "{$matcher * |$minTimes,$maxText}"
+        return "($matcher *|$minTimes,$maxText)"
     }
 
     override fun join(separator: Matcher<T>): Matcher<T> {
