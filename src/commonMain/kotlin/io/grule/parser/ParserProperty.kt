@@ -6,7 +6,7 @@ import kotlin.reflect.KProperty
 
 internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> {
     abstract val matcher: ParserMatcher
-    private lateinit var name: String
+    private var name: String? = null
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         name = property.name
@@ -14,7 +14,7 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
     }
 
     override fun toString(): String {
-        return name
+        return name ?: matcher.toString()
     }
 
     override fun match(status: ParserMatcherStatus): ParserMatcherStatus {
