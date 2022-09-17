@@ -87,14 +87,14 @@ fun interface Matcher<T : Status<T>> {
         if (terminal is ReversedMatcher<T>) {
             return terminal.reverser.until(this)
         }
-        return MatcherUntilNonGreedy(this, terminal, 0, Int.MAX_VALUE)
+        return MatcherUntilNonGreedy(this, 0, Int.MAX_VALUE, terminal)
     }
 
     infix fun till(terminal: Matcher<T>): Matcher<T> {
         if (terminal is ReversedMatcher<T>) {
             return terminal.reverser.until(this)
         }
-        return MatcherUntilGreedy(this, terminal, 0, Int.MAX_VALUE)
+        return MatcherUntilGreedy(this, 0, Int.MAX_VALUE, terminal)
     }
 
     infix fun self(fn: Self<T>.() -> Matcher<T>): Matcher<T> {

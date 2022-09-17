@@ -4,8 +4,10 @@ package io.grule.matcher
  * non-greedy: a*?b
  */
 internal class MatcherUntilNonGreedy<T : Status<T>>(
-    val matcher: Matcher<T>, val terminal: Matcher<T>,
-    val minTimes: Int, val maxTimes: Int
+    val matcher: Matcher<T>,
+    val minTimes: Int,
+    val maxTimes: Int,
+    val terminal: Matcher<T>,
 ) : Matcher<T> {
 
     init {
@@ -15,20 +17,17 @@ internal class MatcherUntilNonGreedy<T : Status<T>>(
 
     override fun match(status: T): T {
         var result = status
-        var repeatTimes = 0
-        while (true) {
-            if (repeatTimes >= minTimes) {
-                try {
-                    return result.apply(terminal)
-                } catch (_: MatcherException) {
-                }
+        for (i in 0 until minTimes) {
+            result = result.apply(matcher)
+        }
+        for (i in minTimes..maxTimes) {
+            try {
+                return result.apply(terminal)
+            } catch (_: MatcherException) {
             }
             result = result.apply(matcher)
-            repeatTimes++
-            if (repeatTimes > maxTimes) {
-                status.panic("limit out of range $maxTimes")
-            }
         }
+        status.panic(this)
     }
 
     override fun toString(): String {
