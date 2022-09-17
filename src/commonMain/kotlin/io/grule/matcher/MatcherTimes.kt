@@ -2,22 +2,16 @@ package io.grule.matcher
 
 internal class MatcherTimes<T : Status<T>>(
     val matcher: Matcher<T>,
-    val minTimes: Int,
-    val maxTimes: Int,
+    val times: CountRange,
 ) : Matcher<T> {
-
-    init {
-        require(minTimes >= 0)
-        require(maxTimes >= minTimes)
-    }
 
     override fun match(status: T): T {
         var result = status
-        for (i in 0 until minTimes) {
+        for (i in 0 until times.min) {
             result = result.apply(matcher)
         }
         try {
-            for (i in minTimes until maxTimes) {
+            for (i in 0 until times.length) {
                 result = result.apply(matcher)
             }
         } catch (_: MatcherException) {
@@ -26,32 +20,23 @@ internal class MatcherTimes<T : Status<T>>(
     }
 
     override fun toString(): String {
-        if (minTimes == maxTimes) {
-            return "($matcher *$minTimes)"
-        }
-        if (minTimes == 0 && maxTimes == 1) {
-            return "($matcher *?)"
-        }
-        val maxText = if (maxTimes != Int.MAX_VALUE) "$maxTimes" else ""
-        return "($matcher *:$minTimes,$maxText)"
+        return "($matcher * ${times})"
     }
 
     override fun join(separator: Matcher<T>): Matcher<T> {
-        if (maxTimes == 1) {
+        if (times.isSingle) {
             return this
         }
-        val min = maxOf(0, minTimes - 1)
-        val max = if (maxTimes == Int.MAX_VALUE) maxTimes else maxOf(0, maxTimes - 1)
-        val composedMatcher = (matcher + separator).times(min, max).till(matcher)
-        return if (minTimes > 0) composedMatcher else composedMatcher.optional()
+        val composedMatcher = (matcher + separator).times((times - 1).toIntRange()).till(matcher)
+        return if (times.min > 0) composedMatcher else composedMatcher.optional()
     }
 
     override fun until(terminal: Matcher<T>): Matcher<T> {
-        return MatcherUntilNonGreedy(matcher, minTimes, maxTimes, terminal)
+        return MatcherUntilNonGreedy(matcher, times, terminal)
     }
 
     override fun till(terminal: Matcher<T>): Matcher<T> {
-        return MatcherUntilGreedy(matcher, minTimes, maxTimes, terminal)
+        return MatcherUntilGreedy(matcher, times, terminal)
     }
 
     override fun plus(matcher: Matcher<T>): Matcher<T> {

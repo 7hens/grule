@@ -5,22 +5,16 @@ package io.grule.matcher
  */
 internal class MatcherUntilGreedy<T : Status<T>>(
     val matcher: Matcher<T>,
-    val minTimes: Int,
-    val maxTimes: Int,
+    val times: CountRange,
     val terminal: Matcher<T>,
 ) : Matcher<T> {
 
-    init {
-        require(minTimes >= 0)
-        require(maxTimes >= minTimes)
-    }
-
     override fun match(status: T): T {
         var result = status
-        for (i in 0 until minTimes) {
+        for (i in 0 until times.min) {
             result = result.apply(matcher)
         }
-        return matchInternal(result, maxTimes - minTimes)
+        return matchInternal(result, times.length)
     }
 
     private fun matchInternal(status: T, restTimes: Int): T {
@@ -35,7 +29,6 @@ internal class MatcherUntilGreedy<T : Status<T>>(
     }
 
     override fun toString(): String {
-        val maxText = if (maxTimes == Int.MAX_VALUE) "$maxTimes" else ""
-        return "($matcher *?|$minTimes,$maxText|? $terminal)"
+        return "($matcher *|$times}| $terminal)"
     }
 }

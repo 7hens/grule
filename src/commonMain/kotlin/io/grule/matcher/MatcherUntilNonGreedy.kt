@@ -5,33 +5,30 @@ package io.grule.matcher
  */
 internal class MatcherUntilNonGreedy<T : Status<T>>(
     val matcher: Matcher<T>,
-    val minTimes: Int,
-    val maxTimes: Int,
+    val times: CountRange,
     val terminal: Matcher<T>,
 ) : Matcher<T> {
 
-    init {
-        require(minTimes >= 0)
-        require(maxTimes >= minTimes)
-    }
-
     override fun match(status: T): T {
         var result = status
-        for (i in 0 until minTimes) {
+        for (i in 0 until times.min) {
             result = result.apply(matcher)
         }
-        for (i in minTimes..maxTimes) {
+        try {
+            return result.apply(terminal)
+        } catch (_: MatcherException) {
+        }
+        for (i in 0 until times.length) {
+            result = result.apply(matcher)
             try {
                 return result.apply(terminal)
             } catch (_: MatcherException) {
             }
-            result = result.apply(matcher)
         }
         status.panic(this)
     }
 
     override fun toString(): String {
-        val maxText = if (maxTimes == Int.MAX_VALUE) "$maxTimes" else ""
-        return "($matcher *|$minTimes,$maxText|? $terminal)"
+        return "($matcher *?|$times| $terminal)"
     }
 }

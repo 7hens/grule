@@ -38,7 +38,7 @@ fun interface Matcher<T : Status<T>> {
     }
 
     fun times(minTimes: Int, maxTimes: Int): Matcher<T> {
-        return MatcherTimes(this, minTimes, maxTimes)
+        return MatcherTimes(this, CountRange(minTimes, maxTimes))
     }
 
     operator fun times(times: IntRange): Matcher<T> {
@@ -87,14 +87,14 @@ fun interface Matcher<T : Status<T>> {
         if (terminal is ReversedMatcher<T>) {
             return terminal.reverser.until(this)
         }
-        return MatcherUntilNonGreedy(this, 0, Int.MAX_VALUE, terminal)
+        return MatcherUntilNonGreedy(this, CountRange.INFINITE, terminal)
     }
 
     infix fun till(terminal: Matcher<T>): Matcher<T> {
         if (terminal is ReversedMatcher<T>) {
             return terminal.reverser.until(this)
         }
-        return MatcherUntilGreedy(this, 0, Int.MAX_VALUE, terminal)
+        return MatcherUntilGreedy(this, CountRange.INFINITE, terminal)
     }
 
     infix fun self(fn: Self<T>.() -> Matcher<T>): Matcher<T> {
