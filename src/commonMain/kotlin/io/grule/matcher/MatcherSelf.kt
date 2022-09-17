@@ -4,7 +4,8 @@ import io.grule.node.KeyProvider
 
 // exp self { me + it or it + me }
 internal class MatcherSelf<T : Status<T>>(
-    primary: Matcher<T>, fn: Matcher.Self<T>.() -> Matcher<T>
+    primary: Matcher<T>,
+    fn: Matcher.Self<T>.() -> Matcher<T>,
 ) : Matcher<T> {
 
     private var nonRepeatable = recursive()

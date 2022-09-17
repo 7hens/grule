@@ -66,14 +66,14 @@ fun interface Matcher<T : Status<T>> {
     }
 
     fun optional(): Matcher<T> {
-        return times(0, 1)
+        return repeat(1)
     }
 
     infix fun join(separator: Matcher<T>): Matcher<T> {
         if (separator is ReversedMatcher<T>) {
             return separator.reverser.join(this)
         }
-        return (this + separator).till(this)
+        return (this + separator).till(this).optional()
     }
 
     infix fun interlace(separator: Matcher<T>): Matcher<T> {
@@ -98,8 +98,7 @@ fun interface Matcher<T : Status<T>> {
     }
 
     infix fun self(fn: Self<T>.() -> Matcher<T>): Matcher<T> {
-        val me = MatcherMe(shadow(), this, shadow())
-        return fn(Self(me, this))
+        return MatcherSelf(this, fn)
     }
 
     companion object {

@@ -30,7 +30,7 @@ internal data class CountRange(val min: Int, val max: Int) {
     override fun toString(): String {
         val minText = if (min == 0) "" else "" + min
         val maxText = if (max == Int.MAX_VALUE) "" else "" + max
-        return if (min == max) minText else "$minText,$maxText"
+        return if (minText == maxText) minText else "$minText,$maxText"
     }
 
     companion object {
