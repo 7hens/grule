@@ -32,7 +32,7 @@ internal class MatcherSelf<T : Status<T>>(
     }
 
     private fun resolve(fn: Matcher.Self<T>.() -> Matcher<T>) {
-        val result = fn(SelfImpl(ItMatcher(build(), false), MeMatcher(nonRepeatable, false)))
+        val result = fn(Matcher.Self(ItMatcher(build(), false), MeMatcher(nonRepeatable, false)))
         if (result is KeyMatcher<T> && result.key == this) {
             repeatable or result
         } else {
@@ -54,8 +54,6 @@ internal class MatcherSelf<T : Status<T>>(
     fun isRecursive(matcher: Matcher<*>): Boolean {
         return KeyProvider.keyOf(matcher) === this
     }
-
-    class SelfImpl<T : Status<T>>(override val it: Matcher<T>, override val me: Matcher<T>) : Matcher.Self<T>
 
     interface Interface
 

@@ -24,10 +24,16 @@ fun interface Matcher<T : Status<T>> {
     }
 
     operator fun plus(matcher: Matcher<T>): Matcher<T> {
+        if (matcher is ReversedMatcher<T>) {
+            return matcher.reverser + this
+        }
         return MatcherPlus(this, matcher)
     }
 
     infix fun or(matcher: Matcher<T>): Matcher<T> {
+        if (matcher is ReversedMatcher<T>) {
+            return matcher.reverser or this
+        }
         return MatcherOr(this, matcher)
     }
 
@@ -64,23 +70,36 @@ fun interface Matcher<T : Status<T>> {
     }
 
     infix fun join(separator: Matcher<T>): Matcher<T> {
+        if (separator is ReversedMatcher<T>) {
+            return separator.reverser.join(this)
+        }
         return (this + separator).till(this)
     }
 
     infix fun interlace(separator: Matcher<T>): Matcher<T> {
+        if (separator is ReversedMatcher<T>) {
+            return separator.reverser.interlace(this)
+        }
         return separator.optional() + join(separator) + separator.optional()
     }
 
     infix fun until(terminal: Matcher<T>): Matcher<T> {
+        if (terminal is ReversedMatcher<T>) {
+            return terminal.reverser.until(this)
+        }
         return MatcherUntilNonGreedy(this, terminal, 0, Int.MAX_VALUE)
     }
 
     infix fun till(terminal: Matcher<T>): Matcher<T> {
+        if (terminal is ReversedMatcher<T>) {
+            return terminal.reverser.until(this)
+        }
         return MatcherUntilGreedy(this, terminal, 0, Int.MAX_VALUE)
     }
 
     infix fun self(fn: Self<T>.() -> Matcher<T>): Matcher<T> {
-        return MatcherSelf(this, fn)
+        val me = MatcherMe(shadow(), this, shadow())
+        return fn(Self(me, this))
     }
 
     companion object {
@@ -93,8 +112,8 @@ fun interface Matcher<T : Status<T>> {
         }
     }
 
-    interface Self<T : Status<T>> {
-        val me: Matcher<T>
-        val it: Matcher<T>
-    }
+    data class Self<T : Status<T>>(
+        val me: Matcher<T>,
+        val it: Matcher<T>,
+    )
 }

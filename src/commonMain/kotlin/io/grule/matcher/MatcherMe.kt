@@ -2,6 +2,7 @@ package io.grule.matcher
 
 /**
  * a self { me + b }            -> a + b.repeat()
+ * a self { me + b + me + c }   -> a + (b + a + c).repeat()
  * a self { me + b or me + c }  -> a + (b or c).repeat()
  *
  * a self { b + me }            -> b.repeat() + a
@@ -18,11 +19,20 @@ package io.grule.matcher
  * a self { me + b } self { me + c }
  *                              -> a + b.repeat() + c.repeat()
  */
-class MatcherMe<T : Status<T>>(
+internal class MatcherMe<T : Status<T>>(
     val prefix: Matcher<T>,
     val primary: Matcher<T>,
     val postfix: Matcher<T>,
-) : Matcher<T> by prefix.repeat() + primary + postfix.repeat() {
+) : ReversedMatcher<T> {
+
+    private val finalMatcher by lazy { prefix.repeat() + primary + postfix.repeat() }
+
+    override val reverser: Matcher<T> = Reverser(this)
+
+    override fun match(status: T): T {
+        println("finalMatcher: $finalMatcher")
+        return status.apply(finalMatcher)
+    }
 
     override fun plus(matcher: Matcher<T>): Matcher<T> {
         return MatcherMe(prefix, primary, postfix + matcher)
@@ -39,8 +49,20 @@ class MatcherMe<T : Status<T>>(
         return super.or(matcher)
     }
 
-    class SelfImpl<T : Status<T>>(
-        override val it: Matcher<T>,
-        override val me: Matcher<T>
-    ) : Matcher.Self<T>
+    class Reverser<T : Status<T>>(val right: MatcherMe<T>) : Matcher<T> {
+        override fun match(status: T): T {
+            throw UnsupportedOperationException()
+        }
+
+        override fun plus(matcher: Matcher<T>): Matcher<T> {
+            if (matcher is MatcherMe<T>) {
+                return MatcherMe(matcher.prefix, matcher.primary, matcher.postfix + right.finalMatcher)
+            }
+            return MatcherMe(matcher + right.prefix, right.primary, right.postfix)
+        }
+
+        override fun or(matcher: Matcher<T>): Matcher<T> {
+            return matcher.or(right)
+        }
+    }
 }

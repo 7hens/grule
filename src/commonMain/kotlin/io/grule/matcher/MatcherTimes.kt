@@ -50,4 +50,8 @@ internal class MatcherTimes<T : Status<T>>(
     override fun till(terminal: Matcher<T>): Matcher<T> {
         return MatcherUntilGreedy(matcher, terminal, minTimes, maxTimes)
     }
+
+    override fun plus(matcher: Matcher<T>): Matcher<T> {
+        return till(matcher)
+    }
 }

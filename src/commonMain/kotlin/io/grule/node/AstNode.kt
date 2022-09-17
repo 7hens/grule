@@ -88,6 +88,9 @@ open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream
     }
 
     fun copy(): AstNode {
+        if (isTerminal) {
+            return this
+        }
         return subList(0)
     }
 

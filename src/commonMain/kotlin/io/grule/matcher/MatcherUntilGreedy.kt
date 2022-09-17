@@ -19,8 +19,9 @@ internal class MatcherUntilGreedy<T : Status<T>>(
         var repeatTimes = 0
         while (true) {
             try {
-                lastResult = result
+                val prevResult = result
                 result = result.apply(matcher)
+                lastResult = prevResult
                 repeatTimes++
                 if (repeatTimes == maxTimes) {
                     status.panic("limit out of range $maxTimes")
