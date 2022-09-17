@@ -1,6 +1,6 @@
 package io.grule.matcher
 
-internal class MatcherOr<T : Matcher.Status<T>>(val primary: Matcher<T>, val secondary: Matcher<T>) : Matcher<T> {
+internal class MatcherOr<T : Status<T>>(val primary: Matcher<T>, val secondary: Matcher<T>) : Matcher<T> {
 
     override fun match(status: T): T {
         return try {

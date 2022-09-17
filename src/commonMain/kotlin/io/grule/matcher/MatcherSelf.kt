@@ -3,7 +3,7 @@ package io.grule.matcher
 import io.grule.node.KeyProvider
 
 // exp self { me + it or it + me }
-internal class MatcherSelf<T : Matcher.Status<T>>(
+internal class MatcherSelf<T : Status<T>>(
     primary: Matcher<T>, fn: Matcher.Self<T>.() -> Matcher<T>
 ) : Matcher<T> {
 
@@ -55,7 +55,7 @@ internal class MatcherSelf<T : Matcher.Status<T>>(
         return KeyProvider.keyOf(matcher) === this
     }
 
-    class SelfImpl<T : Matcher.Status<T>>(override val it: Matcher<T>, override val me: Matcher<T>) : Matcher.Self<T>
+    class SelfImpl<T : Status<T>>(override val it: Matcher<T>, override val me: Matcher<T>) : Matcher.Self<T>
 
     interface Interface
 

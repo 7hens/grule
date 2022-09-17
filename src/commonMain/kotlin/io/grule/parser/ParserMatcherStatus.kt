@@ -1,27 +1,30 @@
 package io.grule.parser
 
 import io.grule.lexer.Lexer
+import io.grule.matcher.Context
 import io.grule.matcher.Matcher
+import io.grule.matcher.Prop
+import io.grule.matcher.Status
 import io.grule.node.AstNode
 import io.grule.node.AstNodeChain
 import io.grule.token.Token
 import io.grule.token.TokenStream
 
 open class ParserMatcherStatus private constructor(
-    override val context: Matcher.Context,
+    override val context: Context,
     val position: Int,
     val node: AstNode
-) : Matcher.Status<ParserMatcherStatus> {
+) : Status<ParserMatcherStatus> {
 
-    val tokenStreamProp: Matcher.Prop<TokenStream> get() = prop("tokenStream")
+    val tokenStreamProp: Prop<TokenStream> get() = prop("tokenStream")
 
     val data: TokenStream get() = tokenStreamProp.get()!!
 
-    val lastNode: Matcher.Prop<AstNode> get() = prop("lastNode")
+    val lastNode: Prop<AstNode> get() = prop("lastNode")
 
-    val nodeChainProp: Matcher.Prop<AstNodeChain> get() = prop("nodeChain")
+    val nodeChainProp: Prop<AstNodeChain> get() = prop("nodeChain")
 
-    val lastNodeChainProp: Matcher.Prop<AstNodeChain> get() = prop("lastNodeChain")
+    val lastNodeChainProp: Prop<AstNodeChain> get() = prop("lastNodeChain")
 
     fun peek(offset: Int = 0): Token {
         return data.peek(position + offset)

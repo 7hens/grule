@@ -1,10 +1,18 @@
 package io.grule.matcher
 
-internal class MatcherShadow<T : Matcher.Status<T>> : Matcher<T> {
+internal class MatcherShadow<T : Status<T>> : Matcher<T> {
     override val isEmpty: Boolean = true
 
     override fun match(status: T): T {
         throw MatcherException(status)
+    }
+
+    override fun not(): Matcher<T> {
+        return this
+    }
+
+    override fun test(): Matcher<T> {
+        return this
     }
 
     override fun plus(matcher: Matcher<T>): Matcher<T> {
@@ -16,11 +24,23 @@ internal class MatcherShadow<T : Matcher.Status<T>> : Matcher<T> {
     }
 
     override fun times(minTimes: Int, maxTimes: Int): Matcher<T> {
-        throw UnsupportedOperationException()
+        return this
     }
 
-    override fun self(fn: Matcher.Self<T>.() -> Matcher<T>): Matcher<T> {
-        throw UnsupportedOperationException()
+    override fun join(separator: Matcher<T>): Matcher<T> {
+        return this
+    }
+
+    override fun interlace(separator: Matcher<T>): Matcher<T> {
+        return separator.optional()
+    }
+
+    override fun until(terminal: Matcher<T>): Matcher<T> {
+        return terminal
+    }
+
+    override fun till(terminal: Matcher<T>): Matcher<T> {
+        return terminal
     }
 
     override fun toString(): String {

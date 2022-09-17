@@ -3,7 +3,7 @@ package io.grule.matcher
 /**
  * greedy: a*b
  */
-internal class MatcherUntilGreedy<T : Matcher.Status<T>>(
+internal class MatcherUntilGreedy<T : Status<T>>(
     val matcher: Matcher<T>, val terminal: Matcher<T>,
     val minTimes: Int, val maxTimes: Int
 ) : Matcher<T> {

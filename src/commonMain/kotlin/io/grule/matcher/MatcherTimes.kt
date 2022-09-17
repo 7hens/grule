@@ -1,6 +1,6 @@
 package io.grule.matcher
 
-internal class MatcherTimes<T : Matcher.Status<T>>(
+internal class MatcherTimes<T : Status<T>>(
     val matcher: Matcher<T>, val minTimes: Int, val maxTimes: Int
 ) : Matcher<T> {
 

@@ -2,7 +2,7 @@ package io.grule.matcher
 
 import io.grule.node.KeyProvider
 
-internal class KeyMatcherImpl<T : Matcher.Status<T>>(
+internal class KeyMatcherImpl<T : Status<T>>(
     keyProvider: KeyProvider,
     initMatcher: Matcher<T> = MatcherShadow()
 ) : KeyMatcher<T>, KeyProvider by keyProvider {
@@ -68,7 +68,7 @@ internal class KeyMatcherImpl<T : Matcher.Status<T>>(
         return this
     }
 
-    private fun <T : Matcher.Status<T>> Matcher<T>.wrap(): Matcher<T> {
+    private fun <T : Status<T>> Matcher<T>.wrap(): Matcher<T> {
         return if (this is KeyMatcherImpl<T>) Wrapper(this) else this
     }
 
@@ -76,7 +76,7 @@ internal class KeyMatcherImpl<T : Matcher.Status<T>>(
         return "$delegate"
     }
 
-    private class Wrapper<T : Matcher.Status<T>>(val matcher: KeyMatcher<T>) : KeyMatcher<T> by matcher {
+    private class Wrapper<T : Status<T>>(val matcher: KeyMatcher<T>) : KeyMatcher<T> by matcher {
         override fun toString(): String {
             return matcher.toString()
         }

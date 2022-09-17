@@ -1,6 +1,6 @@
 package io.grule.matcher
 
-internal class MatcherPlus<T : Matcher.Status<T>>(
+internal class MatcherPlus<T : Status<T>>(
     val first: Matcher<T>,
     val second: Matcher<T>
 ) : Matcher<T> {

@@ -1,13 +1,13 @@
 package io.grule.matcher
 
-internal class MatcherContextImpl : Matcher.Context {
+internal class MatcherContextImpl : Context {
     private val map = mutableMapOf<String, Any?>()
 
-    override fun <V> prop(key: String): Matcher.Prop<V> {
+    override fun <V> prop(key: String): Prop<V> {
         return PropImpl(key)
     }
 
-    private inner class PropImpl<V>(override val key: String) : Matcher.Prop<V> {
+    private inner class PropImpl<V>(override val key: String) : Prop<V> {
 
         @Suppress("UNCHECKED_CAST")
         override fun get(): V? {

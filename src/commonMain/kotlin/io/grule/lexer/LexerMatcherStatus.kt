@@ -1,14 +1,17 @@
 package io.grule.lexer
 
+import io.grule.matcher.Context
 import io.grule.matcher.Matcher
+import io.grule.matcher.Prop
+import io.grule.matcher.Status
 import io.grule.token.CharStream
 
 class LexerMatcherStatus private constructor(
-    override val context: Matcher.Context,
+    override val context: Context,
     val position: Int = 0,
-) : Matcher.Status<LexerMatcherStatus> {
+) : Status<LexerMatcherStatus> {
 
-    private val charStreamProp: Matcher.Prop<CharStream> get() = prop("charStream")
+    private val charStreamProp: Prop<CharStream> get() = prop("charStream")
 
     val data: CharStream get() = charStreamProp.get()!!
 

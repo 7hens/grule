@@ -3,7 +3,7 @@ package io.grule.matcher
 import io.grule.node.KeyProvider
 
 @Suppress("MemberVisibilityCanBePrivate")
-fun interface Matcher<T : Matcher.Status<T>> {
+fun interface Matcher<T : Status<T>> {
 
     val isNode: Boolean get() = false
 
@@ -17,6 +17,18 @@ fun interface Matcher<T : Matcher.Status<T>> {
 
     fun not(): Matcher<T> {
         return MatcherNot(this)
+    }
+
+    fun test(): Matcher<T> {
+        return MatcherTest(this)
+    }
+
+    operator fun plus(matcher: Matcher<T>): Matcher<T> {
+        return MatcherPlus(this, matcher)
+    }
+
+    infix fun or(matcher: Matcher<T>): Matcher<T> {
+        return MatcherOr(this, matcher)
     }
 
     fun times(minTimes: Int, maxTimes: Int): Matcher<T> {
@@ -52,7 +64,7 @@ fun interface Matcher<T : Matcher.Status<T>> {
     }
 
     infix fun join(separator: Matcher<T>): Matcher<T> {
-        return repeat().join(separator)
+        return (this + separator).till(this)
     }
 
     infix fun interlace(separator: Matcher<T>): Matcher<T> {
@@ -60,23 +72,11 @@ fun interface Matcher<T : Matcher.Status<T>> {
     }
 
     infix fun until(terminal: Matcher<T>): Matcher<T> {
-        return repeat().until(terminal)
+        return MatcherUntilNonGreedy(this, terminal, 0, Int.MAX_VALUE)
     }
 
     infix fun till(terminal: Matcher<T>): Matcher<T> {
-        return repeat().till(terminal)
-    }
-
-    fun test(): Matcher<T> {
-        return MatcherTest(this)
-    }
-
-    operator fun plus(matcher: Matcher<T>): Matcher<T> {
-        return MatcherPlus(this, matcher)
-    }
-
-    infix fun or(matcher: Matcher<T>): Matcher<T> {
-        return MatcherOr(this, matcher)
+        return MatcherUntilGreedy(this, terminal, 0, Int.MAX_VALUE)
     }
 
     infix fun self(fn: Self<T>.() -> Matcher<T>): Matcher<T> {
@@ -90,39 +90,6 @@ fun interface Matcher<T : Matcher.Status<T>> {
 
         fun <T : Status<T>> shadow(): Matcher<T> {
             return MatcherShadow()
-        }
-    }
-
-    interface Status<T : Status<T>> : ContextOwner {
-        fun apply(matcher: Matcher<T>): T
-
-        fun next(): T
-
-        fun self(): T
-
-        fun panic(rule: Any): Nothing
-
-        val lastMatcher: Prop<Matcher<T>> get() = prop("lastMatcher")
-
-        val parentMatcher: Prop<Matcher<T>> get() = prop("parentMatcher")
-    }
-
-    interface Context {
-        fun <V> prop(key: String): Prop<V>
-    }
-
-    interface ContextOwner : Context {
-        val context: Context
-
-        override fun <V> prop(key: String): Prop<V> = context.prop(key)
-    }
-
-    interface Prop<T> {
-        val key: String
-        fun get(): T?
-        fun set(value: T?)
-        fun set(fn: (T) -> T) {
-            set(fn(get()!!))
         }
     }
 
