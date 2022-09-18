@@ -36,20 +36,7 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun recursiveSelf() {
-        RepeatGrammar().apply {
-            val source = "0 1 2 3"
-            println("================")
-            println(source)
-
-            val exp by parser { X + Num self { it + me } }
-
-            val astNode = exp.parse(tokenStream(source))
-            println(astNode.toStringLine())
-            println(astNode.toStringTree())
-            assertEquals("(0 (1 (2 3)))", astNode.toStringLine())
-        }
-
+    fun recursiveSelfLeft() {
         RepeatGrammar().apply {
             val source = "0 1 2 3"
             println("================")
@@ -61,6 +48,22 @@ class RecursiveParserTest {
             println(astNode.toStringLine())
             println(astNode.toStringTree())
             assertEquals("(((0 1) 2) 3)", astNode.toStringLine())
+        }
+    }
+
+    @Test
+    fun recursiveSelfRight() {
+        RepeatGrammar().apply {
+            val source = "0 1 2 3"
+            println("================")
+            println(source)
+
+            val exp by parser { X + Num self { it + me } }
+
+            val astNode = exp.parse(tokenStream(source))
+            println(astNode.toStringLine())
+            println(astNode.toStringTree())
+            assertEquals("(0 (1 (2 3)))", astNode.toStringLine())
         }
     }
 

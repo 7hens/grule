@@ -10,23 +10,33 @@ internal class MatcherSelf<T : Status<T>>(
     val fn: Matcher.Self<T>.() -> Matcher<T>,
 ) : Matcher<T> {
 
-    private val resultMatcher by lazy {
-        val itMatcher = ItMatcher(primary, false)
+    private val repeatable by lazy {
         val meMatcher = MeMatcher(this, false)
+        val itMatcher = ItMatcher(primary, false)
         fn(Matcher.Self(meMatcher, itMatcher))
     }
 
-    private val selfMatcher by lazy {
-        resultMatcher.more() or primary + resultMatcher.repeat()
+    override fun match(status: T): T {
+        return try {
+            matchInternal(status, repeatable, repeatable)
+        } catch (_: MatcherException) {
+            matchInternal(status, primary, repeatable)
+        }
     }
 
-    override fun match(status: T): T {
-        println("selfMatcher: $selfMatcher")
-        return status.apply(selfMatcher)
+    private fun matchInternal(status: T, head: Matcher<T>, body: Matcher<T>): T {
+        var result = status.apply(head)
+        try {
+            while (true) {
+                result = result.apply(body)
+            }
+        } catch (_: MatcherException) {
+        }
+        return result
     }
 
     override fun toString(): String {
-        return "($primary): $resultMatcher"
+        return "($primary): $repeatable"
     }
 
     inner class ItMatcher(val delegate: Matcher<T>, val isHead: Boolean) : Matcher<T> {
@@ -58,7 +68,7 @@ internal class MatcherSelf<T : Status<T>>(
                 return status.apply(delegate)
             }
             val lastMatcher = status.lastMatcher.get() ?: status.panic(this)
-            val isSelf = lastMatcher === primary || lastMatcher === resultMatcher || lastMatcher is MeMatcher
+            val isSelf = lastMatcher === primary || lastMatcher === repeatable || lastMatcher is MeMatcher
             println("me:: lastMatcher: $lastMatcher")
             return if (isSelf) status.self() else status.panic(this)
         }

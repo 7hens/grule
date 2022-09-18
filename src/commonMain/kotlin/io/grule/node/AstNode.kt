@@ -112,7 +112,7 @@ open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream
         if (size == 1 && !includesKey) {
             return first().toStringLine(includesKey)
         }
-        return children.joinToString(" ", "$prefix(", ")") { it.toStringLine() }
+        return children.joinToString(" ", "$prefix(", ")") { it.toStringLine(includesKey) }
     }
 
     fun toStringTree(style: TreeStyle = TreeStyle.SOLID): String {

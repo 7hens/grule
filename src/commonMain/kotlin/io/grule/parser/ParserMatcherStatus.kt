@@ -52,6 +52,7 @@ open class ParserMatcherStatus private constructor(
 
     override fun self(): ParserMatcherStatus {
         val lastNode = this.lastNode.get()!!
+        println("lastNode: ${lastNode.toStringLine(true)}")
         val parentNode = AstNode.of(node)
         parentNode.merge(lastNode)
         lastNode.clear()
