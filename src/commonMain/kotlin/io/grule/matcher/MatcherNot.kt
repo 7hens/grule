@@ -4,7 +4,7 @@ internal class MatcherNot<T : Status<T>>(private val matcher: Matcher<T>) : Matc
 
     override fun match(status: T): T {
         try {
-            status.apply(matcher)
+            matcher.match(status)
         } catch (e: MatcherException) {
             return status.next()
         }

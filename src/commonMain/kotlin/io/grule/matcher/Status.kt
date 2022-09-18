@@ -1,15 +1,14 @@
 package io.grule.matcher
 
-interface Status<T : Status<T>> : ContextOwner {
-    fun apply(matcher: Matcher<T>): T
+import io.grule.node.KeyProvider
+
+interface Status<T : Status<T>> : ContextOwner, KeyProvider {
 
     fun next(): T
 
     fun self(): T
 
+    fun key(key: Any): T
+
     fun panic(rule: Any): Nothing
-
-    val lastMatcher: Prop<Matcher<T>> get() = prop("lastMatcher")
-
-    val parentMatcher: Prop<Matcher<T>> get() = prop("parentMatcher")
 }

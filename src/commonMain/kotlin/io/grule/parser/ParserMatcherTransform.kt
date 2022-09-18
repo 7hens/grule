@@ -6,7 +6,7 @@ internal class ParserMatcherTransform(val parser: Parser, val transformation: As
     override val key: Any get() = parser.key
 
     override fun match(status: ParserMatcherStatus): ParserMatcherStatus {
-        val result = status.apply(parser)
+        val result = parser.match(status)
         val resultNode = result.node.map { transformation.apply(it) }
         status.node.clear()
         status.node.merge(resultNode)

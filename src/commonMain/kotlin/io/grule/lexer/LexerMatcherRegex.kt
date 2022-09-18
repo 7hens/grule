@@ -8,7 +8,7 @@ internal class LexerMatcherRegex(private val pattern: String) : LexerMatcher {
     private val lexer = parseRegex(pattern)
 
     override fun match(status: LexerMatcherStatus): LexerMatcherStatus {
-        return status.apply(lexer)
+        return lexer.match(status)
     }
 
     private fun parseRegex(pattern: String): LexerMatcher {

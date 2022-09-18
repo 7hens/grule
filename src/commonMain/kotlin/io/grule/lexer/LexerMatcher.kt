@@ -34,6 +34,6 @@ interface LexerMatcherExt {
 
     fun LexerMatcher.match(charStream: CharStream, offset: Int = 0): Int {
         val status = LexerMatcherStatus.from(charStream, offset)
-        return status.apply(this).position - offset
+        return match(status).position - offset
     }
 }

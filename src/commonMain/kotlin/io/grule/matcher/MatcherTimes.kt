@@ -8,11 +8,11 @@ internal class MatcherTimes<T : Status<T>>(
     override fun match(status: T): T {
         var result = status
         for (i in 0 until times.min) {
-            result = result.apply(matcher)
+            result = matcher.match(result)
         }
         try {
             for (i in 0 until times.length) {
-                result = result.apply(matcher)
+                result = matcher.match(result)
             }
         } catch (_: MatcherException) {
         }

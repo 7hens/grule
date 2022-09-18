@@ -1,6 +1,5 @@
 package io.grule.lexer
 
-import io.grule.token.CharStream
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -8,12 +7,6 @@ import kotlin.test.assertEquals
  * LexerMatcherKtTest.
  */
 internal class LexerDslTest {
-
-    private fun LexerMatcher.match(text: String): LexerMatcherStatus {
-        val charStream = CharStream.fromString(text)
-        val status = LexerMatcherStatus.from(charStream)
-        return status.apply(this)
-    }
 
     @Test
     fun tokenStream() {

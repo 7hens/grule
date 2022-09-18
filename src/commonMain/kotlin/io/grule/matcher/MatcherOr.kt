@@ -4,9 +4,9 @@ internal class MatcherOr<T : Status<T>>(val primary: Matcher<T>, val secondary: 
 
     override fun match(status: T): T {
         return try {
-            status.apply(primary)
+            primary.match(status)
         } catch (_: MatcherException) {
-            status.apply(secondary)
+            secondary.match(status)
         }
     }
 

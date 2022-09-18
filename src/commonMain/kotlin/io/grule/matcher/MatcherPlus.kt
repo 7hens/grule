@@ -6,7 +6,7 @@ internal class MatcherPlus<T : Status<T>>(
 ) : Matcher<T> {
 
     override fun match(status: T): T {
-        return status.apply(first).apply(second)
+        return second.match(first.match(status))
     }
 
     override fun toString(): String {

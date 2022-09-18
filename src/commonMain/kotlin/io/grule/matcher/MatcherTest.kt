@@ -3,7 +3,7 @@ package io.grule.matcher
 internal class MatcherTest<T : Status<T>>(private val matcher: Matcher<T>) : Matcher<T> {
 
     override fun match(status: T): T {
-        status.apply(matcher)
+        matcher.match(status)
         return status
     }
 

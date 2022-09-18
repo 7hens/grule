@@ -12,19 +12,19 @@ internal class MatcherUntilGreedy<T : Status<T>>(
     override fun match(status: T): T {
         var result = status
         for (i in 0 until times.min) {
-            result = result.apply(matcher)
+            result = matcher.match(result)
         }
         return matchInternal(result, times.length)
     }
 
     private fun matchInternal(status: T, restTimes: Int): T {
         if (restTimes == 0) {
-            return status.apply(terminal)
+            return terminal.match(status)
         }
         return try {
-            matchInternal(status.apply(matcher), restTimes - 1)
+            matchInternal(matcher.match(status), restTimes - 1)
         } catch (e: MatcherException) {
-            status.apply(terminal)
+            terminal.match(status)
         }
     }
 

@@ -9,6 +9,7 @@ import io.grule.token.CharStream
 class LexerMatcherStatus private constructor(
     override val context: Context,
     val position: Int = 0,
+    override val key: Any,
 ) : Status<LexerMatcherStatus> {
 
     private val charStreamProp: Prop<CharStream> get() = prop("charStream")
@@ -30,7 +31,11 @@ class LexerMatcherStatus private constructor(
         if (peek() == null) {
             panic(Lexer.EOF)
         }
-        return LexerMatcherStatus(context, position + count)
+        return LexerMatcherStatus(context, position + count, key)
+    }
+
+    override fun key(key: Any): LexerMatcherStatus {
+        return LexerMatcherStatus(context, position, key)
     }
 
     override fun panic(rule: Any): Nothing {
@@ -45,15 +50,9 @@ class LexerMatcherStatus private constructor(
         return this
     }
 
-    override fun apply(matcher: Matcher<LexerMatcherStatus>): LexerMatcherStatus {
-        val result = matcher.match(this)
-        lastMatcher.set(matcher)
-        return result
-    }
-
     companion object {
         fun from(charStream: CharStream, position: Int = 0): LexerMatcherStatus {
-            val instance = LexerMatcherStatus(Matcher.context(), position)
+            val instance = LexerMatcherStatus(Matcher.context(), position, Unit)
             instance.charStreamProp.set(charStream)
             return instance
         }

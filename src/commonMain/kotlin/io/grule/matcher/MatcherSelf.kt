@@ -25,15 +25,17 @@ internal class MatcherSelf<T : Status<T>>(
     }
 
     private fun matchInternal(status: T, head: Matcher<T>, body: Matcher<T>): T {
-        var result = status.apply(head)
+        var result = head.match(status).key(this)
         try {
             while (true) {
-                result = result.apply(body)
+                result = body.match(result).key(this)
             }
         } catch (_: MatcherException) {
         }
         return result
     }
+
+    private fun isSelf(status: T): Boolean = status.key === this
 
     override fun toString(): String {
         return "($primary): $repeatable"
@@ -44,11 +46,9 @@ internal class MatcherSelf<T : Status<T>>(
 
         override fun match(status: T): T {
             if (!isHead) {
-                return status.apply(delegate)
+                return delegate.match(status)
             }
-            val lastMatcher = status.lastMatcher.get() ?: status.panic(this)
-            val isSelf = lastMatcher === delegate
-            return if (isSelf) status.self() else status.panic(this)
+            return if (isSelf(status)) status.self() else status.panic(this)
         }
 
         override fun plus(matcher: Matcher<T>): Matcher<T> {
@@ -65,12 +65,9 @@ internal class MatcherSelf<T : Status<T>>(
 
         override fun match(status: T): T {
             if (!isHead) {
-                return status.apply(delegate)
+                return delegate.match(status)
             }
-            val lastMatcher = status.lastMatcher.get() ?: status.panic(this)
-            val isSelf = lastMatcher === primary || lastMatcher === repeatable || lastMatcher is MeMatcher
-            println("me:: lastMatcher: $lastMatcher")
-            return if (isSelf) status.self() else status.panic(this)
+            return if (isSelf(status)) status.self() else status.panic(this)
         }
 
         override fun plus(matcher: Matcher<T>): Matcher<T> {

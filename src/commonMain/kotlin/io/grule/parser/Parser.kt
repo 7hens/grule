@@ -11,7 +11,7 @@ interface Parser : ParserMatcher, ParserMatcherExt, KeyProvider, AstNodeStream<P
         val mainParser = ParserDsl.run { this@Parser + Lexer.EOF }
         val node = AstNode.of(this)
         val status = ParserMatcherStatus.from(tokenStream, node)
-        status.apply(mainParser)
+        mainParser.match(status)
         return node.first()
     }
 
