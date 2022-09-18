@@ -1,11 +1,11 @@
 package io.grule.matcher
 
-import io.grule.node.KeyProvider
+import io.grule.node.KeyOwner
 
 internal class KeyMatcherImpl<T : Status<T>>(
-    keyProvider: KeyProvider,
+    keyOwner: KeyOwner,
     initMatcher: Matcher<T> = MatcherShadow()
-) : KeyMatcher<T>, KeyProvider by keyProvider {
+) : KeyMatcher<T>, KeyOwner by keyOwner {
 
     override val isEmpty: Boolean get() = delegate.isEmpty
 

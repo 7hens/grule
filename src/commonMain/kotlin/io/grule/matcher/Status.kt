@@ -1,8 +1,8 @@
 package io.grule.matcher
 
-import io.grule.node.KeyProvider
+import io.grule.node.KeyOwner
 
-interface Status<T : Status<T>> : ContextOwner, KeyProvider {
+interface Status<T : Status<T>> : ContextOwner, KeyOwner {
 
     fun next(): T
 

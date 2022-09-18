@@ -3,10 +3,10 @@ package io.grule.parser
 import io.grule.lexer.Lexer
 import io.grule.node.AstNode
 import io.grule.node.AstNodeStream
-import io.grule.node.KeyProvider
+import io.grule.node.KeyOwner
 import io.grule.token.TokenStream
 
-interface Parser : ParserMatcher, ParserMatcherExt, KeyProvider, AstNodeStream<Parser> {
+interface Parser : ParserMatcher, ParserMatcherExt, KeyOwner, AstNodeStream<Parser> {
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = ParserDsl.run { this@Parser + Lexer.EOF }
         val node = AstNode.of(this)

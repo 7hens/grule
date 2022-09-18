@@ -2,7 +2,7 @@ package io.grule.node
 
 import io.grule.token.Token
 
-open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream<AstNode>, KeyProvider by keyProvider {
+open class AstNode private constructor(keyOwner: KeyOwner) : AstNodeStream<AstNode>, KeyOwner by keyOwner {
     private val groups = mutableMapOf<Any, MutableList<AstNode>>()
     private val children = mutableListOf<AstNode>()
 
@@ -134,11 +134,11 @@ open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream
 
     companion object {
         fun of(key: Any): AstNode {
-            return AstNode(KeyProvider(key))
+            return AstNode(KeyOwner(key))
         }
 
         fun of(key: Any, token: Token): AstNode {
-            return Terminal(KeyProvider(key), token)
+            return Terminal(KeyOwner(key), token)
         }
 
         fun of(key: Any, vararg elements: AstNode): AstNode {
@@ -150,7 +150,7 @@ open class AstNode private constructor(keyProvider: KeyProvider) : AstNodeStream
         }
     }
 
-    private class Terminal(rule: KeyProvider, token: Token) : AstNode(rule) {
+    private class Terminal(rule: KeyOwner, token: Token) : AstNode(rule) {
         override val isTerminal: Boolean = true
         override val firstToken: Token = token
         override val lastToken: Token = token
