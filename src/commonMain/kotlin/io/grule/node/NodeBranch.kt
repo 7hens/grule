@@ -1,21 +1,21 @@
-package io.grule.node2
+package io.grule.node
 
 import io.grule.token.Token
 import io.grule.util.MultiMap
 
 internal class NodeBranch(
     override val key: Any,
-    override val list: List<Node>
-) : Node {
+    override val children: List<AstNode>
+) : AstNode {
 
-    override val map: MultiMap<Any, Node>
-            by lazy { list.groupBy { it.key } }
+    override val map: MultiMap<Any, AstNode>
+            by lazy { children.groupBy { it.key } }
 
     override val text: String
-            by lazy { list.joinToString(" ") { it.text } }
+            by lazy { children.joinToString(" ") { it.text } }
 
-    override val tokens: List<Token>
-            by lazy { list.flatMap { it.tokens } }
+    override val tokens: Sequence<Token>
+            by lazy { children.asSequence().flatMap { it.tokens } }
 
     override fun toString(): String {
         if (key is String) {
@@ -27,9 +27,9 @@ internal class NodeBranch(
     override fun toStringLine(includesKey: Boolean): String {
         val prefix = if (includesKey) "$key" else ""
         if (size == 1 && !includesKey) {
-            return list.first().toStringLine(includesKey)
+            return children.first().toStringLine(includesKey)
         }
-        return list.joinToString(" ", "$prefix(", ")") { it.toStringLine(includesKey) }
+        return children.joinToString(" ", "$prefix(", ")") { it.toStringLine(includesKey) }
     }
 
     override fun toStringTree(style: TreeStyle): String {
@@ -38,10 +38,10 @@ internal class NodeBranch(
         }
         val result = StringBuilder(key.toString())
         if (isSingle()) {
-            val child = list.first()
+            val child = children.first()
             result.append("/").append(child.toStringTree(style))
         } else {
-            for ((index, child) in list.withIndex()) {
+            for ((index, child) in children.withIndex()) {
                 style.applyTo(result, child.toStringTree(style), index == size - 1)
             }
         }

@@ -1,6 +1,5 @@
 package io.grule.parser
 
-import io.grule.node.AstNode
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -17,11 +16,9 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
         return name ?: matcher.toString()
     }
 
-    override fun match(status: ParserMatcherStatus): ParserMatcherStatus {
-        val isolatedNode = AstNode.of(this)
-        val result = matcher.match(status.withNode(isolatedNode).key(this))
-        status.node.add(isolatedNode)
-        return result.withNode(status.node)
+    override fun match(status: ParserStatus): ParserStatus {
+        val result = matcher.match(status.withNode(newNode()).withKey(key))
+        return result.withNode(status.node + result.node)
     }
 
     override val key: Any get() = this

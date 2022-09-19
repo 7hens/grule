@@ -1,4 +1,4 @@
-package io.grule.node2
+package io.grule.node
 
 import io.grule.util.first
 import io.grule.util.last
@@ -7,24 +7,24 @@ interface NodeStream<T> {
 
     fun transform(mapper: NodeMapper): T
 
-    fun transform(mapper: Node.() -> Node): T {
+    fun transform(mapper: AstNode.() -> AstNode): T {
         return transform(NodeMapper(mapper))
     }
 
-    operator fun plus(node: Node): T {
-        return transform { newNode(list + node) }
+    operator fun plus(node: AstNode): T {
+        return transform { newNode(children + node) }
     }
 
     fun subList(fromIndex: Int, toIndex: Int): T {
-        return transform { newNode(list.subList(fromIndex, toIndex)) }
+        return transform { newNode(children.subList(fromIndex, toIndex)) }
     }
 
     fun subList(fromIndex: Int): T {
-        return transform { newNode(list.subList(fromIndex, list.lastIndex)) }
+        return transform { newNode(children.subList(fromIndex, children.lastIndex)) }
     }
 
     fun first(): T {
-        return transform { list.first() }
+        return transform { children.first() }
     }
 
     fun first(key: Any): T {
@@ -32,7 +32,7 @@ interface NodeStream<T> {
     }
 
     fun last(): T {
-        return transform { list.last() }
+        return transform { children.last() }
     }
 
     fun last(key: Any): T {
@@ -43,7 +43,7 @@ interface NodeStream<T> {
         return transform { if (keyEquals(keyOwner)) this else keyOwner.newNode(this) }
     }
 
-    fun flat(predicate: (Node) -> Boolean): T {
+    fun flat(predicate: (AstNode) -> Boolean): T {
         return transform(NodeMapperFlat(predicate))
     }
 
@@ -51,27 +51,27 @@ interface NodeStream<T> {
         return flat { it.keyEquals(key) }
     }
 
-    fun binary(isOperator: (Node) -> Boolean, comparator: Comparator<Node>): T {
+    fun binary(isOperator: (AstNode) -> Boolean, comparator: Comparator<AstNode>): T {
         return transform(NodeMapperBinary(isOperator, comparator))
     }
 
-    fun binary(isOperator: (Node) -> Boolean): T {
+    fun binary(isOperator: (AstNode) -> Boolean): T {
         return binary(isOperator, DefaultOperatorPriority)
     }
 
-    fun binary(operator: Any, comparator: Comparator<Node> = DefaultOperatorPriority): T {
+    fun binary(operator: Any, comparator: Comparator<AstNode> = DefaultOperatorPriority): T {
         return binary({ it.keyEquals(operator) }, comparator)
     }
 
-    fun forTree(consumer: (Node) -> Unit): T {
+    fun forTree(consumer: (AstNode) -> Unit): T {
         return transform(NodeMapperForTree(consumer))
     }
 
-    fun map(mapper: (Node) -> Node): T {
-        return transform { newNode(list.map(mapper)) }
+    fun map(mapper: (AstNode) -> AstNode): T {
+        return transform { newNode(children.map(mapper)) }
     }
 
-    fun mapTree(mapper: (Node) -> Node): T {
+    fun mapTree(mapper: (AstNode) -> AstNode): T {
         return transform(NodeMapperMapTree(mapper))
     }
 }

@@ -1,14 +1,14 @@
 package io.grule.matcher
 
-import io.grule.node2.KeyOwner
+import io.grule.node.KeyOwner
 
-interface Status<T : Status<T>> : ContextOwner, KeyOwner {
+interface Status<T : Status<T>> : KeyOwner {
+
+    fun withKey(key: Any): T
 
     fun next(): T
 
     fun self(): T
-
-    fun key(key: Any): T
 
     fun panic(rule: Any): Nothing
 }

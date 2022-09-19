@@ -25,10 +25,10 @@ internal class MatcherSelf<T : Status<T>>(
     }
 
     private fun matchInternal(status: T, head: Matcher<T>, body: Matcher<T>): T {
-        var result = head.match(status).key(this)
+        var result = head.match(status).withKey(this)
         try {
             while (true) {
-                result = body.match(result).key(this)
+                result = body.match(result).withKey(this)
             }
         } catch (_: MatcherException) {
         }

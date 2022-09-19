@@ -3,7 +3,7 @@ package io.grule.parser
 import io.grule.lexer.Lexer
 import io.grule.matcher.Matcher
 
-typealias ParserMatcher = Matcher<ParserMatcherStatus>
+typealias ParserMatcher = Matcher<ParserStatus>
 
 typealias ParserSupplier = ParserDsl.() -> ParserMatcher
 

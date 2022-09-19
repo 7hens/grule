@@ -1,6 +1,6 @@
 package io.grule.matcher
 
-import io.grule.node2.KeyOwner
+import io.grule.node.KeyOwner
 
 internal class KeyMatcherImpl<T : Status<T>>(
     keyOwner: KeyOwner,

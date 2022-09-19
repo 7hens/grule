@@ -2,21 +2,20 @@ package io.grule.parser
 
 import io.grule.lexer.Lexer
 import io.grule.node.AstNode
-import io.grule.node.AstNodeStream
-import io.grule.node2.KeyOwner
+import io.grule.node.KeyOwner
+import io.grule.node.NodeMapper
+import io.grule.node.NodeStream
 import io.grule.token.TokenStream
 
-interface Parser : ParserMatcher, ParserMatcherExt, KeyOwner, AstNodeStream<Parser> {
+interface Parser : ParserMatcher, ParserMatcherExt, KeyOwner, NodeStream<Parser> {
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = ParserDsl.run { this@Parser + Lexer.EOF }
-        val node = AstNode.of(this)
-        val status = ParserMatcherStatus.from(tokenStream, node)
-        mainParser.match(status)
-        return node.first()
+        val status = ParserStatus(key, newNode(), tokenStream)
+        return mainParser.match(status).node.first()
     }
 
-    override fun transform(transformation: AstNode.Transformation): Parser {
-        return ParserMatcherTransform(this, transformation)
+    override fun transform(mapper: NodeMapper): Parser {
+        return ParserMatcherTransform(this, mapper)
     }
 
     fun flat(): Parser {

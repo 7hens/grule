@@ -7,7 +7,7 @@ internal class LexerMatcherRegex(private val pattern: String) : LexerMatcher {
     private val g = RegexGrammar()
     private val lexer = parseRegex(pattern)
 
-    override fun match(status: LexerMatcherStatus): LexerMatcherStatus {
+    override fun match(status: LexerStatus): LexerStatus {
         return lexer.match(status)
     }
 

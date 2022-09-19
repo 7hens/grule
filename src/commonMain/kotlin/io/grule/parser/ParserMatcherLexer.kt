@@ -1,14 +1,13 @@
 package io.grule.parser
 
 import io.grule.lexer.Lexer
-import io.grule.node.AstNode
 
 internal class ParserMatcherLexer(private val lexer: Lexer) : ParserMatcher {
 
-    override fun match(status: ParserMatcherStatus): ParserMatcherStatus {
+    override fun match(status: ParserStatus): ParserStatus {
         val token = status.peek()
         if (token.lexer == lexer) {
-            return status.next(AstNode.of(lexer, token))
+            return status.next(lexer.newNode(token))
         }
         status.panic(lexer)
     }

@@ -1,11 +1,14 @@
 package io.grule.lexer
 
+import io.grule.node.KeyOwner
 import io.grule.token.CharStream
 import io.grule.token.TokenStream
 import io.grule.token.TokenStreamImpl
 
 @Suppress("MemberVisibilityCanBePrivate")
-interface Lexer : LexerMatcherExt {
+interface Lexer : LexerMatcherExt, KeyOwner {
+    override val key: Any get() = this
+
     fun lex(context: LexerContext)
 
     fun tokenStream(charStream: CharStream): TokenStream {

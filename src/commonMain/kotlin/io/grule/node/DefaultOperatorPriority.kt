@@ -1,9 +1,9 @@
-package io.grule.node2
+package io.grule.node
 
 enum class DefaultOperatorPriority {
     MIN, SEMICOLON, QUERY, OR, XOR, AND, EQ, REL, PLUS, TIMES, MAX;
 
-    companion object : Comparator<Node> {
+    companion object : Comparator<AstNode> {
         private val priorities = mapOf(
             ";" to SEMICOLON,
             "?" to QUERY,
@@ -21,9 +21,9 @@ enum class DefaultOperatorPriority {
             return priorities[first] ?: MIN
         }
 
-        override fun compare(a: Node, b: Node): Int {
-            val firstPriority = DefaultOperatorPriority.of(a.tokens.first().text)
-            val secondPriority = DefaultOperatorPriority.of(b.tokens.first().text)
+        override fun compare(a: AstNode, b: AstNode): Int {
+            val firstPriority = of(a.tokens.first().text)
+            val secondPriority = of(b.tokens.first().text)
             return firstPriority.ordinal - secondPriority.ordinal
         }
     }

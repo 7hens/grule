@@ -1,7 +1,7 @@
 package io.grule.lexer
 
 internal object LexerMatcherEOF : LexerMatcher {
-    override fun match(status: LexerMatcherStatus): LexerMatcherStatus {
+    override fun match(status: LexerStatus): LexerStatus {
         status.peek() ?: return status
         status.panic(this)
     }

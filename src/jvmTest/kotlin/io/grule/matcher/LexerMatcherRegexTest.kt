@@ -1,7 +1,7 @@
 package io.grule.matcher
 
 import io.grule.lexer.LexerMatcherRegex
-import io.grule.lexer.LexerMatcherStatus
+import io.grule.lexer.LexerStatus
 import io.grule.token.CharStream
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -15,7 +15,7 @@ internal class LexerMatcherRegexTest {
         println(pattern)
         val charStream = CharStream.fromString(text)
         val lexerRegex = LexerMatcherRegex(pattern)
-        val status = LexerMatcherStatus.from(charStream)
+        val status = LexerStatus(lexerRegex, charStream)
         val result = lexerRegex.not().until(lexerRegex.test()).match(status)
         return lexerRegex.match(result).position - result.position
     }

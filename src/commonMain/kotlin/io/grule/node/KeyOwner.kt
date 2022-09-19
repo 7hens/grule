@@ -1,4 +1,4 @@
-package io.grule.node2
+package io.grule.node
 
 import io.grule.token.Token
 
@@ -9,15 +9,15 @@ interface KeyOwner {
         return key == keyOf(other)
     }
 
-    fun newNode(token: Token): Node {
+    fun newNode(token: Token): AstNode {
         return NodeTerminal(key, token)
     }
 
-    fun newNode(nodes: Iterable<Node>): Node {
+    fun newNode(nodes: Iterable<AstNode>): AstNode {
         return NodeBranch(key, nodes.toList())
     }
 
-    fun newNode(vararg nodes: Node): Node {
+    fun newNode(vararg nodes: AstNode): AstNode {
         return newNode(listOf(*nodes))
     }
 

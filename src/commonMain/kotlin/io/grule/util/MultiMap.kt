@@ -8,9 +8,9 @@ fun <K, V> MultiMap<K, V>.get(key: K, index: Int): V? {
 
 fun <K, V> MultiMap<K, V>.first(key: K): V = firstOrNull(key)!!
 
-fun <K, V> MultiMap<K, V>.firstOrNull(key: K): V? = get(key, 0)
+fun <K, V> MultiMap<K, V>.firstOrNull(key: K): V? = get(key)?.firstOrNull()
 
 fun <K, V> MultiMap<K, V>.last(key: K): V = lastOrNull(key)!!
 
-fun <K, V> MultiMap<K, V>.lastOrNull(key: K): V? = get(key, size - 1)
+fun <K, V> MultiMap<K, V>.lastOrNull(key: K): V? = get(key)?.lastOrNull()
 
