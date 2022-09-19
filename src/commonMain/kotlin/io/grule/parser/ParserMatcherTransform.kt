@@ -7,7 +7,7 @@ internal class ParserMatcherTransform(val parser: Parser, val mapper: NodeMapper
 
     override fun match(status: ParserStatus): ParserStatus {
         val result = parser.match(status)
-        val resultNode = result.node.transform(mapper)
+        val resultNode = result.node.map { it.transform(mapper) }
         return result.withNode(resultNode)
     }
 

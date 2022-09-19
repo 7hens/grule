@@ -20,7 +20,7 @@ interface NodeStream<T> {
     }
 
     fun subList(fromIndex: Int): T {
-        return transform { newNode(children.subList(fromIndex, children.lastIndex)) }
+        return transform { newNode(children.subList(fromIndex, children.size)) }
     }
 
     fun first(): T {

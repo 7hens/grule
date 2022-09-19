@@ -42,11 +42,17 @@ open class ParserStatus(
 
     override fun self(): ParserStatus {
 //        val lastNode = this.lastNode.get()!!
-        println("lastNode: ${node.toStringLine(true)}")
+        println("parserStatus: $this")
+        if (node.size > 1) {
+            val body = node.subList(0, node.size - 1)
+            val tail = node.last()
+            return withNode(node.newNode(body + tail))
+        }
 //        val parentNode = AstNode.of(node)
 //        parentNode.merge(lastNode)
 //        lastNode.clear()
 //        lastNode.add(parentNode)
+//        newNode(node.all())
         return this
     }
 
@@ -73,6 +79,6 @@ open class ParserStatus(
 //    }
 
     override fun toString(): String {
-        return "$key #$position"
+        return "#$position, @$key, ${node.toStringLine(true)}"
     }
 }

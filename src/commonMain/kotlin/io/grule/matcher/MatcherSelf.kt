@@ -65,7 +65,7 @@ internal class MatcherSelf<T : Status<T>>(
 
         override fun match(status: T): T {
             if (!isHead) {
-                return delegate.match(status)
+                return delegate.match(status.withKey(this))
             }
             return if (isSelf(status)) status.self() else status.panic(this)
         }

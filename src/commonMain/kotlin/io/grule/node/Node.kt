@@ -31,6 +31,10 @@ interface AstNode : KeyOwner, NodeStream<AstNode> {
         return mapper.apply(this)
     }
 
+    operator fun get(index: Int): AstNode {
+        return children[index]
+    }
+
     fun all(): List<AstNode> {
         return children
     }

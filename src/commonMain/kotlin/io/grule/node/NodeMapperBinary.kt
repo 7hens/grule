@@ -1,7 +1,5 @@
 package io.grule.node
 
-import io.grule.util.first
-
 /**
  * | Cases             | Examples            | Result              |
  * | ----------------- | ------------------- | ------------------- |
@@ -19,22 +17,22 @@ internal class NodeMapperBinary(
         if (node.isEmpty()) {
             return node
         }
-        val opIndex = node.children.indexOfLast(isOperator)
+        val opIndex = node.all().indexOfLast(isOperator)
         if (opIndex == -1) {
-            if (node.size == 1 && node.map.containsKey(node.key)) {
-                return apply(node.children.first())
+            if (node.size == 1 && node.contains(node.key)) {
+                return apply(node.first())
             }
-            return node.map { if (it.key == node.key) apply(it) else it }
+            return node.map { if (it.keyEquals(node)) apply(it) else it }
         }
         val left = apply(node.subList(0, opIndex))
-        val op = node.children[opIndex]
+        val op = node[opIndex]
         val right = apply(node.subList(opIndex + 1))
         return sort(left, op, right)
     }
 
     private fun sort(left: AstNode, op: AstNode, right: AstNode): AstNode {
-        if (right.children.any(isOperator)) {
-            val (rightLeft, rightOp, rightRight) = right.children
+        if (right.all().any(isOperator)) {
+            val (rightLeft, rightOp, rightRight) = right.all()
             return sort(exp(left, op, rightLeft), rightOp, rightRight)
         }
         return sortLeft(left, op, right)
@@ -44,22 +42,23 @@ internal class NodeMapperBinary(
         if (left === right) {
             return left
         }
-        require(left.key == right.key)
+        require(left.keyEquals(right))
 
         if (isPrior(left, op)) {
             return exp(left, op, right)
         }
-        val leftTail = left.children.last()
-        val leftBody = left.subList(0, left.size - 1)
+        val leftTailIndex = left.children.indexOfLast { left.keyEquals(it) }
+        val leftTail = left.subList(leftTailIndex)
+        val leftBody = left.subList(0, leftTailIndex)
         return leftBody + sortLeft(leftTail, op, right)
     }
 
     private fun isPrior(element: AstNode, op: AstNode): Boolean {
         val opKey = op.key
-        if (opKey !in element.map) {
+        if (opKey !in element) {
             return true
         }
-        val prevOpNode = element.map.first(opKey)
+        val prevOpNode = element.first(opKey)
         return comparator.compare(prevOpNode, op) >= 0
     }
 
