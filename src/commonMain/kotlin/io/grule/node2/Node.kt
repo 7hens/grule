@@ -1,7 +1,5 @@
 package io.grule.node2
 
-import io.grule.node.KeyOwner
-import io.grule.node.TreeStyle
 import io.grule.token.Token
 import io.grule.util.MultiMap
 
@@ -18,6 +16,8 @@ interface Node : KeyOwner, NodeStream<Node> {
     val size: Int get() = list.size
 
     fun isEmpty(): Boolean = list.isEmpty()
+
+    fun isTerminal(): Boolean = list.isEmpty() && tokens.isNotEmpty()
 
     fun isSingle(): Boolean = list.size == 1
 

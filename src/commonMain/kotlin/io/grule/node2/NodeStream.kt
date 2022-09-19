@@ -1,6 +1,7 @@
 package io.grule.node2
 
-import io.grule.node.KeyOwner
+import io.grule.util.first
+import io.grule.util.last
 
 interface NodeStream<T> {
 
@@ -11,19 +12,35 @@ interface NodeStream<T> {
     }
 
     operator fun plus(node: Node): T {
-        return transform { newTree(list + node) }
+        return transform { newNode(list + node) }
     }
 
     fun subList(fromIndex: Int, toIndex: Int): T {
-        return transform { newTree(list.subList(fromIndex, toIndex)) }
+        return transform { newNode(list.subList(fromIndex, toIndex)) }
     }
 
     fun subList(fromIndex: Int): T {
-        return transform { newTree(list.subList(fromIndex, list.lastIndex)) }
+        return transform { newNode(list.subList(fromIndex, list.lastIndex)) }
+    }
+
+    fun first(): T {
+        return transform { list.first() }
+    }
+
+    fun first(key: Any): T {
+        return transform { map.first(key) }
+    }
+
+    fun last(): T {
+        return transform { list.last() }
+    }
+
+    fun last(key: Any): T {
+        return transform { map.last(key) }
     }
 
     fun wrapWith(keyOwner: KeyOwner): T {
-        return transform { if (keyEquals(keyOwner)) this else keyOwner.newTree(this) }
+        return transform { if (keyEquals(keyOwner)) this else keyOwner.newNode(this) }
     }
 
     fun flat(predicate: (Node) -> Boolean): T {
@@ -51,7 +68,7 @@ interface NodeStream<T> {
     }
 
     fun map(mapper: (Node) -> Node): T {
-        return transform { newTree(list.map(mapper)) }
+        return transform { newNode(list.map(mapper)) }
     }
 
     fun mapTree(mapper: (Node) -> Node): T {

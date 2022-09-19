@@ -1,5 +1,7 @@
 package io.grule.node
 
+import io.grule.node2.KeyOwner
+import io.grule.node2.TreeStyle
 import io.grule.token.Token
 
 open class AstNode private constructor(keyOwner: KeyOwner) : AstNodeStream<AstNode>, KeyOwner by keyOwner {

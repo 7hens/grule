@@ -1,6 +1,6 @@
 package io.grule.matcher
 
-import io.grule.node.KeyOwner
+import io.grule.node2.KeyOwner
 
 @Suppress("MemberVisibilityCanBePrivate")
 fun interface Matcher<T : Status<T>> {

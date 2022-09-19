@@ -1,6 +1,5 @@
 package io.grule.node2
 
-import io.grule.node.TreeStyle
 import io.grule.token.Token
 import io.grule.util.MultiMap
 

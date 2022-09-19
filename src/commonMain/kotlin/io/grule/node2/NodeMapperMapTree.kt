@@ -6,6 +6,6 @@ internal class NodeMapperMapTree(val mapper: (Node) -> Node) : NodeMapper {
         if (node.isEmpty()) {
             return mapper(node)
         }
-        return node.newTree(node.list.map { apply(it) })
+        return node.newNode(node.list.map { apply(it) })
     }
 }

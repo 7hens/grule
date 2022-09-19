@@ -1,8 +1,5 @@
-package io.grule.node
+package io.grule.node2
 
-import io.grule.node2.Node
-import io.grule.node2.NodeBranch
-import io.grule.node2.NodeTerminal
 import io.grule.token.Token
 
 interface KeyOwner {
@@ -12,24 +9,16 @@ interface KeyOwner {
         return key == keyOf(other)
     }
 
-    fun newEmpty(): Node {
-        return newTree()
-    }
-
-    fun newTerminal(token: Token): Node {
+    fun newNode(token: Token): Node {
         return NodeTerminal(key, token)
     }
 
-    fun newSingle(node: Node): Node {
-        return newTree(listOf(node))
-    }
-
-    fun newTree(nodes: Iterable<Node>): Node {
+    fun newNode(nodes: Iterable<Node>): Node {
         return NodeBranch(key, nodes.toList())
     }
 
-    fun newTree(vararg nodes: Node): Node {
-        return newTree(listOf(*nodes))
+    fun newNode(vararg nodes: Node): Node {
+        return newNode(listOf(*nodes))
     }
 
     companion object {

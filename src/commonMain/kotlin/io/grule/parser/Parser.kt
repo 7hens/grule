@@ -3,7 +3,7 @@ package io.grule.parser
 import io.grule.lexer.Lexer
 import io.grule.node.AstNode
 import io.grule.node.AstNodeStream
-import io.grule.node.KeyOwner
+import io.grule.node2.KeyOwner
 import io.grule.token.TokenStream
 
 interface Parser : ParserMatcher, ParserMatcherExt, KeyOwner, AstNodeStream<Parser> {

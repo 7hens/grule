@@ -1,6 +1,6 @@
 package io.grule.matcher
 
-import io.grule.node.KeyOwner
+import io.grule.node2.KeyOwner
 
 interface Status<T : Status<T>> : ContextOwner, KeyOwner {
 

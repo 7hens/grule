@@ -64,6 +64,6 @@ internal class NodeMapperBinary(
     }
 
     private fun exp(left: Node, op: Node, right: Node): Node {
-        return left.newTree(left, op, right)
+        return left.newNode(left, op, right)
     }
 }
