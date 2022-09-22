@@ -12,5 +12,7 @@ interface Status<T : Status<T>> : KeyOwner {
 
     fun self(matcher: Matcher<T>): T
 
+    fun selfPartial(matcher: Matcher<T>): T
+
     fun panic(rule: Any): Nothing
 }

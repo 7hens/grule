@@ -15,6 +15,10 @@ interface NodeStream<T> {
         return transform { newNode(children + node) }
     }
 
+    operator fun plus(nodes: Iterable<AstNode>): T {
+        return transform { newNode(children + nodes) }
+    }
+
     fun subList(fromIndex: Int, toIndex: Int): T {
         return transform { newNode(children.subList(fromIndex, toIndex)) }
     }

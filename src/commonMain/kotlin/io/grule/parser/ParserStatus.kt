@@ -50,18 +50,33 @@ open class ParserStatus(
     }
 
     override fun self(matcher: Matcher<ParserStatus>): ParserStatus {
-        println("self_m: $this,     $matcher")
         val result = matcher.match(withNode(node.newNode()))
-        return result.withNode(node.newNode(trimSingle(node + trimSingle(result.node))))
+        println("self: $this,     $matcher\n     -> $result")
+        return result.withNode(node.newNode(resolveSelfNode(node, result.node, false)))
+    }
+
+    override fun selfPartial(matcher: Matcher<ParserStatus>): ParserStatus {
+        val result = matcher.match(withNode(node.newNode()))
+        println("selfPartial: $this,     $matcher\n     -> $result")
+        return result.withNode(node.newNode(resolveSelfNode(node, result.node, true)))
+    }
+
+    private fun resolveSelfNode(prevNode: AstNode, resultNode: AstNode, partial: Boolean): AstNode {
+        val trimmedResultNode = trimSingle(resultNode)
+        if (partial) {
+            return trimSingle(prevNode + trimmedResultNode.all())
+        }
+        return trimSingle(prevNode + trimmedResultNode)
     }
 
     private fun trimSingle(node: AstNode): AstNode {
+//        if (true) return node
         if (!node.isSingle()) {
             return node
         }
         val singleChild = node.first()
         if (singleChild.keyEquals(node)) {
-            return trimSingle(singleChild)
+            return singleChild
         }
         return node
     }

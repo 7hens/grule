@@ -47,4 +47,8 @@ class LexerStatus(
     override fun self(matcher: Matcher<LexerStatus>): LexerStatus {
         return matcher.match(this)
     }
+
+    override fun selfPartial(matcher: Matcher<LexerStatus>): LexerStatus {
+        return matcher.match(this)
+    }
 }

@@ -6,38 +6,7 @@ import kotlin.test.assertEquals
 class RecursiveParserTest {
 
     @Test
-    fun recursiveRight() {
-        RepeatGrammar().apply {
-            val source = "0 * 1 + 2 * 3 - 4 / x"
-            println("================")
-            println(source)
-            println("{ X + \"x\" or X + Num self { X + Num + Op + me } }")
-
-            val exp by parser { X + "x" or X + Num self { X + Num + Op + me } }
-
-            val astNode = exp.parse(tokenStream(source))
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
-    fun recursiveBinary() {
-        RepeatGrammar().apply {
-            val source = "0 * 1 + 2 * 3 - 4 / x"
-            println("================")
-            println(source)
-            println("X + Num or X + \"x\" self { me + Op + it }")
-
-            val exp by parser { X + Num or X + "x" self { me + Op + it } }
-            val binary by parser { exp.flat().binary(Op) }
-
-            val astNode = binary.parse(tokenStream(source))
-            println(astNode.toStringTree())
-        }
-    }
-
-    @Test
-    fun recursiveSelfLeft() {
+    fun left() {
         RepeatGrammar().apply {
             val source = "0 1 2 3"
             println("================")
@@ -54,7 +23,24 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun recursiveSelfRight() {
+    fun leftBinary() {
+        RepeatGrammar().apply {
+            val source = "0 * 1 / x"
+            println("================")
+            println(source)
+            println("X + \"x\" or X + Num self { me + Op + it }")
+
+            val exp by parser { X + "x" or X + Num self { me + Op + it } }
+
+            val astNode = exp.parse(tokenStream(source))
+            println(astNode.toStringLine())
+            println(astNode.toStringTree())
+            assertEquals("((0 * 1) / x)", astNode.toStringLine())
+        }
+    }
+
+    @Test
+    fun right() {
         RepeatGrammar().apply {
             val source = "0 1 2 3"
             println("================")
@@ -71,7 +57,24 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun recursiveSelfSelf() {
+    fun rightBinary() {
+        RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
+            println("================")
+            println(source)
+            println("{ X + \"x\" or X + Num self { X + Num + Op + me } }")
+
+            val exp by parser { X + "x" or X + Num self { X + Num + Op + me } }
+
+            val astNode = exp.parse(tokenStream(source))
+            println(astNode.toStringLine())
+            println(astNode.toStringTree())
+            assertEquals("(0 * (1 + (2 * (3 - (4 / x)))))", astNode.toStringLine())
+        }
+    }
+
+    @Test
+    fun cascadingLeft() {
         RepeatGrammar().apply {
             val source = "0 + 1 2 3"
             println("================")
@@ -88,7 +91,7 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun recursiveSelfOr() {
+    fun or() {
         RepeatGrammar().apply {
             val source = "0 + 1 2 - 3"
             println("================")
@@ -105,13 +108,32 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun binary() {
+    fun thenBinaryOp() {
+        RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4 / x"
+            println("================")
+            println(source)
+            println("X + Num or X + \"x\" self { me + Op + it }")
+
+            val exp by parser { X + Num or X + "x" self { me + Op + it } }
+            val binary by parser { exp.flat().binary(Op) }
+
+            val astNode = binary.parse(tokenStream(source))
+            println(astNode.toStringLine())
+            println(astNode.toStringTree())
+            assertEquals("(((0 * 1) + (2 * 3)) - (4 / x))", astNode.toStringLine())
+        }
+    }
+
+    @Test
+    fun cascadingBinary() {
         RepeatGrammar().apply {
             val source = "1 + 2 * 3 * 4 + 5"
             println("--------------------------------------")
             println(source)
+            println("X + Num self { me + \"*\" + it } self { me + \"+\" + it }")
 
-            val exp by parser { X + Num self { me + "*" + it or me + "+" + it } }
+            val exp by parser { X + Num self { me + "*" + it } self { me + "+" + it } }
             val main by parser { X + exp }
             val astNode = main.parse(tokenStream(source))
             println(astNode.toStringLine())

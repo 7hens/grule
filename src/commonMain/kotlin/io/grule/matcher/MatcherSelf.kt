@@ -61,7 +61,7 @@ internal class MatcherSelf<T : Status<T>>(
             var result = status.self(primary)
             try {
                 while (true) {
-                    result = result.self(body)
+                    result = result.selfPartial(body)
                 }
             } catch (_: MatcherException) {
             }
