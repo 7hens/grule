@@ -1,6 +1,7 @@
 package io.grule.parser
 
 import io.grule.lexer.Lexer
+import io.grule.matcher.Matcher
 import io.grule.matcher.Status
 import io.grule.node.AstNode
 import io.grule.token.Token
@@ -41,19 +42,17 @@ open class ParserStatus(
     }
 
     override fun self(): ParserStatus {
-//        val lastNode = this.lastNode.get()!!
         println("parserStatus: $this")
         if (node.size > 1) {
-            val body = node.subList(0, node.size - 1)
-            val tail = node.last()
-            return withNode(node.newNode(body + tail))
+            return withNode(node.newNode(node))
         }
-//        val parentNode = AstNode.of(node)
-//        parentNode.merge(lastNode)
-//        lastNode.clear()
-//        lastNode.add(parentNode)
-//        newNode(node.all())
         return this
+    }
+
+    override fun self(matcher: Matcher<ParserStatus>): ParserStatus {
+        println("parserStatus(self): $this,     $matcher")
+        val result = matcher.match(withNode(node.newNode()))
+        return result.withNode(node + result.node)
     }
 
 //    override fun apply(matcher: Matcher<ParserMatcherStatus>): ParserMatcherStatus {

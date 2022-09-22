@@ -1,5 +1,6 @@
 package io.grule.lexer
 
+import io.grule.matcher.Matcher
 import io.grule.matcher.Status
 import io.grule.token.CharStream
 
@@ -41,5 +42,9 @@ class LexerStatus(
 
     override fun self(): LexerStatus {
         return this
+    }
+
+    override fun self(matcher: Matcher<LexerStatus>): LexerStatus {
+        return matcher.match(this)
     }
 }

@@ -104,12 +104,12 @@ class RecursiveParserTest {
     fun binary() {
         RepeatGrammar().apply {
             val source = "1 + 2 * 3 * 4 + 5"
-            val exp by parser { X + Num self { me + "*" + it } self { me + "+" + it } }
-            val main by parser { X + exp }
-
-            val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
+
+            val exp by parser { X + Num self { me + "*" + it or me + "+" + it } }
+            val main by parser { X + exp }
+            val astNode = main.parse(tokenStream(source))
             println(astNode.toStringLine())
             println(astNode.toStringTree())
             assertEquals("((1 + ((2 * 3) * 4)) + 5)", astNode.toStringLine())

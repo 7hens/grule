@@ -10,5 +10,7 @@ interface Status<T : Status<T>> : KeyOwner {
 
     fun self(): T
 
+    fun self(matcher: Matcher<T>): T
+
     fun panic(rule: Any): Nothing
 }

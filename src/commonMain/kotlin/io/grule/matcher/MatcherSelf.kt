@@ -10,35 +10,76 @@ internal class MatcherSelf<T : Status<T>>(
     val fn: Matcher.Self<T>.() -> Matcher<T>,
 ) : Matcher<T> {
 
-    private val repeatable by lazy {
-        val meMatcher = MeMatcher(this, false)
-        val itMatcher = ItMatcher(primary, false)
-        fn(Matcher.Self(meMatcher, itMatcher))
-    }
+    private val meMatcher = MeMatcher()
+
+    private val repeatable by lazy { fn(Matcher.Self(meMatcher, primary)) }
 
     override fun match(status: T): T {
-        return try {
-            matchInternal(status, repeatable, repeatable)
-        } catch (_: MatcherException) {
-            matchInternal(status, primary, repeatable)
-        }
+        return meMatcher.match(status)
     }
 
     private fun matchInternal(status: T, head: Matcher<T>, body: Matcher<T>): T {
-        var result = head.match(status).withKey(this)
+        var result = head.match(status).withKey(head)
         try {
             while (true) {
-                result = body.match(result).withKey(this)
+                result = body.match(result).withKey(body)
             }
         } catch (_: MatcherException) {
         }
         return result
     }
 
-    private fun isSelf(status: T): Boolean = status.key === this
-
     override fun toString(): String {
         return "($primary): $repeatable"
+    }
+
+    inner class MeMatcher : Matcher<T> {
+        override val isNode: Boolean = true
+
+        override fun match(status: T): T {
+            return try {
+                status.self(repeatable)
+            } catch (e: MatcherException) {
+                status.self(primary)
+//                primary.match(status)
+            }
+        }
+
+        override fun plus(matcher: Matcher<T>): Matcher<T> {
+            return HeadMeMatcher(matcher)
+        }
+
+        override fun toString(): String {
+            return "\$me"
+        }
+    }
+
+    inner class HeadMeMatcher(val body: Matcher<T>) : Matcher<T> {
+        override fun match(status: T): T {
+            var result = status.self(primary)
+            try {
+                while (true) {
+                    result = result.self(body)
+                }
+            } catch (_: MatcherException) {
+            }
+            return result
+        }
+
+        override fun plus(matcher: Matcher<T>): Matcher<T> {
+            return HeadMeMatcher(body + matcher)
+        }
+
+        override fun or(matcher: Matcher<T>): Matcher<T> {
+            if (matcher is HeadMeMatcher) {
+                return HeadMeMatcher(body or matcher.body)
+            }
+            return super.or(matcher)
+        }
+
+        override fun toString(): String {
+            return "\$me $body"
+        }
     }
 
     inner class ItMatcher(val delegate: Matcher<T>, val isHead: Boolean) : Matcher<T> {
@@ -48,7 +89,9 @@ internal class MatcherSelf<T : Status<T>>(
             if (!isHead) {
                 return delegate.match(status)
             }
-            return if (isSelf(status)) status.self() else status.panic(this)
+            val isSelf = status.key === primary
+            println("it: isSelf: $isSelf | $status")
+            return if (isSelf) status.self() else status.panic(this)
         }
 
         override fun plus(matcher: Matcher<T>): Matcher<T> {
@@ -57,25 +100,6 @@ internal class MatcherSelf<T : Status<T>>(
 
         override fun toString(): String {
             return "\$it"
-        }
-    }
-
-    inner class MeMatcher(val delegate: Matcher<T>, val isHead: Boolean) : Matcher<T> {
-        override val isNode: Boolean = true
-
-        override fun match(status: T): T {
-            if (!isHead) {
-                return delegate.match(status.withKey(this))
-            }
-            return if (isSelf(status)) status.self() else status.panic(this)
-        }
-
-        override fun plus(matcher: Matcher<T>): Matcher<T> {
-            return MatcherPlus(MeMatcher(delegate, true), matcher)
-        }
-
-        override fun toString(): String {
-            return "\$me"
         }
     }
 }
