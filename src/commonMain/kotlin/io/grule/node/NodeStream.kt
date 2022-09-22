@@ -43,6 +43,10 @@ interface NodeStream<T> {
         return transform { map.last(key) }
     }
 
+    fun trimSingle(): T {
+        return transform(NodeMapperTrimSingle())
+    }
+
     fun wrapWith(keyOwner: KeyOwner): T {
         return transform { if (keyEquals(keyOwner)) this else keyOwner.newNode(this) }
     }

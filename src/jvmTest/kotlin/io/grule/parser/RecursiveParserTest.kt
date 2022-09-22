@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 class RecursiveParserTest {
 
     @Test
-    fun left() {
+    fun meIt() {
         RepeatGrammar().apply {
             val source = "0 1 2 3"
             println("================")
@@ -23,7 +23,7 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun leftBinary() {
+    fun meOpIt() {
         RepeatGrammar().apply {
             val source = "0 * 1 / x"
             println("================")
@@ -40,9 +40,9 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun right() {
+    fun itMe() {
         RepeatGrammar().apply {
-            val source = "0 1 2 3"
+            val source = "0 1 2 3 4 5 6"
             println("================")
             println(source)
             println("X + Num self { it + me }")
@@ -52,12 +52,29 @@ class RecursiveParserTest {
             val astNode = exp.parse(tokenStream(source))
             println(astNode.toStringLine())
             println(astNode.toStringTree())
-            assertEquals("(0 (1 (2 3)))", astNode.toStringLine())
+            assertEquals("(0 (1 (2 (3 (4 (5 6))))))", astNode.toStringLine())
         }
     }
 
     @Test
-    fun rightBinary() {
+    fun itOpMe() {
+        RepeatGrammar().apply {
+            val source = "x * 1 / 2 - 3 + 4 / 5"
+            println("================")
+            println(source)
+            println("X + \"x\" or X + Num self { it + Op + me }")
+
+            val exp by parser { X + "x" or X + Num self { it + Op + me } }
+
+            val astNode = exp.parse(tokenStream(source))
+            println(astNode.toStringLine())
+            println(astNode.toStringTree())
+            assertEquals("(x * (1 / (2 - (3 + (4 / 5)))))", astNode.toStringLine())
+        }
+    }
+
+    @Test
+    fun numOpMe() {
         RepeatGrammar().apply {
             val source = "0 * 1 + 2 * 3 - 4 / x"
             println("================")
@@ -74,7 +91,7 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun cascadingLeft() {
+    fun meOp_meNum() {
         RepeatGrammar().apply {
             val source = "0 + 1 2 3"
             println("================")
@@ -91,7 +108,7 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun or() {
+    fun meItOrMeOp() {
         RepeatGrammar().apply {
             val source = "0 + 1 2 - 3"
             println("================")
@@ -108,7 +125,7 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun thenBinaryOp() {
+    fun meOpIt_binary() {
         RepeatGrammar().apply {
             val source = "0 * 1 + 2 * 3 - 4 / x"
             println("================")
@@ -126,7 +143,7 @@ class RecursiveParserTest {
     }
 
     @Test
-    fun cascadingBinary() {
+    fun meXIt_meXIt() {
         RepeatGrammar().apply {
             val source = "1 + 2 * 3 * 4 + 5"
             println("--------------------------------------")

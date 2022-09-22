@@ -62,11 +62,20 @@ open class ParserStatus(
     }
 
     private fun resolveSelfNode(prevNode: AstNode, resultNode: AstNode, partial: Boolean): AstNode {
+        val trimmedPrevNode = trimSinglePrev(prevNode)
         val trimmedResultNode = trimSingle(resultNode)
-        if (partial) {
-            return trimSingle(prevNode + trimmedResultNode.all())
+        if (partial && !trimmedResultNode.isTerminal()) {
+            return trimmedPrevNode + trimmedResultNode.all()
         }
-        return trimSingle(prevNode + trimmedResultNode)
+        return trimmedPrevNode + trimmedResultNode.trimSingle()
+    }
+
+    private fun trimSinglePrev(node: AstNode): AstNode {
+        if (!node.isSingle()) {
+            return node
+        }
+        val singleChild = node.first()
+        return node.newNode(trimSingle(singleChild))
     }
 
     private fun trimSingle(node: AstNode): AstNode {

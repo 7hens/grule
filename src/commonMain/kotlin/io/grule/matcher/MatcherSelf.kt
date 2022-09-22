@@ -44,6 +44,7 @@ internal class MatcherSelf<T : Status<T>>(
             } catch (e: MatcherException) {
                 status.self(primary)
 //                primary.match(status)
+//                primary.match(status)
             }
         }
 
