@@ -26,6 +26,7 @@ class RecursiveParserTest {
             val source = "0 * 1 + 2 * 3 - 4 / x"
             println("================")
             println(source)
+            println("X + Num or X + \"x\" self { me + Op + it }")
 
             val exp by parser { X + Num or X + "x" self { me + Op + it } }
             val binary by parser { exp.flat().binary(Op) }
@@ -41,6 +42,7 @@ class RecursiveParserTest {
             val source = "0 1 2 3"
             println("================")
             println(source)
+            println("X + Num self { me + it }")
 
             val exp by parser { X + Num self { me + it } }
 
@@ -57,6 +59,7 @@ class RecursiveParserTest {
             val source = "0 1 2 3"
             println("================")
             println(source)
+            println("X + Num self { it + me }")
 
             val exp by parser { X + Num self { it + me } }
 
@@ -90,6 +93,7 @@ class RecursiveParserTest {
             val source = "0 + 1 2 - 3"
             println("================")
             println(source)
+            println("X + Num self { me + it or me + Op }")
 
             val exp by parser { X + Num self { me + it or me + Op } }
 

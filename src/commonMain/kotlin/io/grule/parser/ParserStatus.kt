@@ -42,7 +42,7 @@ open class ParserStatus(
     }
 
     override fun self(): ParserStatus {
-        println("parserStatus: $this")
+        println("self: $this,")
         if (node.size > 1) {
             return withNode(node.newNode(node))
         }
@@ -50,9 +50,20 @@ open class ParserStatus(
     }
 
     override fun self(matcher: Matcher<ParserStatus>): ParserStatus {
-        println("parserStatus(self): $this,     $matcher")
+        println("self_m: $this,     $matcher")
         val result = matcher.match(withNode(node.newNode()))
-        return result.withNode(node + result.node)
+        return result.withNode(node.newNode(trimSingle(node + trimSingle(result.node))))
+    }
+
+    private fun trimSingle(node: AstNode): AstNode {
+        if (!node.isSingle()) {
+            return node
+        }
+        val singleChild = node.first()
+        if (singleChild.keyEquals(node)) {
+            return trimSingle(singleChild)
+        }
+        return node
     }
 
 //    override fun apply(matcher: Matcher<ParserMatcherStatus>): ParserMatcherStatus {

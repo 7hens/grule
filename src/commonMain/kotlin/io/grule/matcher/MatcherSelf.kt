@@ -10,9 +10,11 @@ internal class MatcherSelf<T : Status<T>>(
     val fn: Matcher.Self<T>.() -> Matcher<T>,
 ) : Matcher<T> {
 
+    private val itMatcher = ItMatcher()
+
     private val meMatcher = MeMatcher()
 
-    private val repeatable by lazy { fn(Matcher.Self(meMatcher, primary)) }
+    private val repeatable by lazy { fn(Matcher.Self(meMatcher, itMatcher)) }
 
     override fun match(status: T): T {
         return meMatcher.match(status)
@@ -82,20 +84,11 @@ internal class MatcherSelf<T : Status<T>>(
         }
     }
 
-    inner class ItMatcher(val delegate: Matcher<T>, val isHead: Boolean) : Matcher<T> {
+    inner class ItMatcher : Matcher<T> {
         override val isNode: Boolean = true
 
         override fun match(status: T): T {
-            if (!isHead) {
-                return delegate.match(status)
-            }
-            val isSelf = status.key === primary
-            println("it: isSelf: $isSelf | $status")
-            return if (isSelf) status.self() else status.panic(this)
-        }
-
-        override fun plus(matcher: Matcher<T>): Matcher<T> {
-            return MatcherPlus(ItMatcher(delegate, true), matcher)
+            return status.self(primary)
         }
 
         override fun toString(): String {
