@@ -1,7 +1,6 @@
 package io.grule.parser
 
 import io.grule.lexer.Lexer
-import io.grule.lexer.LexerEOF.key
 import io.grule.matcher.Matcher
 import io.grule.matcher.Status
 import io.grule.node.AstNode
@@ -61,6 +60,6 @@ open class ParserStatus(
     }
 
     override fun toString(): String {
-        return "#$position, @$key, ${node.toStringLine()}"
+        return "#$position, ${node.toStringLine()}"
     }
 }

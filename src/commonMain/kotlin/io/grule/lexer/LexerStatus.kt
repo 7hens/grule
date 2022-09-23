@@ -42,4 +42,8 @@ class LexerStatus(
     override fun selfPartial(matcher: Matcher<LexerStatus>): LexerStatus {
         return matcher.match(this)
     }
+
+    override fun toString(): String {
+        return "#$position, ${data.position}, ${data.peek(0)}"
+    }
 }
