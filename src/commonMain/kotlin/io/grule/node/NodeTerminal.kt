@@ -19,16 +19,18 @@ internal class NodeTerminal(override val key: Any, val token: Token) : AstNode {
         if (key is String) {
             return "$key"
         }
-        return toStringLine(true)
+        return toStringLine()
     }
 
-    override fun toStringLine(includesKey: Boolean): String {
-        val prefix = if (includesKey) "$key" else ""
+    override fun toStringExpr(): String {
         return text
             .replace("(", "\\(")
             .replace(")", "\\)")
             .replace("\n", "\\n")
-            .let { if (includesKey) "$prefix($it)" else it }
+    }
+
+    override fun toStringLine(): String {
+        return "$key(${toStringExpr()})"
     }
 
     override fun toStringTree(style: TreeStyle): String {

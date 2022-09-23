@@ -23,7 +23,9 @@ interface AstNode : KeyOwner, NodeStream<AstNode> {
 
     fun isSingle(): Boolean = children.size == 1
 
-    fun toStringLine(includesKey: Boolean = false): String
+    fun toStringExpr(): String
+
+    fun toStringLine(): String
 
     fun toStringTree(style: TreeStyle = TreeStyle.SOLID): String
 

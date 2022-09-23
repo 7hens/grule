@@ -24,12 +24,15 @@ internal class NodeBranch(
         return "$key ($text)"
     }
 
-    override fun toStringLine(includesKey: Boolean): String {
-        val prefix = if (includesKey) "$key" else ""
-        if (size == 1 && !includesKey) {
-            return children.first().toStringLine(includesKey)
+    override fun toStringExpr(): String {
+        if (size == 1) {
+            return children.first().toStringExpr()
         }
-        return children.joinToString(" ", "$prefix(", ")") { it.toStringLine(includesKey) }
+        return children.joinToString(" ", "(", ")") { it.toStringExpr() }
+    }
+
+    override fun toStringLine(): String {
+        return children.joinToString(" ", "$key(", ")") { it.toStringLine() }
     }
 
     override fun toStringTree(style: TreeStyle): String {

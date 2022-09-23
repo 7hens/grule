@@ -3,8 +3,8 @@ package io.grule.parser
 import io.grule.Grammar
 
 class RepeatGrammar : Grammar() {
-    val Num by lexer { DIGIT.more() }
-    val Op by lexer { X - "+-*/%><=!" }
+    val N by lexer { DIGIT.more() }
+    val O by lexer { X - "+-*/%><=!" }
 
     init {
         lexer.skip { WRAP or SPACE }

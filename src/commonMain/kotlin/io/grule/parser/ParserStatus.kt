@@ -51,14 +51,26 @@ open class ParserStatus(
 
     override fun self(matcher: Matcher<ParserStatus>): ParserStatus {
         val result = matcher.match(withNode(node.newNode()))
-        println("self: $this,     $matcher\n     -> $result")
-        return result.withNode(node.newNode(resolveSelfNode(node, result.node, false)))
+//        val newNode = node.newNode(resolveSelfNode(node, result.node, false))
+        val newNode = node + result.node.trimSingle()
+        println(
+            "self: ${node.toStringLine()},     $matcher" +
+                    "\n     -> ${result.node.toStringLine()}" +
+                    "\n     => ${newNode.toStringLine()}"
+        )
+        return result.withNode(newNode)
     }
 
     override fun selfPartial(matcher: Matcher<ParserStatus>): ParserStatus {
         val result = matcher.match(withNode(node.newNode()))
-        println("selfPartial: $this,     $matcher\n     -> $result")
-        return result.withNode(node.newNode(resolveSelfNode(node, result.node, true)))
+//        val newNode = node.newNode(resolveSelfNode(node, result.node, true))
+        val newNode = node.newNode(node + result.node.all())
+        println(
+            "selfPartial: ${node.toStringLine()},     $matcher" +
+                    "\n     -> ${result.node.toStringLine()}" +
+                    "\n     => ${newNode.toStringLine()}"
+        )
+        return result.withNode(newNode)
     }
 
     private fun resolveSelfNode(prevNode: AstNode, resultNode: AstNode, partial: Boolean): AstNode {
@@ -113,6 +125,6 @@ open class ParserStatus(
 //    }
 
     override fun toString(): String {
-        return "#$position, @$key, ${node.toStringLine(true)}"
+        return "#$position, @$key, ${node.toStringLine()}"
     }
 }

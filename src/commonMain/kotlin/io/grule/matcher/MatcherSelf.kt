@@ -20,17 +20,6 @@ internal class MatcherSelf<T : Status<T>>(
         return meMatcher.match(status)
     }
 
-    private fun matchInternal(status: T, head: Matcher<T>, body: Matcher<T>): T {
-        var result = head.match(status).withKey(head)
-        try {
-            while (true) {
-                result = body.match(result).withKey(body)
-            }
-        } catch (_: MatcherException) {
-        }
-        return result
-    }
-
     override fun toString(): String {
         return "($primary): $repeatable"
     }

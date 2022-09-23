@@ -8,15 +8,15 @@ class ParserBinaryTest {
     fun simple() {
         RepeatGrammar().apply {
             val source = "0 * 1 + 2 * 3 - 4 / x"
-            val exp by parser { (X + Num + Op).until(X + "x") }
-            val main by parser { X + exp.binary(Op) }
+            val exp by parser { (X + N + O).until(X + "x") }
+            val main by parser { X + exp.binary(O) }
 
             val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
-            println(astNode.toStringLine())
+            println(astNode.toStringExpr())
             println(astNode.toStringTree())
-            assertEquals("(((0 * 1) + (2 * 3)) - (4 / x))", astNode.toStringLine())
+            assertEquals("(((0 * 1) + (2 * 3)) - (4 / x))", astNode.toStringExpr())
         }
     }
 
@@ -24,15 +24,15 @@ class ParserBinaryTest {
     fun missingElements() {
         RepeatGrammar().apply {
             val source = "* 1 + 2 * 3 * - 4 /"
-            val exp by parser { (X + Op).more().repeat().join(X + Num) }
-            val main by parser { X + exp.binary(Op) }
+            val exp by parser { (X + O).more().repeat().join(X + N) }
+            val main by parser { X + exp.binary(O) }
 
             val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
-            println(astNode.toStringLine())
+            println(astNode.toStringExpr())
             println(astNode.toStringTree())
-            assertEquals("(((() * 1) + ((2 * 3) * ())) - (4 / ()))", astNode.toStringLine())
+            assertEquals("(((() * 1) + ((2 * 3) * ())) - (4 / ()))", astNode.toStringExpr())
         }
     }
 
@@ -40,15 +40,15 @@ class ParserBinaryTest {
     fun missingOperators() {
         RepeatGrammar().apply {
             val source = "1 2 3 + 2 * 3 - 4 / x"
-            val exp by parser { (X + (X + Num).more() + Op).until(X + "x") }
-            val main by parser { X + exp.binary(Op) }
+            val exp by parser { (X + (X + N).more() + O).until(X + "x") }
+            val main by parser { X + exp.binary(O) }
 
             val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
-            println(astNode.toStringLine())
+            println(astNode.toStringExpr())
             println(astNode.toStringTree())
-            assertEquals("(((1 2 3) + (2 * 3)) - (4 / x))", astNode.toStringLine())
+            assertEquals("(((1 2 3) + (2 * 3)) - (4 / x))", astNode.toStringExpr())
         }
     }
 }
