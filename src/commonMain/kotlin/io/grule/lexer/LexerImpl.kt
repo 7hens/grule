@@ -4,7 +4,7 @@ internal class LexerImpl(private val matcher: LexerMatcher, val emitsToken: Bool
     private var lexer: Lexer = this
 
     override fun lex(context: LexerContext) {
-        val status = matcher.match(LexerStatus(key, context))
+        val status = matcher.match(LexerStatus(context))
         val matchNum = status.position
         if (emitsToken) {
             context.emit(lexer, matchNum)

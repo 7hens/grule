@@ -10,7 +10,7 @@ import io.grule.token.TokenStream
 interface Parser : ParserMatcher, ParserMatcherExt, KeyOwner, NodeStream<Parser> {
     fun parse(tokenStream: TokenStream): AstNode {
         val mainParser = ParserDsl.run { this@Parser + Lexer.EOF }
-        val status = ParserStatus(key, newNode(), tokenStream)
+        val status = ParserStatus(newNode(), tokenStream)
         return mainParser.match(status).node.first()
     }
 

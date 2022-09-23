@@ -17,8 +17,8 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
     }
 
     override fun match(status: ParserStatus): ParserStatus {
-        val result = matcher.match(status.withNode(newNode()).withKey(key))
-        return result.withNode(status.node + result.node.trimSingle()).withKey(status.key)
+        val result = matcher.match(status.withNode(newNode()))
+        return result.withNode(status.node + result.node.trimSingle())
     }
 
     override val key: Any get() = this

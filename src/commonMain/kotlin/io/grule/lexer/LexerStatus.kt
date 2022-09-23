@@ -5,14 +5,9 @@ import io.grule.matcher.Status
 import io.grule.token.CharStream
 
 class LexerStatus(
-    override val key: Any,
     val data: CharStream,
     val position: Int = 0,
 ) : Status<LexerStatus> {
-
-    override fun withKey(key: Any): LexerStatus {
-        return LexerStatus(key, data, position)
-    }
 
     fun next(count: Int): LexerStatus {
         if (count == 0) {
@@ -21,7 +16,7 @@ class LexerStatus(
         if (peek() == null) {
             panic(Lexer.EOF)
         }
-        return LexerStatus(key, data, position + count)
+        return LexerStatus(data, position + count)
     }
 
     fun peek(offset: Int = 0): Char? {
@@ -38,10 +33,6 @@ class LexerStatus(
 
     override fun next(): LexerStatus {
         return next(1)
-    }
-
-    override fun self(): LexerStatus {
-        return this
     }
 
     override fun self(matcher: Matcher<LexerStatus>): LexerStatus {

@@ -1,7 +1,6 @@
 package io.grule.lexer
 
 import io.grule.matcher.Matcher
-import io.grule.node.KeyOwner
 import io.grule.token.CharStream
 
 typealias LexerMatcher = Matcher<LexerStatus>
@@ -34,7 +33,7 @@ interface LexerMatcherExt {
     }
 
     fun LexerMatcher.match(charStream: CharStream, offset: Int = 0): Int {
-        val status = LexerStatus(KeyOwner.keyOf(this), charStream, offset)
+        val status = LexerStatus(charStream, offset)
         return match(status).position - offset
     }
 }
