@@ -1,7 +1,5 @@
 package io.grule.matcher
 
-import io.grule.node.KeyOwner
-
 @Suppress("MemberVisibilityCanBePrivate")
 fun interface Matcher<T : Status<T>> {
 
@@ -11,9 +9,7 @@ fun interface Matcher<T : Status<T>> {
 
     fun match(status: T): T
 
-    fun key(key: Any): KeyMatcher<T> {
-        return KeyMatcherImpl(KeyOwner(key), this)
-    }
+    fun matchesEmpty(): Boolean = false
 
     fun not(): Matcher<T> {
         return MatcherNot(this)
