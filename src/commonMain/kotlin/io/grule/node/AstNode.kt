@@ -1,5 +1,6 @@
 package io.grule.node
 
+import io.grule.token.TextPosition
 import io.grule.token.Token
 import io.grule.util.MultiMap
 import io.grule.util.firstOrNull
@@ -10,6 +11,8 @@ interface AstNode : KeyOwner, NodeStream<AstNode> {
     val text: String
 
     val tokens: Sequence<Token>
+
+    val position: TextPosition get() = tokens.firstOrNull()?.position ?: TextPosition.Default
 
     val children: List<AstNode>
 
