@@ -102,9 +102,6 @@ fun interface Matcher<T : Status<T>> {
     }
 
     companion object {
-        fun context(): Context {
-            return MatcherContextImpl()
-        }
 
         fun <T : Status<T>> shadow(): Matcher<T> {
             return MatcherShadow()
