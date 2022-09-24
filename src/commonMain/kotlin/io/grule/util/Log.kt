@@ -14,6 +14,8 @@ interface Log {
 
     val info: Log get() = level(Level.INFO)
 
+    val warn: Log get() = level(Level.WARN)
+
     val error: Log get() = level(Level.ERROR)
 
     companion object : Log by Impl(Level.INFO, "") {
@@ -44,5 +46,5 @@ interface Log {
         override fun level(level: Level): Log = this
     }
 
-    enum class Level { VERBOSE, DEBUG, INFO, ERROR }
+    enum class Level { VERBOSE, DEBUG, INFO, WARN, ERROR }
 }

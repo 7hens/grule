@@ -126,6 +126,28 @@ class RecursiveParserTest {
     }
 
     @Test
+    fun meOp_meIt() {
+        RepeatGrammar().apply {
+            val source = "0 * 1 + 2 * 3 - 4"
+            println("================")
+            println(source)
+            println(" X + N self { me + O } self { me + it }")
+
+            val e by parser { X + N self { me + O } self { me + it } }
+
+            val astNode = e.parse(tokenStream(source))
+            println(astNode.toStringExpr())
+            println(astNode.toStringLine())
+            println(astNode.toStringTree())
+            assertEquals("(((((0 *) (1 +)) (2 *)) (3 -)) 4)", astNode.toStringExpr())
+            assertEquals(
+                "e(e(e(e(e(e(N(0)) O(*)) e(e(N(1)) O(+))) e(e(N(2)) O(*))) e(e(N(3)) O(-))) e(N(4)))",
+                astNode.toStringLine()
+            )
+        }
+    }
+    
+    @Test
     fun meOpIt_binary() {
         RepeatGrammar().apply {
             val source = "0 * 1 + 2 * 3 - 4 / x"
