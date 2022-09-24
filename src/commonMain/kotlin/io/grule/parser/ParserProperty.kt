@@ -7,8 +7,6 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
     abstract val matcher: ParserMatcher
     private var name: String? = null
 
-    // TODO check if matcher can match every status (full matcher)
-
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         name = property.name
         return this
@@ -21,6 +19,10 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
     override fun match(status: ParserStatus): ParserStatus {
         val result = matcher.match(status.withNode(newNode()))
         return result.withNode(status.node + result.node.trimSingle())
+    }
+
+    override fun matchesEmpty(): Boolean {
+        return matcher.matchesEmpty()
     }
 
     override val key: Any get() = this

@@ -28,6 +28,13 @@ internal class MatcherUntilNonGreedy<T : Status<T>>(
         status.panic(this)
     }
 
+    override fun matchesEmpty(): Boolean {
+        if (times.min == 0) {
+            return terminal.matchesEmpty()
+        }
+        return matcher.matchesEmpty() && terminal.matchesEmpty()
+    }
+
     override fun toString(): String {
         return "($matcher *?|$times| $terminal)"
     }

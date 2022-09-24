@@ -17,6 +17,13 @@ internal class MatcherUntilGreedy<T : Status<T>>(
         return matchInternal(result, times.length)
     }
 
+    override fun matchesEmpty(): Boolean {
+        if (times.min == 0) {
+            return terminal.matchesEmpty()
+        }
+        return matcher.matchesEmpty() && terminal.matchesEmpty()
+    }
+
     private fun matchInternal(status: T, restTimes: Int): T {
         if (restTimes == 0) {
             return terminal.match(status)

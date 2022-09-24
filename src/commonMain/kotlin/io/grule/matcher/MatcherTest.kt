@@ -7,6 +7,10 @@ internal class MatcherTest<T : Status<T>>(private val matcher: Matcher<T>) : Mat
         return status
     }
 
+    override fun matchesEmpty(): Boolean {
+        return true
+    }
+
     override fun toString(): String {
         return "(? $matcher)"
     }

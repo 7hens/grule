@@ -19,6 +19,10 @@ internal class MatcherTimes<T : Status<T>>(
         return result
     }
 
+    override fun matchesEmpty(): Boolean {
+        return times.min == 0 || matcher.matchesEmpty()
+    }
+
     override fun toString(): String {
         return "($matcher * ${times})"
     }

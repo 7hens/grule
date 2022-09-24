@@ -16,8 +16,15 @@ internal class MatcherSelf<T : Status<T>>(
 
     private val repeatable by lazy { fn(Matcher.Self(meMatcher, itMatcher)) }
 
+    private val canMatchEmpty by lazy { matchesEmpty() }
+
     override fun match(status: T): T {
+        require(!canMatchEmpty) { "Matches empty: $status" }
         return meMatcher.match(status)
+    }
+
+    override fun matchesEmpty(): Boolean {
+        return primary.matchesEmpty() || repeatable.matchesEmpty()
     }
 
     override fun toString(): String {
@@ -32,9 +39,11 @@ internal class MatcherSelf<T : Status<T>>(
                 status.self(repeatable)
             } catch (e: MatcherException) {
                 status.self(primary)
-//                primary.match(status)
-//                primary.match(status)
             }
+        }
+
+        override fun matchesEmpty(): Boolean {
+            return primary.matchesEmpty() || repeatable.matchesEmpty()
         }
 
         override fun plus(matcher: Matcher<T>): Matcher<T> {
@@ -47,6 +56,7 @@ internal class MatcherSelf<T : Status<T>>(
     }
 
     inner class HeadMeMatcher(val body: Matcher<T>) : Matcher<T> {
+
         override fun match(status: T): T {
             var result = status.self(primary)
             try {
@@ -56,6 +66,10 @@ internal class MatcherSelf<T : Status<T>>(
             } catch (_: MatcherException) {
             }
             return result
+        }
+
+        override fun matchesEmpty(): Boolean {
+            return primary.matchesEmpty() || body.matchesEmpty()
         }
 
         override fun plus(matcher: Matcher<T>): Matcher<T> {
@@ -79,6 +93,10 @@ internal class MatcherSelf<T : Status<T>>(
 
         override fun match(status: T): T {
             return status.self(primary)
+        }
+
+        override fun matchesEmpty(): Boolean {
+            return primary.matchesEmpty()
         }
 
         override fun toString(): String {

@@ -6,7 +6,7 @@ import io.grule.matcher.Status
 import io.grule.node.AstNode
 import io.grule.token.Token
 import io.grule.token.TokenStream
-import io.grule.util.Log
+import io.grule.util.Logger
 
 open class ParserStatus(
     val node: AstNode,
@@ -40,7 +40,7 @@ open class ParserStatus(
     override fun self(matcher: Matcher<ParserStatus>): ParserStatus {
         val result = matcher.match(withNode(node.newNode()))
         val newNode = node + result.node.trimSingle()
-        Log.debug {
+        Logger.debug {
             "self: ${node.toStringLine()},     $matcher" +
                     "\n     -> ${result.node.toStringLine()}" +
                     "\n     => ${newNode.toStringLine()}"
@@ -51,7 +51,7 @@ open class ParserStatus(
     override fun selfPartial(matcher: Matcher<ParserStatus>): ParserStatus {
         val result = matcher.match(withNode(node.newNode()))
         val newNode = node.newNode(node + result.node.all())
-        Log.debug {
+        Logger.debug {
             "selfPartial: ${node.toStringLine()},     $matcher" +
                     "\n     -> ${result.node.toStringLine()}" +
                     "\n     => ${newNode.toStringLine()}"
