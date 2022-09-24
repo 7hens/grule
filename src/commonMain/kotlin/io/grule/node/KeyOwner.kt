@@ -10,11 +10,11 @@ interface KeyOwner {
     }
 
     fun newNode(token: Token): AstNode {
-        return NodeTerminal(key, token)
+        return AstNodeTerminal(key, token)
     }
 
     fun newNode(nodes: Iterable<AstNode>): AstNode {
-        return NodeBranch(key, nodes.toList())
+        return AstNodeBranch(key, nodes.toList())
     }
 
     fun newNode(vararg nodes: AstNode): AstNode {

@@ -34,7 +34,7 @@ interface Logger {
         }
 
         override fun invoke(fn: () -> String): Logger {
-            println("[${level.name.first()}: $tag] - ${fn()}")
+            println("[${level.name.first()}__$tag] - ${fn()}")
             return this
         }
 

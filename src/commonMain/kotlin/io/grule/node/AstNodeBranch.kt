@@ -3,7 +3,7 @@ package io.grule.node
 import io.grule.token.Token
 import io.grule.util.MultiMap
 
-internal class NodeBranch(
+internal class AstNodeBranch(
     override val key: Any,
     override val children: List<AstNode>
 ) : AstNode {
