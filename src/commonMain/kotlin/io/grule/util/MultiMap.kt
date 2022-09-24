@@ -6,6 +6,10 @@ fun <K, V> MultiMap<K, V>.get(key: K, index: Int): V? {
     return get(key)?.get(index)
 }
 
+fun <K, V> MultiMap<K, V>.getOrEmpty(key: K): List<V> {
+    return get(key) ?: emptyList()
+}
+
 fun <K, V> MultiMap<K, V>.first(key: K): V = firstOrNull(key)!!
 
 fun <K, V> MultiMap<K, V>.firstOrNull(key: K): V? = get(key)?.firstOrNull()

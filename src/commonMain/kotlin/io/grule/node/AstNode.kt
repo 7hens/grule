@@ -4,6 +4,7 @@ import io.grule.token.TextPosition
 import io.grule.token.Token
 import io.grule.util.MultiMap
 import io.grule.util.firstOrNull
+import io.grule.util.getOrEmpty
 import io.grule.util.lastOrNull
 
 interface AstNode : KeyOwner, NodeStream<AstNode> {
@@ -45,7 +46,7 @@ interface AstNode : KeyOwner, NodeStream<AstNode> {
     }
 
     fun all(key: Any): List<AstNode> {
-        return map.getValue(key)
+        return map.getOrEmpty(KeyOwner.keyOf(key))
     }
 
     fun firstOrNull(): AstNode? {
@@ -53,7 +54,7 @@ interface AstNode : KeyOwner, NodeStream<AstNode> {
     }
 
     fun firstOrNull(key: Any): AstNode? {
-        return map.firstOrNull(key)
+        return map.firstOrNull(KeyOwner.keyOf(key))
     }
 
     fun lastOrNull(): AstNode? {
@@ -61,10 +62,10 @@ interface AstNode : KeyOwner, NodeStream<AstNode> {
     }
 
     fun lastOrNull(key: Any): AstNode? {
-        return map.lastOrNull(key)
+        return map.lastOrNull(KeyOwner.keyOf(key))
     }
 
     operator fun contains(key: Any): Boolean {
-        return map.containsKey(key)
+        return map.containsKey(KeyOwner.keyOf(key))
     }
 }

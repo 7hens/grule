@@ -32,7 +32,7 @@ interface NodeStream<T> {
     }
 
     fun first(key: Any): T {
-        return transform { map.first(key) }
+        return transform { map.first(KeyOwner.keyOf(key)) }
     }
 
     fun last(): T {
@@ -40,7 +40,7 @@ interface NodeStream<T> {
     }
 
     fun last(key: Any): T {
-        return transform { map.last(key) }
+        return transform { map.last(KeyOwner.keyOf(key)) }
     }
 
     fun trimSingle(): T {
