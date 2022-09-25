@@ -1,8 +1,8 @@
 package io.grule.matcher
 
 internal class MatcherShadow<T : Status<T>> : ReversedMatcher<T> {
+
     override val reverser: Matcher<T> = this
-    override val isEmpty: Boolean = true
 
     override fun match(status: T): T {
         throw MatcherException(status)

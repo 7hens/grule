@@ -2,11 +2,11 @@ package io.grule.node
 
 @Suppress("MemberVisibilityCanBePrivate")
 class TreeStyle(
-    val wrap: String,
-    val leaf: String,
     val branch: String,
-    val leafIndent: String,
+    val leaf: String,
+    val wrap: String,
     val branchIndent: String,
+    val leafIndent: String,
 ) {
     private val wrapReg = Regex.fromLiteral(wrap)
 
@@ -16,8 +16,8 @@ class TreeStyle(
     }
 
     companion object {
-        val SOLID = TreeStyle("\n", " └─ ", " ├─ ", "    ", " │  ")
-        val DASHED = TreeStyle("\n", "'-- ", "|-- ", "    ", "|   ")
-        val DOTED = TreeStyle("\n", ". ", ". ", "  ", ". ")
+        val SOLID = TreeStyle(" ├─ ", " └─ ", "\n", " │  ", "    ")
+        val DASHED = TreeStyle("|-- ", "'-- ", "\n", "|   ", "    ")
+        val DOTED = TreeStyle(". ", ". ", "\n", ". ", "  ")
     }
 }

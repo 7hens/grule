@@ -3,10 +3,6 @@ package io.grule.matcher
 @Suppress("MemberVisibilityCanBePrivate")
 fun interface Matcher<T : Status<T>> {
 
-    val isNode: Boolean get() = false
-
-    val isEmpty: Boolean get() = false
-
     fun match(status: T): T
 
     fun matchesEmpty(): Boolean = false

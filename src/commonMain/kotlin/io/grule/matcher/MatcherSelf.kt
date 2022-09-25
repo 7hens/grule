@@ -1,9 +1,10 @@
 package io.grule.matcher
 
-// exp self { me + it or it + me }
 /**
+ * ```
  * x self { a + me + b }
  * x self { a + me + b + me + c }
+ * ```
  */
 internal class MatcherSelf<T : Status<T>>(
     val primary: Matcher<T>,
@@ -32,7 +33,6 @@ internal class MatcherSelf<T : Status<T>>(
     }
 
     inner class MeMatcher : Matcher<T> {
-        override val isNode: Boolean = true
 
         override fun match(status: T): T {
             return try {
@@ -89,7 +89,6 @@ internal class MatcherSelf<T : Status<T>>(
     }
 
     inner class ItMatcher : Matcher<T> {
-        override val isNode: Boolean = true
 
         override fun match(status: T): T {
             return status.self(primary)
