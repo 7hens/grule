@@ -19,18 +19,11 @@ internal class AstNodeTerminal(override val key: Any, val token: Token) : AstNod
         if (key is String) {
             return "$key"
         }
-        return toStringLine()
+        return "$key(${toStringExp()})"
     }
 
-    override fun toStringExpr(): String {
-        return text
-            .replace("(", "\\(")
-            .replace(")", "\\)")
-            .replace("\n", "\\n")
-    }
-
-    override fun toStringLine(): String {
-        return "$key(${toStringExpr()})"
+    override fun toStringExp(): String {
+        return text.replace("(", "\\(").replace(")", "\\)").replace("\n", "\\n")
     }
 
     override fun toStringTree(style: TreeStyle): String {

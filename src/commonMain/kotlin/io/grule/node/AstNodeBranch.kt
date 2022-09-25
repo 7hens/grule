@@ -5,7 +5,7 @@ import io.grule.util.MultiMap
 
 internal class AstNodeBranch(
     override val key: Any,
-    override val children: List<AstNode>
+    override val children: List<AstNode>,
 ) : AstNode {
 
     override val map: MultiMap<Any, AstNode>
@@ -18,21 +18,14 @@ internal class AstNodeBranch(
             by lazy { children.asSequence().flatMap { it.tokens } }
 
     override fun toString(): String {
-        if (key is String) {
-            return "($key)"
-        }
-        return "$key ($text)"
+        return children.joinToString(" ", "$key(", ")") { it.toString() }
     }
 
-    override fun toStringExpr(): String {
+    override fun toStringExp(): String {
         if (size == 1) {
-            return children.first().toStringExpr()
+            return children.first().toStringExp()
         }
-        return children.joinToString(" ", "(", ")") { it.toStringExpr() }
-    }
-
-    override fun toStringLine(): String {
-        return children.joinToString(" ", "$key(", ")") { it.toStringLine() }
+        return children.joinToString(" ", "(", ")") { it.toStringExp() }
     }
 
     override fun toStringTree(style: TreeStyle): String {

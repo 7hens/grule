@@ -36,7 +36,7 @@ class JsonRegMatcherTest : Grammar() {
         println(source)
         println("-----------------")
 
-        val astNode = jObject.parse(this, source)
+        val astNode = jObject.parse(tokenStream(source))
         println(astNode.toStringTree())
     }
 }
@@ -48,22 +48,22 @@ Output
 { "a": [1, 2.34], "b": "hello" }
 -----------------
 jObject/jDict
- ├─ ({)
+ ├─ {
  ├─ jPair
- │   ├─ jString/string ("a")
- │   ├─ (:)
+ │   ├─ jString/string("a")
+ │   ├─ :
  │   └─ jObject/jArray
- │       ├─ ([)
- │       ├─ jObject/jNumber/number (1)
- │       ├─ (,)
- │       ├─ jObject/jNumber/number (2.34)
- │       └─ (])
- ├─ (,)
+ │       ├─ [
+ │       ├─ jObject/jNumber/number(1)
+ │       ├─ ,
+ │       ├─ jObject/jNumber/number(2.34)
+ │       └─ ]
+ ├─ ,
  ├─ jPair
- │   ├─ jString/string ("b")
- │   ├─ (:)
- │   └─ jObject/jString/string ("hello")
- └─ (})
+ │   ├─ jString/string("b")
+ │   ├─ :
+ │   └─ jObject/jString/string("hello")
+ └─ }
 ```
 
 ## Setting up the dependency
@@ -80,6 +80,6 @@ allprojects {
 
 ```kotlin
 dependencies {
-    implementation("com.github.7hens.grule:grule:0.1")
+    implementation("com.github.7hens.grule:grule:0.2")
 }
 ```

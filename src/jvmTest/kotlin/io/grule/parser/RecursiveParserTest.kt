@@ -16,13 +16,13 @@ class RecursiveParserTest {
             val e by parser { X + N self { it + me } }
 
             val astNode = e.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("(0 (1 (2 (3 (4 (5 6))))))", astNode.toStringExpr())
+            assertEquals("(0 (1 (2 (3 (4 (5 6))))))", astNode.toStringExp())
             assertEquals(
                 "e(e(N(0)) e(e(N(1)) e(e(N(2)) e(e(N(3)) e(e(N(4)) e(e(N(5)) e(N(6))))))))",
-                astNode.toStringLine()
+                astNode.toString()
             )
         }
     }
@@ -38,13 +38,13 @@ class RecursiveParserTest {
             val e by parser { X + "x" or X + N self { it + O + me } }
 
             val astNode = e.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("(x * (1 / (2 - (3 + (4 / 5)))))", astNode.toStringExpr())
+            assertEquals("(x * (1 / (2 - (3 + (4 / 5)))))", astNode.toStringExp())
             assertEquals(
-                "e(e(x(x)) O(*) e(e(N(1)) O(/) e(e(N(2)) O(-) e(e(N(3)) O(+) e(e(N(4)) O(/) e(N(5)))))))",
-                astNode.toStringLine()
+                "e(e(x) O(*) e(e(N(1)) O(/) e(e(N(2)) O(-) e(e(N(3)) O(+) e(e(N(4)) O(/) e(N(5)))))))",
+                astNode.toString()
             )
         }
     }
@@ -60,11 +60,11 @@ class RecursiveParserTest {
             val e by parser { X + N self { me + it } }
 
             val astNode = e.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("(((0 1) 2) 3)", astNode.toStringExpr())
-            assertEquals("e(e(e(e(N(0)) e(N(1))) e(N(2))) e(N(3)))", astNode.toStringLine())
+            assertEquals("(((0 1) 2) 3)", astNode.toStringExp())
+            assertEquals("e(e(e(e(N(0)) e(N(1))) e(N(2))) e(N(3)))", astNode.toString())
         }
     }
 
@@ -79,11 +79,11 @@ class RecursiveParserTest {
             val e by parser { X + "x" or X + N self { me + O + it } }
 
             val astNode = e.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("((0 * 1) / x)", astNode.toStringExpr())
-            assertEquals("e(e(e(N(0)) O(*) e(N(1))) O(/) e(x(x)))", astNode.toStringLine())
+            assertEquals("((0 * 1) / x)", astNode.toStringExp())
+            assertEquals("e(e(e(N(0)) O(*) e(N(1))) O(/) e(x))", astNode.toString())
         }
     }
 
@@ -98,11 +98,11 @@ class RecursiveParserTest {
             val e by parser { X + N self { me + O } self { me + N } }
 
             val astNode = e.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("((((0 +) 1) 2) 3)", astNode.toStringExpr())
-            assertEquals("e(e(e(e(e(N(0)) O(+)) N(1)) N(2)) N(3))", astNode.toStringLine())
+            assertEquals("((((0 +) 1) 2) 3)", astNode.toStringExp())
+            assertEquals("e(e(e(e(e(N(0)) O(+)) N(1)) N(2)) N(3))", astNode.toString())
         }
     }
 
@@ -117,11 +117,11 @@ class RecursiveParserTest {
             val e by parser { X + N self { me + it or me + O } }
 
             val astNode = e.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("(((((0 +) 1) 2) -) 3)", astNode.toStringExpr())
-            assertEquals("e(e(e(e(e(e(N(0)) O(+)) e(N(1))) e(N(2))) O(-)) e(N(3)))", astNode.toStringLine())
+            assertEquals("(((((0 +) 1) 2) -) 3)", astNode.toStringExp())
+            assertEquals("e(e(e(e(e(e(N(0)) O(+)) e(N(1))) e(N(2))) O(-)) e(N(3)))", astNode.toString())
         }
     }
 
@@ -136,17 +136,17 @@ class RecursiveParserTest {
             val e by parser { X + N self { me + O } self { me + it } }
 
             val astNode = e.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("(((((0 *) (1 +)) (2 *)) (3 -)) 4)", astNode.toStringExpr())
+            assertEquals("(((((0 *) (1 +)) (2 *)) (3 -)) 4)", astNode.toStringExp())
             assertEquals(
                 "e(e(e(e(e(e(N(0)) O(*)) e(e(N(1)) O(+))) e(e(N(2)) O(*))) e(e(N(3)) O(-))) e(N(4)))",
-                astNode.toStringLine()
+                astNode.toString()
             )
         }
     }
-    
+
     @Test
     fun meOpIt_binary() {
         RepeatGrammar().apply {
@@ -159,13 +159,13 @@ class RecursiveParserTest {
             val b by parser { e.flat().binary(O) }
 
             val astNode = b.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("(((0 * 1) + (2 * 3)) - (4 / x))", astNode.toStringExpr())
+            assertEquals("(((0 * 1) + (2 * 3)) - (4 / x))", astNode.toStringExp())
             assertEquals(
-                "b(e(e(e(e(N(0)) O(*) e(N(1))) O(+) e(e(N(2)) O(*) e(N(3)))) O(-) e(e(N(4)) O(/) e(x(x)))))",
-                astNode.toStringLine()
+                "b(e(e(e(e(N(0)) O(*) e(N(1))) O(+) e(e(N(2)) O(*) e(N(3)))) O(-) e(e(N(4)) O(/) e(x))))",
+                astNode.toString()
             )
         }
     }
@@ -181,13 +181,13 @@ class RecursiveParserTest {
             val e by parser { X + N self { me + "*" + it } self { me + "+" + it } }
             val m by parser { X + e }
             val astNode = m.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("((1 + ((2 * 3) * 4)) + 5)", astNode.toStringExpr())
+            assertEquals("((1 + ((2 * 3) * 4)) + 5)", astNode.toStringExp())
             assertEquals(
-                "m(e(e(e(N(1)) +(+) e(e(e(N(2)) *(*) e(N(3))) *(*) e(N(4)))) +(+) e(N(5))))",
-                astNode.toStringLine()
+                "m(e(e(e(N(1)) + e(e(e(N(2)) * e(N(3))) * e(N(4)))) + e(N(5))))",
+                astNode.toString()
             )
         }
     }
@@ -203,13 +203,13 @@ class RecursiveParserTest {
             val e by parser { X + "x" or X + N self { X + N + O + me } }
 
             val astNode = e.parse(tokenStream(source))
-            println(astNode.toStringExpr())
-            println(astNode.toStringLine())
+            println(astNode.toStringExp())
+            println(astNode.toString())
             println(astNode.toStringTree())
-            assertEquals("(0 * (1 + (2 * (3 - (4 / x)))))", astNode.toStringExpr())
+            assertEquals("(0 * (1 + (2 * (3 - (4 / x)))))", astNode.toStringExp())
             assertEquals(
-                "e(N(0) O(*) e(N(1) O(+) e(N(2) O(*) e(N(3) O(-) e(N(4) O(/) e(x(x)))))))",
-                astNode.toStringLine()
+                "e(N(0) O(*) e(N(1) O(+) e(N(2) O(*) e(N(3) O(-) e(N(4) O(/) e(x))))))",
+                astNode.toString()
             )
         }
     }

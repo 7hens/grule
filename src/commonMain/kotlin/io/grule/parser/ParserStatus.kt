@@ -41,9 +41,9 @@ open class ParserStatus(
         val result = matcher.match(withNode(node.newNode()))
         val newNode = node + result.node.trimSingle()
         Logger.debug {
-            "self: ${node.toStringLine()},     $matcher" +
-                    "\n     -> ${result.node.toStringLine()}" +
-                    "\n     => ${newNode.toStringLine()}"
+            "self: $node,     $matcher" +
+                    "\n     -> ${result.node}" +
+                    "\n     => $newNode"
         }
         return result.withNode(newNode)
     }
@@ -52,14 +52,14 @@ open class ParserStatus(
         val result = matcher.match(withNode(node.newNode()))
         val newNode = node.newNode(node + result.node.all())
         Logger.debug {
-            "selfPartial: ${node.toStringLine()},     $matcher" +
-                    "\n     -> ${result.node.toStringLine()}" +
-                    "\n     => ${newNode.toStringLine()}"
+            "selfPartial: $node,     $matcher" +
+                    "\n     -> ${result.node}" +
+                    "\n     => $newNode"
         }
         return result.withNode(newNode)
     }
 
     override fun toString(): String {
-        return "#$position, ${node.toStringLine()}"
+        return "#$position, $node"
     }
 }

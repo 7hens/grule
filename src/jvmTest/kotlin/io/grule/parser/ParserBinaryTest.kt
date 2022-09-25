@@ -14,9 +14,9 @@ class ParserBinaryTest {
             val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
-            println(astNode.toStringExpr())
+            println(astNode.toStringExp())
             println(astNode.toStringTree())
-            assertEquals("(((0 * 1) + (2 * 3)) - (4 / x))", astNode.toStringExpr())
+            assertEquals("(((0 * 1) + (2 * 3)) - (4 / x))", astNode.toStringExp())
         }
     }
 
@@ -30,9 +30,9 @@ class ParserBinaryTest {
             val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
-            println(astNode.toStringExpr())
+            println(astNode.toStringExp())
             println(astNode.toStringTree())
-            assertEquals("(((() * 1) + ((2 * 3) * ())) - (4 / ()))", astNode.toStringExpr())
+            assertEquals("(((() * 1) + ((2 * 3) * ())) - (4 / ()))", astNode.toStringExp())
         }
     }
 
@@ -46,9 +46,9 @@ class ParserBinaryTest {
             val astNode = main.parse(tokenStream(source))
             println("--------------------------------------")
             println(source)
-            println(astNode.toStringExpr())
+            println(astNode.toStringExp())
             println(astNode.toStringTree())
-            assertEquals("(((1 2 3) + (2 * 3)) - (4 / x))", astNode.toStringExpr())
+            assertEquals("(((1 2 3) + (2 * 3)) - (4 / x))", astNode.toStringExp())
         }
     }
 }
