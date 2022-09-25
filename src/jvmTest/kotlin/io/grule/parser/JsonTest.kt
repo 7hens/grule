@@ -1,35 +1,37 @@
 package io.grule.parser
 
-import io.grule.Grule
+import io.grule.lexer.LexerFactory
 import org.junit.Test
 
-class JsonTest : Grule() {
-    val string by token(L + '"' + L_any.untilNonGreedy(L + '"'))
-    val number by token(L + L_digit.repeat(1) + (L + "." + L_digit.repeat(1)).optional())
-    val bool by token(L + "true" or L + "false")
-    val nil by token(L + "null")
+class JsonTest {
+    val source = """{ "a": [1, 2.34], "b": "hello" }"""
+    val lexer = LexerFactory()
+    val string by lexer { X - '"' + ANY.until(X - '"') }
+    val number by lexer { X + DIGIT.more() + (X + "." + DIGIT.more()).optional() }
+    val bool by lexer { X + "true" or X + "false" }
+    val nil by lexer { X + "null" }
 
     init {
-        token(L - "{}[]:,")
-        skip(L + L_space or L_wrap)
+        lexer.token { X - "{}[]:," }
+        lexer.skip { SPACE }
     }
 
-    val jObject: Parser by p { jString or jNumber or jBool or jNil or jArray or jDict }
-    val jString by P + string
-    val jNumber by P + number
-    val jBool by P + bool
-    val jNil by P + nil
-    val jArray by P + "[" + jObject.join(P + ",") + "]"
-    val jPair by P + jString + ":" + jObject
-    val jDict by P + "{" + jPair.join(P + ",") + "}"
+    val parser = ParserFactory()
+    val jObject: Parser by parser { X + jString or jNumber or jBool or jNil or jArray or jDict }
+    val jString by parser { X + string }
+    val jNumber by parser { X + number }
+    val jBool by parser { X + bool }
+    val jNil by parser { X + nil }
+    val jArray by parser { X + "[" + jObject.join(X + ",") + "]" }
+    val jPair by parser { X + jString + ":" + jObject }
+    val jDict by parser { X + "{" + jPair.join(X + ",") + "}" }
 
     @Test
-    fun json() {
-        val source = """{ "a": [1, 2.34], "b": "hello" }"""
+    fun test() {
         println(source)
         println("-----------------")
 
-        val astNode = parse(jObject, source)
+        val astNode = jObject.parse(lexer.tokenStream(source))
         println(astNode.toStringTree())
     }
 }

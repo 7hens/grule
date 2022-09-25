@@ -10,25 +10,25 @@ NOTE: grule is experimental yet.
 ## Sample - Json parser
 
 ```kotlin
-class JsonRegLexerTest: Grule() {
-    val string by token(L / """(".*?")""")
-    val number by token(L / "\\d+(\\.\\d+)?")
-    val bool by token(L / "true|false")
-    val nil by token(L / "null")
+class JsonRegMatcherTest : Grammar() {
+    val string by lexer { X / """(".*?")""" }
+    val number by lexer { X / "\\d+(\\.\\d+)?" }
+    val bool by lexer { X / "true|false" }
+    val nil by lexer { X / "null" }
 
     init {
-        token(L - "{}[]:,")
-        skip(L + L_space or L_wrap)
+        lexer.token { X - "{}[]:," }
+        lexer.skip { SPACE or WRAP }
     }
 
-    val jObject: Parser by p { jString or jNumber or jBool or jNil or jArray or jDict }
-    val jString by P + string
-    val jNumber by P + number
-    val jBool by P + bool
-    val jNil by P + nil
-    val jArray by P + "[" + jObject.join(P + ",") + "]"
-    val jPair by P + jString + ":" + jObject
-    val jDict by P + "{" + jPair.join(P + ",") + "}"
+    val jObject: Parser by parser { jString or jNumber or jBool or jNil or jArray or jDict }
+    val jString by parser { X + string }
+    val jNumber by parser { X + number }
+    val jBool by parser { X + bool }
+    val jNil by parser { X + nil }
+    val jArray by parser { X + "[" + jObject.join(X + ",") + "]" }
+    val jPair by parser { X + jString + ":" + jObject }
+    val jDict by parser { X + "{" + jPair.join(X + ",") + "}" }
 
     @Test
     fun json() {
@@ -36,11 +36,10 @@ class JsonRegLexerTest: Grule() {
         println(source)
         println("-----------------")
 
-        val astNode = parse(jObject, source)
+        val astNode = jObject.parse(tokenStream(source))
         println(astNode.toStringTree())
     }
 }
-
 ```
 
 Output
@@ -48,33 +47,23 @@ Output
 ```plain
 { "a": [1, 2.34], "b": "hello" }
 -----------------
-jObject
- └─ jDict
-     ├─ ({)
-     ├─ jPair
-     │   ├─ jString
-     │   │   └─ string ("a")
-     │   ├─ (:)
-     │   └─ jObject
-     │       └─ jArray
-     │           ├─ ([)
-     │           ├─ jObject
-     │           │   └─ jInteger
-     │           │       └─ integer (1)
-     │           ├─ (,)
-     │           ├─ jObject
-     │           │   └─ jFloat
-     │           │       └─ float (2.34)
-     │           └─ (])
-     ├─ (,)
-     ├─ jPair
-     │   ├─ jString
-     │   │   └─ string ("b")
-     │   ├─ (:)
-     │   └─ jObject
-     │       └─ jString
-     │           └─ string ("hello")
-     └─ (})
+jObject/jDict
+ ├─ {
+ ├─ jPair
+ │   ├─ jString/string("a")
+ │   ├─ :
+ │   └─ jObject/jArray
+ │       ├─ [
+ │       ├─ jObject/jNumber/number(1)
+ │       ├─ ,
+ │       ├─ jObject/jNumber/number(2.34)
+ │       └─ ]
+ ├─ ,
+ ├─ jPair
+ │   ├─ jString/string("b")
+ │   ├─ :
+ │   └─ jObject/jString/string("hello")
+ └─ }
 ```
 
 ## Setting up the dependency
@@ -91,6 +80,6 @@ allprojects {
 
 ```kotlin
 dependencies {
-    implementation("com.github.7hens.grule:grule:0.1")
+    implementation("com.github.7hens.grule:grule:0.2")
 }
 ```
