@@ -80,6 +80,6 @@ allprojects {
 
 ```kotlin
 dependencies {
-    implementation("com.github.7hens.grule:grule:0.2")
+    implementation("com.github.7hens.grule:grule:0.3")
 }
 ```
