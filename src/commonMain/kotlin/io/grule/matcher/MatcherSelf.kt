@@ -1,6 +1,6 @@
 package io.grule.matcher
 
-import io.grule.util.Logger
+import io.grule.util.log.Logger
 
 /**
  * ```

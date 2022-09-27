@@ -6,7 +6,7 @@ import io.grule.matcher.Status
 import io.grule.node.AstNode
 import io.grule.token.Token
 import io.grule.token.TokenStream
-import io.grule.util.Logger
+import io.grule.util.log.Logger
 
 open class ParserStatus(
     val node: AstNode,

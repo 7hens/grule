@@ -1,9 +1,15 @@
 package io.grule.parser
 
+import io.grule.util.log.Logger
+import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class RecursiveParserTest {
+    @Before
+    fun before() {
+        Logger.setDefault(Logger.builder().verbose)
+    }
 
     @Test
     fun itMe() {
