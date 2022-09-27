@@ -23,11 +23,15 @@ internal class LexerDslTest {
 
     @Test
     fun selfRight() {
+        val source = "A-BC-A-BC-A-BC"
+        println(source)
+        println("{ X + \"A\" or X + \"BC\" self { it + \"-\" + me } }")
+
         val lexer = LexerFactory()
         val abc by lexer { X + "A" or X + "BC" self { it + "-" + me } }
-        val tokenStream = lexer.tokenStream("A-BC-A-BC-A-BC")
+        val tokenStream = lexer.tokenStream(source)
 
-        println(abc)
+        abc.toString()
         println(tokenStream.all().joinToString("\n"))
         assertEquals(abc, tokenStream.peek(0).lexer)
         assertEquals(Lexer.EOF, tokenStream.peek(1).lexer)
@@ -36,13 +40,14 @@ internal class LexerDslTest {
     @Test
     fun selfLeft() {
         val source = "A-BC-A-BC-A-BC"
+        println(source)
+        println("X + \"A\" or X + \"BC\" self { me + \"-\" + it }")
+
         val lexer = LexerFactory()
         val abc by lexer { X + "A" or X + "BC" self { me + "-" + it } }
         val tokenStream = lexer.tokenStream(source)
 
         abc.toString()
-        println(source)
-        println("X + \"A\" or X + \"BC\" self { me + \"-\" + it }")
         println(tokenStream.all().joinToString("\n"))
         assertEquals(abc, tokenStream.peek(0).lexer)
         assertEquals(Lexer.EOF, tokenStream.peek(1).lexer)

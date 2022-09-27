@@ -40,7 +40,7 @@ open class ParserStatus(
     override fun self(matcher: Matcher<ParserStatus>): ParserStatus {
         val result = matcher.match(withNode(node.newNode()))
         val newNode = node + result.node.trimSingle()
-        Logger.debug {
+        Logger.verbose {
             "self: $node,     $matcher" +
                     "\n     -> ${result.node}" +
                     "\n     => $newNode"
@@ -51,7 +51,7 @@ open class ParserStatus(
     override fun selfPartial(matcher: Matcher<ParserStatus>): ParserStatus {
         val result = matcher.match(withNode(node.newNode()))
         val newNode = node.newNode(node + result.node.all())
-        Logger.debug {
+        Logger.verbose {
             "selfPartial: $node,     $matcher" +
                     "\n     -> ${result.node}" +
                     "\n     => $newNode"

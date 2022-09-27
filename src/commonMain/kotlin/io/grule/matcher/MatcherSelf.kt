@@ -1,5 +1,7 @@
 package io.grule.matcher
 
+import io.grule.util.Logger
+
 /**
  * ```
  * x self { a + me + b }
@@ -35,6 +37,7 @@ internal class MatcherSelf<T : Status<T>>(
     inner class MeMatcher : Matcher<T> {
 
         override fun match(status: T): T {
+            Logger.verbose { "MeMatcher: $status" }
             return try {
                 status.self(repeatable)
             } catch (e: MatcherException) {
@@ -91,6 +94,7 @@ internal class MatcherSelf<T : Status<T>>(
     inner class ItMatcher : Matcher<T> {
 
         override fun match(status: T): T {
+            Logger.verbose { "ItMatcher: $status" }
             return status.self(primary)
         }
 

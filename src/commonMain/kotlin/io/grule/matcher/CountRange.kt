@@ -2,7 +2,7 @@ package io.grule.matcher
 
 internal data class CountRange(val min: Int, val max: Int) {
     init {
-        require(min in 0..max)
+        require(min in 0..max) { "min ($min) should be between 0 and max ($max)" }
     }
 
     val length: Int get() = max - min
