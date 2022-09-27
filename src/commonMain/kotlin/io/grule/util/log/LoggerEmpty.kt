@@ -8,5 +8,5 @@ internal object LoggerEmpty : Logger {
 
     override fun printer(printer: Printer): Logger = this
 
-    override fun invoke(fn: () -> String): Logger = this
+    override fun invoke(fn: () -> Any?): Logger = this
 }

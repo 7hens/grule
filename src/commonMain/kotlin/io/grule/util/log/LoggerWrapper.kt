@@ -10,5 +10,5 @@ abstract class LoggerWrapper : Logger {
 
     override fun printer(printer: Printer): Logger = delegate.printer(printer)
 
-    override fun invoke(fn: () -> String): Logger = delegate.invoke(fn)
+    override fun invoke(fn: () -> Any?): Logger = delegate.invoke(fn)
 }

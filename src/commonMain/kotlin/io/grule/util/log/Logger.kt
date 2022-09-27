@@ -8,7 +8,11 @@ interface Logger {
 
     fun printer(printer: Printer): Logger
 
-    operator fun invoke(fn: () -> String): Logger
+    operator fun invoke(fn: () -> Any?): Logger
+
+    operator fun invoke(message: Any?): Logger {
+        return invoke { message }
+    }
 
     val verbose: Logger get() = level(LogLevel.VERBOSE)
 

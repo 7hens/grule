@@ -18,8 +18,8 @@ internal class LoggerImpl(val level: LogLevel, val tag: String, val printer: Pri
         return LoggerImpl(level, tag, printer)
     }
 
-    override fun invoke(fn: () -> String): Logger {
-        printer.print("[${level.name.first()}__$tag] - ${fn()}")
+    override fun invoke(fn: () -> Any?): Logger {
+        printer.print(level, tag, fn())
         return this
     }
 }

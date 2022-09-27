@@ -6,8 +6,8 @@ import java.util.*
 actual object SysPrinter : Printer {
     private const val DATE_FORMAT = "HH:mm:ss:SSS";
 
-    override fun print(message: String) {
+    override fun print(level: LogLevel, tag: String, message: Any?) {
         val date = SimpleDateFormat(DATE_FORMAT).format(Date())
-        println("$date  $message")
+        println("[${level.name.first()}. $date #$tag] $message")
     }
 }

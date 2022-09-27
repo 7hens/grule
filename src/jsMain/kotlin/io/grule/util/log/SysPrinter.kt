@@ -1,8 +1,8 @@
 package io.grule.util.log
 
 actual object SysPrinter : Printer {
-    override fun print(message: String) {
+    override fun print(level: LogLevel, tag: String, message: Any?) {
         val date = js("new Date().toString()")
-        println("$date $message")
+        println("[${level.name.first()}. $date #$tag] $message")
     }
 }
