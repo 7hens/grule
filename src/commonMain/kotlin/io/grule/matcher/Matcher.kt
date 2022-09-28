@@ -93,6 +93,10 @@ fun interface Matcher<T : Status<T>> {
         return MatcherSelf(this, fn)
     }
 
+    fun cache(): Matcher<T> {
+        return MatcherCache(this)
+    }
+
     companion object {
 
         fun <T : Status<T>> shadow(): Matcher<T> {

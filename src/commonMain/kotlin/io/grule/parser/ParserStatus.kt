@@ -14,6 +14,17 @@ open class ParserStatus(
     val position: Int = 0,
 ) : Status<ParserStatus> {
 
+//    override fun equals(other: Any?): Boolean {
+//        if (other is ParserStatus) {
+//            return other.data == data && other.position == position
+//        }
+//        return false
+//    }
+//
+//    override fun hashCode(): Int {
+//        return listOf(data, position).hashCode()
+//    }
+
     fun withNode(node: AstNode): ParserStatus {
         return ParserStatus(node, data, position)
     }

@@ -26,7 +26,7 @@ class LexerFactory internal constructor() : Lexer {
     }
 
     operator fun invoke(fn: LexerSupplier): ReadOnlyProperty<Any?, Lexer> {
-        return LexerProperty { fn(LexerDsl) }.also { lexers.add(it) }
+        return LexerProperty { fn(LexerDsl).cache() }.also { lexers.add(it) }
     }
 
     operator fun invoke(): ReadOnlyProperty<Any?, Lexer> {

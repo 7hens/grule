@@ -29,7 +29,7 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
             return
         }
         val newDataStartOffset = dataStartPos + count
-        require(newDataStartOffset <= dataEndPos)
+        require(newDataStartOffset <= dataEndPos) { "Move to $newDataStartOffset out of bounds ($dataEndPos)" }
         for (i in dataStartPos until newDataStartOffset) {
             if (buffer[i] == '\n') {
                 currentLine++

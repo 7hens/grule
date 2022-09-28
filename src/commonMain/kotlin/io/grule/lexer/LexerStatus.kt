@@ -9,6 +9,17 @@ class LexerStatus(
     val position: Int = 0,
 ) : Status<LexerStatus> {
 
+//    override fun equals(other: Any?): Boolean {
+//        if (other is LexerStatus) {
+//            return other.data == data && other.position == position
+//        }
+//        return false
+//    }
+//
+//    override fun hashCode(): Int {
+//        return listOf(data, position).hashCode()
+//    }
+
     fun next(count: Int): LexerStatus {
         if (count == 0) {
             return this

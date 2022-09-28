@@ -9,15 +9,17 @@ import io.grule.util.log.Logger
  * ```
  */
 internal class MatcherSelf<T : Status<T>>(
-    val primary: Matcher<T>,
+    val matcher: Matcher<T>,
     val fn: Matcher.Self<T>.() -> Matcher<T>,
 ) : Matcher<T> {
+
+    private val primary = matcher.cache()
 
     private val itMatcher = ItMatcher()
 
     private val meMatcher = MeMatcher()
 
-    private val repeatable by lazy { fn(Matcher.Self(meMatcher, itMatcher)) }
+    private val repeatable by lazy { fn(Matcher.Self(meMatcher, itMatcher)).cache() }
 
     private val canMatchEmpty by lazy { matchesEmpty() }
 
