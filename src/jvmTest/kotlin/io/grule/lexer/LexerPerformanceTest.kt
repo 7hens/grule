@@ -17,7 +17,7 @@ class LexerPerformanceTest {
         val count = 0 until 10000
         val source = count.joinToString("") { "ABC" }
         val lexer = LexerFactory()
-        val abc by lexer { count.fold(X) { acc, _ -> acc + "A" + "BC" } }
+        val abc by lexer { X + "A" + "BC" + "A" + "BC" }
         val tokenStream = lexer.tokenStream(source)
 
         abc.toString()
@@ -30,7 +30,20 @@ class LexerPerformanceTest {
         val count = 0 until 10000
         val source = count.joinToString("") { "ABC" }
         val lexer = LexerFactory()
-        val abc by lexer { X + "ABCABCABC" or X + "ABCABC" or X + "ABC" }
+        val abc by lexer { X + "E" or X + "EF" or X + "ABC" }
+        val tokenStream = lexer.tokenStream(source)
+
+        abc.toString()
+        Logger.info("AFTER tokenStream")
+        tokenStream.all().forEach { Logger.info(it) }
+    }
+
+    @Test(timeout = 1000L)
+    fun self() {
+        val count = 0 until 10000
+        val source = count.joinToString("") { "A-B+C-" }
+        val lexer = LexerFactory()
+        val abc by lexer { X - "ABC-" self { it + "-" + me } self { me + "+" + it } }
         val tokenStream = lexer.tokenStream(source)
 
         abc.toString()

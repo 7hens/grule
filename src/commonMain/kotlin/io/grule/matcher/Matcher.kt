@@ -19,14 +19,14 @@ fun interface Matcher<T : Status<T>> {
         if (matcher is ReversedMatcher<T>) {
             return matcher.reverser + this
         }
-        return MatcherPlus(listOf(this, matcher))
+        return MatcherPlus(this, matcher)
     }
 
     infix fun or(matcher: Matcher<T>): Matcher<T> {
         if (matcher is ReversedMatcher<T>) {
             return matcher.reverser or this
         }
-        return MatcherOr(listOf(this, matcher))
+        return MatcherOr(this, matcher)
     }
 
     fun times(minTimes: Int, maxTimes: Int): Matcher<T> {
