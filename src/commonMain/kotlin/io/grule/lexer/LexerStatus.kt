@@ -6,19 +6,21 @@ import io.grule.token.CharStream
 
 class LexerStatus(
     val data: CharStream,
-    val position: Int = 0,
+    val position: Int = data.charIndex,
 ) : Status<LexerStatus> {
 
-//    override fun equals(other: Any?): Boolean {
-//        if (other is LexerStatus) {
-//            return other.data == data && other.position == position
-//        }
-//        return false
-//    }
-//
-//    override fun hashCode(): Int {
-//        return listOf(data, position).hashCode()
-//    }
+    override fun equals(other: Any?): Boolean {
+        if (other is LexerStatus) {
+            return other.data == data && other.position == position
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return listOf(data, position).hashCode()
+    }
+
+    private val positionOffset get() = position - data.charIndex
 
     fun next(count: Int): LexerStatus {
         if (count == 0) {
@@ -31,11 +33,11 @@ class LexerStatus(
     }
 
     fun peek(offset: Int = 0): Char? {
-        return data.peek(position + offset)
+        return data.peek(positionOffset + offset)
     }
 
     fun getText(count: Int): String {
-        return data.getText(position, position + count)
+        return data.getText(positionOffset, positionOffset + count)
     }
 
     override fun panic(rule: Any): Nothing {

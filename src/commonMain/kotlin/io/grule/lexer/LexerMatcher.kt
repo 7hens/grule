@@ -33,7 +33,7 @@ interface LexerMatcherExt {
     }
 
     fun LexerMatcher.match(charStream: CharStream, offset: Int = 0): Int {
-        val status = LexerStatus(charStream, offset)
-        return match(status).position - offset
+        val status = LexerStatus(charStream, charStream.charIndex + offset)
+        return match(status).position - status.position
     }
 }
