@@ -14,16 +14,16 @@ open class ParserStatus(
     val position: Int = 0,
 ) : Status<ParserStatus> {
 
-//    override fun equals(other: Any?): Boolean {
-//        if (other is ParserStatus) {
-//            return other.data == data && other.position == position
-//        }
-//        return false
-//    }
-//
-//    override fun hashCode(): Int {
-//        return listOf(data, position).hashCode()
-//    }
+    override fun equals(other: Any?): Boolean {
+        if (other is ParserStatus) {
+            return other.data == data && other.position == position && other.node.keyEquals(node)
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return listOf(data, position, node.key).hashCode()
+    }
 
     fun withNode(node: AstNode): ParserStatus {
         return ParserStatus(node, data, position)
@@ -52,9 +52,7 @@ open class ParserStatus(
         val result = matcher.match(withNode(node.newNode()))
         val newNode = node + result.node.trimSingle()
         Logger.verbose {
-            "self: $node,     $matcher" +
-                    "\n     -> ${result.node}" +
-                    "\n     => $newNode"
+            "self: $node,     $matcher" + "\n     -> ${result.node}" + "\n     => $newNode"
         }
         return result.withNode(newNode)
     }
@@ -63,9 +61,7 @@ open class ParserStatus(
         val result = matcher.match(withNode(node.newNode()))
         val newNode = node.newNode(node + result.node.all())
         Logger.verbose {
-            "selfPartial: $node,     $matcher" +
-                    "\n     -> ${result.node}" +
-                    "\n     => $newNode"
+            "selfPartial: $node,     $matcher" + "\n     -> ${result.node}" + "\n     => $newNode"
         }
         return result.withNode(newNode)
     }
