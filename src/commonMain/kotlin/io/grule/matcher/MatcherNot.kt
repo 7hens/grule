@@ -6,7 +6,7 @@ internal class MatcherNot<T : Status<T>>(private val matcher: Matcher<T>) : Matc
         try {
             matcher.match(status)
         } catch (e: MatcherException) {
-            return status.next()
+            return status.move()
         }
         throw MatcherException(status.toString())
     }

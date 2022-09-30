@@ -1,6 +1,6 @@
 package io.grule.lexer
 
-internal object LexerMatcherSot : LexerMatcher {
+internal object LexerMatcherbot : LexerMatcher {
 
     override fun match(status: LexerStatus): LexerStatus {
         if (status.position <= status.data.charIndex) {

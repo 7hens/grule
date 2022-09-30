@@ -10,7 +10,7 @@ class RegexGrammar : Grammar() {
     val Hex by lexer { X + "\\x" + HEX * 2 }
     val Octal by lexer { X + "\\" + OCTAL * 3 or X + "\\0" }
     val Digit by lexer { DIGIT }
-    val CharClass by lexer { X + "\\" - "SsDdWwBb" or X + "." }
+    val CharClass by lexer { X + "\\" - "SsDdWwBb" or X - ".^\$" }
 
     init {
         lexer.token { X - REG_OPERATORS }

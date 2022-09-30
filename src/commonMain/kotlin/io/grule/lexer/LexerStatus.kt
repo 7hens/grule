@@ -29,7 +29,7 @@ class LexerStatus(
         if (peek() == null) {
             panic(Lexer.EOF)
         }
-        return LexerStatus(data, position + step)
+        return LexerStatus(data, maxOf(position + step, data.charIndex))
     }
 
     fun peek(offset: Int = 0): Char? {

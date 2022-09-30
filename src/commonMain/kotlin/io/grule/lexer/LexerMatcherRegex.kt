@@ -131,6 +131,8 @@ internal class LexerMatcherRegex(private val pattern: String) : LexerMatcher {
             "\\W" -> LexerDsl.WORD.not()
             "\\b" -> LexerDsl.BOUNDARY
             "\\B" -> LexerDsl.BOUNDARY.not()
+            "^" -> LexerDsl.BOL
+            "\$" -> LexerDsl.EOL
             else -> LexerDsl.ANY
         }
     }

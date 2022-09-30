@@ -10,7 +10,7 @@ internal class LexerMatcherRegexTest {
     private val text = "0123456789ABCDEF{*你好\uD83D\uDE04\u0000\r\n\t "
 
     private fun match(pattern: String): Int {
-        println("---------------------------")
+        println("--------------------------- ${text.length}")
         println(text)
         println(pattern)
         val charStream = CharStream.fromString(text)
@@ -28,10 +28,11 @@ internal class LexerMatcherRegexTest {
         assertEquals(1, match("\\0"))
         assertEquals(1, match("\\{"))
         assertEquals(1, match("\\*"))
-        assertEquals(4, match("\\u4f60\\u597d\\uD83D\\uDE04"))
+        assertEquals(4, match("\\u4f60\\u597d\\uD83D\\uDE04")) // 你好😄
         assertEquals(2, match("\\u0030\\u0031"))
         assertEquals(2, match("\\x30\\x31"))
         assertEquals(2, match("\\060\\061"))
+        assertEquals(1, match("\\n"))
         assertEquals(2, match("\\n\\t"))
     }
 
@@ -72,5 +73,14 @@ internal class LexerMatcherRegexTest {
     fun boundary() {
         assertEquals(16, match("\\b\\w+"))
         assertEquals(16, match("\\w+\\b"))
+    }
+
+    @Test
+    fun line() {
+        assertEquals(16, match("^\\w+"))
+        assertEquals(2, match("^\\t "))
+        assertEquals(5, match("\\uD83D\\uDE04\\0\\r\\n^"))
+        assertEquals(5, match("\\uD83D\\uDE04\\0\\r\$\\n"))
+        assertEquals(2, match("\\t \$"))
     }
 }

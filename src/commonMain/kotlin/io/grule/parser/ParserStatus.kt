@@ -45,7 +45,7 @@ open class ParserStatus(
         if (data.peek() == Lexer.EOF) {
             panic(Lexer.EOF)
         }
-        return ParserStatus(node, data, position + step)
+        return ParserStatus(node, data, maxOf(position + step, 0))
     }
 
     override fun self(matcher: Matcher<ParserStatus>): ParserStatus {
