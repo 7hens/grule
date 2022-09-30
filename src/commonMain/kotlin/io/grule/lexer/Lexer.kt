@@ -20,7 +20,7 @@ interface Lexer : LexerMatcherExt, KeyOwner {
     }
 
     companion object {
-        val EOF: Lexer = LexerEOF
+        val EOF: Lexer = LexerEof
 
         fun indent(newLine: Lexer, indent: Lexer, dedent: Lexer): Lexer {
             return LexerIndent(newLine, indent, dedent)
