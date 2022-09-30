@@ -22,6 +22,10 @@ fun interface Matcher<T : Status<T>> {
         return MatcherPlus(this, matcher)
     }
 
+    operator fun plus(step: Int): Matcher<T> {
+        return if (step == 0) this else plus(MatcherMove(step))
+    }
+
     infix fun or(matcher: Matcher<T>): Matcher<T> {
         if (matcher is ReversedMatcher<T>) {
             return matcher.reverser or this

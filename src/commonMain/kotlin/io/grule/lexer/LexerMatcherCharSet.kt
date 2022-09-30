@@ -5,7 +5,7 @@ internal class LexerMatcherCharSet(val set: Iterable<Char>) : LexerMatcher {
     override fun match(status: LexerStatus): LexerStatus {
         val c = status.peek() ?: status.panic(LexerMatcherEOF)
         if (c in set) {
-            return status.next()
+            return status.move()
         }
         status.panic(this)
     }

@@ -74,4 +74,20 @@ internal class LexerDslTest {
         assertEquals(a, tokenStream.peek(0).lexer)
         assertEquals(Lexer.EOF, tokenStream.peek(6).lexer)
     }
+
+    @Test
+    fun move() {
+        val source = "ABC12345"
+        println(source)
+        println("X + 3 + \"123\" + -1 + \"345\"")
+
+        val lexer = LexerFactory()
+        val move by lexer { X + 3 + "123" + -1 + "345" }
+        val tokenStream = lexer.tokenStream(source)
+
+        move.toString()
+        println(tokenStream.all().joinToString("\n"))
+        assertEquals(move, tokenStream.peek(0).lexer)
+        assertEquals(Lexer.EOF, tokenStream.peek(1).lexer)
+    }
 }

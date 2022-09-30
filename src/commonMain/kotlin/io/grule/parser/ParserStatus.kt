@@ -41,11 +41,11 @@ open class ParserStatus(
         throw ParserMatcherException(this, rule)
     }
 
-    override fun next(): ParserStatus {
+    override fun move(step: Int): ParserStatus {
         if (data.peek() == Lexer.EOF) {
             panic(Lexer.EOF)
         }
-        return ParserStatus(node, data, position + 1)
+        return ParserStatus(node, data, position + step)
     }
 
     override fun self(matcher: Matcher<ParserStatus>): ParserStatus {

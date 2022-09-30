@@ -9,7 +9,7 @@ internal class LexerMatcherString(private val text: String) : LexerMatcher {
         }
         val actualText = status.getText(text.length)
         if (actualText == text) {
-            return status.next(text.length)
+            return status.move(text.length)
         }
         status.panic(this)
     }

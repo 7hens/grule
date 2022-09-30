@@ -22,14 +22,14 @@ class LexerStatus(
 
     private val positionOffset get() = position - data.charIndex
 
-    fun next(count: Int): LexerStatus {
-        if (count == 0) {
+    override fun move(step: Int): LexerStatus {
+        if (step == 0) {
             return this
         }
         if (peek() == null) {
             panic(Lexer.EOF)
         }
-        return LexerStatus(data, position + count)
+        return LexerStatus(data, position + step)
     }
 
     fun peek(offset: Int = 0): Char? {
@@ -42,10 +42,6 @@ class LexerStatus(
 
     override fun panic(rule: Any): Nothing {
         throw LexerMatcherException(this, rule)
-    }
-
-    override fun next(): LexerStatus {
-        return next(1)
     }
 
     override fun self(matcher: Matcher<LexerStatus>): LexerStatus {

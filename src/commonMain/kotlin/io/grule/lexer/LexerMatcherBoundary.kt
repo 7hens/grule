@@ -9,7 +9,7 @@ internal object LexerMatcherBoundary : LexerMatcher {
         if (isHead || isTail) {
             return status
         }
-        matcher.match(status.next(-1))
+        matcher.match(status.move(-1))
         return status
     }
 

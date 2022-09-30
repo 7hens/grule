@@ -2,7 +2,10 @@ package io.grule.matcher
 
 interface Status<T : Status<T>> {
 
-    fun next(): T
+    @Deprecated("Use move() instead", ReplaceWith("move()"))
+    fun next(): T = move()
+
+    fun move(step: Int = 1): T
 
     fun self(matcher: Matcher<T>): T
 
