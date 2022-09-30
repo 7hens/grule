@@ -31,7 +31,7 @@ internal class LexerIndent(val newLine: Lexer, val indent: Lexer, val dedent: Le
             if (spaceNum >= 0) {
                 context.emit(newLine)
             } else {
-                context.emitEOF()
+                context.emitEof()
             }
         }
         prevTabCount = tabCount

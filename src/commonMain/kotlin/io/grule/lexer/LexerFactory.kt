@@ -18,7 +18,7 @@ class LexerFactory internal constructor() : Lexer {
         }
         if (!matches) {
             if (context.peek(0) == null) {
-                context.emitEOF()
+                context.emitEof()
                 return
             }
             throw MatcherException("Unmatched item with [ " + lexers.joinToString(" | ") + " ] at ${context.position}")

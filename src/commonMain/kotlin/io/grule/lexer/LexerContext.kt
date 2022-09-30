@@ -18,7 +18,12 @@ interface LexerContext : CharStream {
         emit(lexer, "<$lexer>")
     }
 
+    @Deprecated("Use emitEof instead", ReplaceWith("emitEof()"))
     fun emitEOF() {
+        emitEof()
+    }
+
+    fun emitEof() {
         emit(Lexer.EOF)
     }
 }
