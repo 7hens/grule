@@ -5,7 +5,8 @@ import io.grule.matcher.Matcher
 object LexerDsl : LexerMatcherExt {
     val X: LexerMatcher = Matcher.shadow()
     val ANY = X + LexerMatcherCharSet.ANY
-    val EOF = X + LexerEof.Matcher
+    val SOT = X + LexerMatcherSot // start of token
+    val EOF = X + LexerMatcherEof
 
     val DIGIT = X - ('0'..'9')
     val BIT = X - "01"

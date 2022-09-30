@@ -24,7 +24,7 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
     }
 
     override fun moveNext(count: Int) {
-        require(count >= 0)
+        require(count >= 0) { "Cannot move back, count is $count" }
         if (count == 0) {
             return
         }

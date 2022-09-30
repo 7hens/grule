@@ -5,7 +5,7 @@ internal class LexerMatcherString(private val text: String) : LexerMatcher {
     override fun match(status: LexerStatus): LexerStatus {
         status.peek(text.length)
         if (status.peek() == null) {
-            status.panic(LexerEof.Matcher)
+            status.panic(LexerMatcherEof)
         }
         val actualText = status.getText(text.length)
         if (actualText == text) {

@@ -3,7 +3,7 @@ package io.grule.lexer
 internal class LexerMatcherCharSet(val set: Iterable<Char>) : LexerMatcher {
 
     override fun match(status: LexerStatus): LexerStatus {
-        val c = status.peek() ?: status.panic(LexerEof.Matcher)
+        val c = status.peek() ?: status.panic(LexerMatcherEof)
         if (c in set) {
             return status.move()
         }
