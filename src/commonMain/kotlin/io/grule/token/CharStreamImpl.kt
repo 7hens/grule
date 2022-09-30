@@ -13,7 +13,7 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
         get() = TextPosition(currentIndex, currentLine, currentColumn)
 
     override fun peek(offset: Int): Char? {
-        require(offset >= 0)
+        require(offset >= 0) { "Offset ($offset) should be Greater than 0" }
         prepare(offset + 1)
         val dataOffset = dataStartPos + offset
         if (dataOffset < dataEndPos) {

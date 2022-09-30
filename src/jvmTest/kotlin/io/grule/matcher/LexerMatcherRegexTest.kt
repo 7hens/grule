@@ -67,4 +67,10 @@ internal class LexerMatcherRegexTest {
         assertEquals(3, match("789(?=\\w)"))
         assertEquals(3, match("789(?!\\d)"))
     }
+
+    @Test
+    fun boundary() {
+        assertEquals(16, match("\\b\\w+"))
+        assertEquals(16, match("\\w+\\b"))
+    }
 }

@@ -19,6 +19,7 @@ object LexerDsl : LexerMatcherExt {
     val WORD = LETTER or DIGIT or X - "_"
     val WORD_HEAD = LETTER or X - "_"
     val WORD_LIST = WORD_HEAD + WORD.repeat()
+    val BOUNDARY = X + LexerMatcherBoundary
 
     val SPACE = X - "\t\r\n\u0085\u000B\u000C "
     val WRAP = X + "\r\n" or X - "\r\n"

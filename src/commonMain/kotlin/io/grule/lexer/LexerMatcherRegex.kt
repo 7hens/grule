@@ -123,12 +123,14 @@ internal class LexerMatcherRegex(private val pattern: String) : LexerMatcher {
     private fun parseClassChar(classChar: AstNode): LexerMatcher {
         val text = classChar.text
         return when (text) {
-            "\\S" -> LexerDsl.SPACE.not()
             "\\s" -> LexerDsl.SPACE
-            "\\D" -> LexerDsl.DIGIT.not()
+            "\\S" -> LexerDsl.SPACE.not()
             "\\d" -> LexerDsl.DIGIT
-            "\\W" -> LexerDsl.WORD.not()
+            "\\D" -> LexerDsl.DIGIT.not()
             "\\w" -> LexerDsl.WORD
+            "\\W" -> LexerDsl.WORD.not()
+            "\\b" -> LexerDsl.BOUNDARY
+            "\\B" -> LexerDsl.BOUNDARY.not()
             else -> LexerDsl.ANY
         }
     }
