@@ -9,7 +9,7 @@ internal class TokenStreamImpl(charStream: CharStream, val lexer: Lexer) : Token
     private val context = LexerContextImpl(charStream, this)
 
     override fun peek(offset: Int): Token {
-        require(offset >= 0)
+        require(offset >= 0) { "Offset $offset should not be negative" }
         prepare(offset + 1)
         if (offset < buffer.size) {
             return buffer[offset]
@@ -32,11 +32,7 @@ internal class TokenStreamImpl(charStream: CharStream, val lexer: Lexer) : Token
     }
 
     override fun moveNext(count: Int) {
-        if (count == 0) {
-            return
-        }
-        require(count > 0)
-        require(count <= buffer.size)
+        require(count in buffer.indices) { "Count $count not in range ${buffer.size}" }
         repeat(count) {
             buffer.removeFirst()
         }
@@ -51,7 +47,7 @@ internal class TokenStreamImpl(charStream: CharStream, val lexer: Lexer) : Token
     }
 
     override fun emit(token: Token) {
-        require(eof == null)
+        require(eof == null) { "Already end of file" }
         buffer.add(token)
         if (token.lexer == Lexer.EOF) {
             eof = token

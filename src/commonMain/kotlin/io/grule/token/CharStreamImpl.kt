@@ -19,7 +19,7 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
         if (dataOffset < dataEndPos) {
             return buffer[dataOffset]
         }
-        require(isReadOver)
+        require(isReadOver) { "Not read over, offset $offset, position $position" }
         return null
     }
 
@@ -43,8 +43,7 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
     }
 
     override fun getText(start: Int, end: Int): String {
-        require(start >= 0)
-        require(end >= start)
+        require(start in 0..end) { "Start pos $start not in range $end" }
         val offset = dataStartPos + start
         val length = minOf(end - start, dataEndPos - offset)
         return buffer.concatToString(offset, offset + length)
