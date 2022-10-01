@@ -16,16 +16,10 @@ interface LexerContext : CharStream {
         emit(Token(lexer, text, TextRange.of(position)))
     }
 
-    @Deprecated("Use emit(token) instead",
-        ReplaceWith("emit(Token(lexer, text, textRange))",
-            "io.grule.token.Token",
-            "io.grule.token.TextRange"))
-    fun emit(lexer: Lexer, count: Int) {
-        emit(lexer, getText(0, count))
-    }
-
-    fun emit(lexer: Lexer) {
-        emit(Token(lexer, "", TextRange.of(position)))
+    fun emit(lexer: Lexer, count: Int = 0) {
+        val text = getText(0, count)
+        val textRange = moveNext(count)
+        emit(Token(lexer, text, textRange))
     }
 
     @Deprecated("Use emitEof instead", ReplaceWith("emitEof()"))
@@ -35,11 +29,5 @@ interface LexerContext : CharStream {
 
     fun emitEof() {
         emit(Lexer.EOF)
-    }
-
-    fun moveThenEmit(count: Int, lexer: Lexer) {
-        val text = getText(0, count)
-        val textRange = moveNext(count)
-        emit(Token(lexer, text, textRange))
     }
 }

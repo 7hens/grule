@@ -46,6 +46,9 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
 
     override fun getText(start: Int, end: Int): String {
         require(start in 0..end) { "Start pos $start not in range $end" }
+        if (end == start) {
+            return ""
+        }
         val offset = dataStartPos + start
         val length = minOf(end - start, dataEndPos - offset)
         return buffer.concatToString(offset, offset + length)

@@ -6,7 +6,7 @@ internal class LexerImpl(private val matcher: LexerMatcher, val emitsToken: Bool
     override fun lex(context: LexerContext) {
         val matchNum = matcher.match(context)
         if (emitsToken) {
-            context.moveThenEmit(matchNum, lexer)
+            context.emit(lexer, matchNum)
         } else {
             context.moveNext(matchNum)
         }

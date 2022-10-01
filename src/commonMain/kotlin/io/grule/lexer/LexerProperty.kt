@@ -14,7 +14,7 @@ internal abstract class LexerProperty : Lexer, ReadOnlyProperty<Any?, Lexer> {
 
     override fun lex(context: LexerContext) {
         val matchNum = matcher.match(context)
-        context.moveThenEmit(matchNum, this)
+        context.emit(this, matchNum)
     }
 
     override fun toString(): String {
