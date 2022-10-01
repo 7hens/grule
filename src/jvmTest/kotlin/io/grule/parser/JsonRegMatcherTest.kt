@@ -10,7 +10,7 @@ class JsonRegMatcherTest : Grammar() {
     val nil by lexer { X / "null" }
 
     init {
-        lexer.token { X - "{}[]:," }
+        lexer.token { X["{}[]:,"] }
         lexer.skip { SPACE or WRAP }
     }
 

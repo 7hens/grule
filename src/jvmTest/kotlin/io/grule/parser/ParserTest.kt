@@ -100,7 +100,7 @@ class ParserTest {
 
     private class RepeatGrammar : Grammar() {
         val Num by lexer { DIGIT.more() }
-        val Op by lexer { X - "+-*/%><=!" }
+        val Op by lexer { X["+-*/%><=!"] }
 
         init {
             lexer.skip { WRAP or SPACE }

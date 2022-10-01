@@ -17,10 +17,10 @@ class MatcherSimpleTest {
             assertEquals(10, (DIGIT).repeat().match(charStream, 0))
             assertEquals(1, (WORD).match(charStream, 0))
             assertEquals(10, (X + "01" + ANY.until(ANY + "89")).match(charStream, 0))
-            assertEquals(3, (X - "DF").join(X + "E").match(charStream, 13))
-            assertEquals(3, (X - "DF").interlace(X + "E").match(charStream, 13))
-            assertEquals(6, (X - "ABCDE").till(X + "F").match(charStream, 10))
-            assertEquals(6, (X - "ABCDE").until(X + "F").match(charStream, 10))
+            assertEquals(3, X["DF"].join(X + "E").match(charStream, 13))
+            assertEquals(3, X["DF"].interlace(X + "E").match(charStream, 13))
+            assertEquals(6, X["ABCDE"].till(X + "F").match(charStream, 10))
+            assertEquals(6, X["ABCDE"].until(X + "F").match(charStream, 10))
             assertEquals(10, (DIGIT.repeat() + (X + "A").test()).match(charStream, 0))
         }
     }

@@ -15,7 +15,7 @@ class ParserDslTest {
 
         val lexer = LexerFactory()
         val num by lexer { DIGIT }
-        val op by lexer { X - "+-*/" }
+        val op by lexer { X["+-*/"] }
         lexer.skip { WRAP or SPACE }
 
         val parser = ParserFactory()
@@ -33,7 +33,7 @@ class ParserDslTest {
 
         val lexer = LexerFactory()
         val num by lexer { DIGIT }
-        val op by lexer { X - "+-*/" }
+        val op by lexer { X["+-*/"] }
         lexer.skip { WRAP or SPACE }
 
         val parser = ParserFactory()

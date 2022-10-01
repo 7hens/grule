@@ -6,13 +6,13 @@ import org.junit.Test
 class JsonTest {
     val source = """{ "a": [1, 2.34], "b": "hello" }"""
     val lexer = LexerFactory()
-    val string by lexer { X - '"' + ANY.until(X - '"') }
+    val string by lexer { X['"'] + ANY.until(X['"']) }
     val number by lexer { X + DIGIT.more() + (X + "." + DIGIT.more()).optional() }
     val bool by lexer { X + "true" or X + "false" }
     val nil by lexer { X + "null" }
 
     init {
-        lexer.token { X - "{}[]:," }
+        lexer.token { X["{}[]:,"] }
         lexer.skip { SPACE }
     }
 

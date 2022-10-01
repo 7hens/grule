@@ -16,12 +16,12 @@ internal class MatcherMove<T : Status<T>>(val step: Int) : Matcher<T> {
 
     override fun times(minTimes: Int, maxTimes: Int): Matcher<T> {
         if (step == 0) {
-            throw IllegalStateException("Step cannot be 0")
+            return this
         }
         return super.times(minTimes, maxTimes)
     }
 
     override fun toString(): String {
-        return "->$step"
+        return "+$step"
     }
 }
