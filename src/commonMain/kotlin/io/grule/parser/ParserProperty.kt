@@ -1,11 +1,21 @@
 package io.grule.parser
 
+import io.grule.lexer.Lexer
+import io.grule.node.AstNode
+import io.grule.token.CharStream
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> {
-    abstract val matcher: ParserMatcher
+internal class ParserProperty(
+    val lexer: Lexer,
+    fn: () -> ParserMatcher,
+) : Parser, ReadOnlyProperty<Any?, Parser> {
+    
+    private val matcher: ParserMatcher by lazy(fn)
+
     private var name: String? = null
+
+    override val key: Any get() = this
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Parser {
         name = property.name
@@ -25,13 +35,7 @@ internal abstract class ParserProperty : Parser, ReadOnlyProperty<Any?, Parser> 
         return matcher.matchesEmpty()
     }
 
-    override val key: Any get() = this
-
-    companion object {
-        operator fun invoke(fn: () -> ParserMatcher): ParserProperty {
-            return object : ParserProperty() {
-                override val matcher: ParserMatcher by lazy(fn)
-            }
-        }
+    override fun parse(source: CharStream): AstNode {
+        return parse(lexer.tokenStream(source))
     }
 }

@@ -10,7 +10,7 @@ internal class LexerDslTest {
 
     @Test
     fun tokenStream() {
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val abc by lexer { X + "A" or X + "BC" }
         val tokenStream = lexer.tokenStream("ABCABCABC")
 
@@ -27,7 +27,7 @@ internal class LexerDslTest {
         println(source)
         println("{ X + \"A\" or X + \"BC\" self { it + \"-\" + me } }")
 
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val abc by lexer { X + "A" or X + "BC" self { it + "-" + me } }
         val tokenStream = lexer.tokenStream(source)
 
@@ -43,7 +43,7 @@ internal class LexerDslTest {
         println(source)
         println("X + \"A\" or X + \"BC\" self { me + \"-\" + it }")
 
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val abc by lexer { X + "A" or X + "BC" self { me + "-" + it } }
         val tokenStream = lexer.tokenStream(source)
 
@@ -55,7 +55,7 @@ internal class LexerDslTest {
 
     @Test
     fun indent() {
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val indent by lexer { X + "\\{" }
         val dedent by lexer { X + "\\}" }
         val newLine by lexer { X }
@@ -81,7 +81,7 @@ internal class LexerDslTest {
         println(source)
         println("X + 3 + \"123\" + -1 + \"345\"")
 
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val move by lexer { X + 3 + "123" + -1 + "345" }
         val tokenStream = lexer.tokenStream(source)
 

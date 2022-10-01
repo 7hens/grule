@@ -26,6 +26,9 @@ internal class AstNodeTerminal(override val key: Any, val token: Token) : AstNod
     }
 
     override fun toStringExp(): String {
+        if (text == "") {
+            return "<${token.lexer}>"
+        }
         return text.replace("(", "\\(").replace(")", "\\)").replace("\n", "\\n")
     }
 

@@ -7,7 +7,7 @@ import io.grule.parser.Parser
 @Suppress("MemberVisibilityCanBePrivate")
 open class Grammar : Lexer {
     val lexer = Lexer.factory()
-    val parser = Parser.factory()
+    val parser = Parser.factory(lexer)
 
     override fun lex(context: LexerContext) {
         return lexer.lex(context)

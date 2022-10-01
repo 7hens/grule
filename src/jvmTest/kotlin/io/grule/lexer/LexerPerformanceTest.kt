@@ -16,7 +16,7 @@ class LexerPerformanceTest {
     fun plus() {
         val count = 0 until 10000
         val source = count.joinToString("") { "ABC" }
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val abc by lexer { X + "A" + "BC" + "A" + "BC" }
         val tokenStream = lexer.tokenStream(source)
 
@@ -29,7 +29,7 @@ class LexerPerformanceTest {
     fun or() {
         val count = 0 until 10000
         val source = count.joinToString("") { "ABC" }
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val abc by lexer { X + "E" or X + "EF" or X + "ABC" }
         val tokenStream = lexer.tokenStream(source)
 
@@ -42,7 +42,7 @@ class LexerPerformanceTest {
     fun self() {
         val count = 0 until 10000
         val source = count.joinToString("") { "A-B+C-" }
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val abc by lexer { X["ABC-"] self { it + "-" + me } self { me + "+" + it } }
         val tokenStream = lexer.tokenStream(source)
 

@@ -11,7 +11,7 @@ class ParserBinaryTest {
             val exp by parser { (X + N + O).until(X + "x") }
             val main by parser { X + exp.binary(O) }
 
-            val astNode = main.parse(tokenStream(source))
+            val astNode = main.parse(source)
             println("--------------------------------------")
             println(source)
             println(astNode.toStringExp())
@@ -27,7 +27,7 @@ class ParserBinaryTest {
             val exp by parser { (X + O).more().repeat().join(X + N) }
             val main by parser { X + exp.binary(O) }
 
-            val astNode = main.parse(tokenStream(source))
+            val astNode = main.parse(source)
             println("--------------------------------------")
             println(source)
             println(astNode.toStringExp())
@@ -43,7 +43,7 @@ class ParserBinaryTest {
             val exp by parser { (X + (X + N).more() + O).until(X + "x") }
             val main by parser { X + exp.binary(O) }
 
-            val astNode = main.parse(tokenStream(source))
+            val astNode = main.parse(source)
             println("--------------------------------------")
             println(source)
             println(astNode.toStringExp())

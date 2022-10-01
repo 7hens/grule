@@ -1,11 +1,11 @@
 package io.grule.parser
 
-import io.grule.lexer.LexerFactory
+import io.grule.lexer.Lexer
 import org.junit.Test
 
 class JsonTest {
     val source = """{ "a": [1, 2.34], "b": "hello" }"""
-    val lexer = LexerFactory()
+    val lexer = Lexer.factory()
     val string by lexer { X['"'] + ANY.until(X['"']) }
     val number by lexer { X + DIGIT.more() + (X + "." + DIGIT.more()).optional() }
     val bool by lexer { X + "true" or X + "false" }
@@ -16,7 +16,7 @@ class JsonTest {
         lexer.skip { SPACE }
     }
 
-    val parser = ParserFactory()
+    val parser = Parser.factory(lexer)
     val jObject: Parser by parser { X + jString or jNumber or jBool or jNil or jArray or jDict }
     val jString by parser { X + string }
     val jNumber by parser { X + number }
@@ -31,7 +31,7 @@ class JsonTest {
         println(source)
         println("-----------------")
 
-        val astNode = jObject.parse(lexer.tokenStream(source))
+        val astNode = jObject.parse(source)
         println(astNode.toStringTree())
     }
 }

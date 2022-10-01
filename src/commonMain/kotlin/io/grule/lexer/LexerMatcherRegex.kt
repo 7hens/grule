@@ -12,7 +12,7 @@ internal class LexerMatcherRegex(private val pattern: String) : LexerMatcher {
     }
 
     private fun parseRegex(pattern: String): LexerMatcher {
-        val astNode = g.regex.parse(g.tokenStream(pattern))
+        val astNode = g.regex.parse(pattern)
         return parseRegex(astNode)
     }
 

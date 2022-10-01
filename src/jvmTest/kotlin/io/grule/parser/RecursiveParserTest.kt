@@ -21,7 +21,7 @@ class RecursiveParserTest {
 
             val e by parser { X + N self { it + me } }
 
-            val astNode = e.parse(tokenStream(source))
+            val astNode = e.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())
@@ -43,7 +43,7 @@ class RecursiveParserTest {
 
             val e by parser { X + "x" or X + N self { it + O + me } }
 
-            val astNode = e.parse(tokenStream(source))
+            val astNode = e.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())
@@ -65,7 +65,7 @@ class RecursiveParserTest {
 
             val e by parser { X + N self { me + it } }
 
-            val astNode = e.parse(tokenStream(source))
+            val astNode = e.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())
@@ -84,7 +84,7 @@ class RecursiveParserTest {
 
             val e by parser { X + "x" or X + N self { me + O + it } }
 
-            val astNode = e.parse(tokenStream(source))
+            val astNode = e.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())
@@ -103,7 +103,7 @@ class RecursiveParserTest {
 
             val e by parser { X + N self { me + O } self { me + N } }
 
-            val astNode = e.parse(tokenStream(source))
+            val astNode = e.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())
@@ -122,7 +122,7 @@ class RecursiveParserTest {
 
             val e by parser { X + N self { me + it or me + O } }
 
-            val astNode = e.parse(tokenStream(source))
+            val astNode = e.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())
@@ -141,7 +141,7 @@ class RecursiveParserTest {
 
             val e by parser { X + N self { me + O } self { me + it } }
 
-            val astNode = e.parse(tokenStream(source))
+            val astNode = e.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())
@@ -164,7 +164,7 @@ class RecursiveParserTest {
             val e by parser { X + N or X + "x" self { me + O + it } }
             val b by parser { e.flat().binary(O) }
 
-            val astNode = b.parse(tokenStream(source))
+            val astNode = b.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())
@@ -186,7 +186,7 @@ class RecursiveParserTest {
 
             val e by parser { X + N self { me + "*" + it } self { me + "+" + it } }
             val m by parser { X + e }
-            val astNode = m.parse(tokenStream(source))
+            val astNode = m.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())
@@ -208,7 +208,7 @@ class RecursiveParserTest {
 
             val e by parser { X + "x" or X + N self { X + N + O + me } }
 
-            val astNode = e.parse(tokenStream(source))
+            val astNode = e.parse(source)
             println(astNode.toStringExp())
             println(astNode.toString())
             println(astNode.toStringTree())

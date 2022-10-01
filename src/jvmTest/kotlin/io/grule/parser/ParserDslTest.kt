@@ -1,6 +1,6 @@
 package io.grule.parser
 
-import io.grule.lexer.LexerFactory
+import io.grule.lexer.Lexer
 import org.junit.Test
 
 /**
@@ -13,14 +13,14 @@ class ParserDslTest {
         println(source)
         println("X + num self { me + op + it }")
 
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val num by lexer { DIGIT }
         val op by lexer { X["+-*/"] }
         lexer.skip { WRAP or SPACE }
 
-        val parser = ParserFactory()
+        val parser = Parser.factory(lexer)
         val exp by parser { X + num self { me + op + it } }
-        val astNode = exp.parse(lexer.tokenStream(source))
+        val astNode = exp.parse(source)
 
         println(astNode.toStringTree())
     }
@@ -31,14 +31,14 @@ class ParserDslTest {
         println(source)
         println("X + num self { it + op + me }")
 
-        val lexer = LexerFactory()
+        val lexer = Lexer.factory()
         val num by lexer { DIGIT }
         val op by lexer { X["+-*/"] }
         lexer.skip { WRAP or SPACE }
 
-        val parser = ParserFactory()
+        val parser = Parser.factory(lexer)
         val exp by parser { X + num self { it + op + me } }
-        val astNode = exp.parse(lexer.tokenStream(source))
+        val astNode = exp.parse(source)
 
         println(astNode.toStringTree())
     }

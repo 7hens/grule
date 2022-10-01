@@ -1,7 +1,10 @@
 package io.grule.parser
 
 import io.grule.lexer.Lexer
+import io.grule.lexer.LexerEof.newNode
 import io.grule.matcher.Matcher
+import io.grule.node.AstNode
+import io.grule.token.TokenStream
 
 typealias ParserMatcher = Matcher<ParserStatus>
 
@@ -15,5 +18,11 @@ interface ParserMatcherExt {
 
     operator fun ParserMatcher.plus(lexer: Lexer): ParserMatcher {
         return plus(ParserMatcherLexer(lexer))
+    }
+
+    fun ParserMatcher.parse(tokenStream: TokenStream): AstNode {
+        val mainParser = this + Lexer.EOF
+        val status = ParserStatus(newNode(), tokenStream)
+        return mainParser.match(status).node.first()
     }
 }

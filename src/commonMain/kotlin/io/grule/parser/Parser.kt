@@ -5,14 +5,14 @@ import io.grule.node.AstNode
 import io.grule.node.KeyOwner
 import io.grule.node.NodeMapper
 import io.grule.node.NodeStream
-import io.grule.token.TokenStream
+import io.grule.token.CharStream
 
 interface Parser : ParserMatcher, ParserMatcherExt, KeyOwner, NodeStream<Parser> {
 
-    fun parse(tokenStream: TokenStream): AstNode {
-        val mainParser = ParserDsl { this@Parser + Lexer.EOF }
-        val status = ParserStatus(newNode(), tokenStream)
-        return mainParser.match(status).node.first()
+    fun parse(source: CharStream): AstNode
+
+    fun parse(source: String): AstNode {
+        return parse(CharStream.fromString(source))
     }
 
     override fun transform(mapper: NodeMapper): Parser {
@@ -25,8 +25,8 @@ interface Parser : ParserMatcher, ParserMatcherExt, KeyOwner, NodeStream<Parser>
 
     companion object {
 
-        fun factory(): ParserFactory {
-            return ParserFactory()
+        fun factory(lexer: Lexer): ParserFactory {
+            return ParserFactory(lexer)
         }
     }
 }
