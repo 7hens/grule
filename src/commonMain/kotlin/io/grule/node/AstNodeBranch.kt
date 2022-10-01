@@ -1,5 +1,6 @@
 package io.grule.node
 
+import io.grule.token.TextRange
 import io.grule.token.Token
 import io.grule.util.MultiMap
 
@@ -16,6 +17,9 @@ internal class AstNodeBranch(
 
     override val tokens: Sequence<Token>
             by lazy { children.asSequence().flatMap { it.tokens } }
+
+    override val textRange: TextRange
+            by lazy { AstNodeTextRange(this) }
 
     override fun toString(): String {
         return children.joinToString(" ", "$key(", ")") { it.toString() }

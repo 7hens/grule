@@ -1,5 +1,6 @@
 package io.grule.node
 
+import io.grule.token.TextRange
 import io.grule.token.Token
 import io.grule.util.MultiMap
 
@@ -8,6 +9,8 @@ internal class AstNodeTerminal(override val key: Any, val token: Token) : AstNod
     override val text: String get() = token.text
 
     override val tokens: Sequence<Token> get() = sequenceOf(token)
+
+    override val textRange: TextRange get() = token.textRange
 
     override val children: List<AstNode>
         get() = emptyList()

@@ -23,11 +23,12 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
         return null
     }
 
-    override fun moveNext(count: Int) {
+    override fun moveNext(count: Int): TextRange {
         require(count >= 0) { "Cannot move back, count is $count" }
         if (count == 0) {
-            return
+            return TextRange.of(position)
         }
+        val startPosition = position
         val newDataStartOffset = dataStartPos + count
         require(newDataStartOffset <= dataEndPos) { "Move to $newDataStartOffset out of bounds ($dataEndPos)" }
         for (i in dataStartPos until newDataStartOffset) {
@@ -40,6 +41,7 @@ internal class CharStreamImpl(private val reader: CharReader, private val chunkS
         }
         dataStartPos = newDataStartOffset
         currentIndex += count
+        return TextRange.of(startPosition, position)
     }
 
     override fun getText(start: Int, end: Int): String {

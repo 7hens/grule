@@ -10,7 +10,7 @@ interface CharStream {
 
     fun getText(start: Int, end: Int): String
 
-    fun moveNext(count: Int)
+    fun moveNext(count: Int): TextRange
 
     companion object {
         fun fromString(text: String): CharStream {

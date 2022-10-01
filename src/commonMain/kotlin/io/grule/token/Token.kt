@@ -5,9 +5,12 @@ import io.grule.lexer.Lexer
 open class Token(
     val lexer: Lexer,
     val text: String,
-    val position: TextPosition,
+    val textRange: TextRange,
 ) {
+
+    val position: TextPosition get() = textRange.start
+
     override fun toString(): String {
-        return "'$text' [$position] <$lexer>"
+        return "#[${textRange.start}, ${textRange.end}] <$lexer>    $text"
     }
 }

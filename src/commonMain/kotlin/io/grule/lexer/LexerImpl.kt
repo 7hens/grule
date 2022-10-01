@@ -6,9 +6,10 @@ internal class LexerImpl(private val matcher: LexerMatcher, val emitsToken: Bool
     override fun lex(context: LexerContext) {
         val matchNum = matcher.match(context)
         if (emitsToken) {
-            context.emit(lexer, matchNum)
+            context.moveThenEmit(matchNum, lexer)
+        } else {
+            context.moveNext(matchNum)
         }
-        context.moveNext(matchNum)
     }
 
     override fun toString(): String {
