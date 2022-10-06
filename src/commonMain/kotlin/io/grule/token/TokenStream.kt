@@ -4,7 +4,7 @@ interface TokenStream {
 
     fun peek(offset: Int = 0): Token
 
-    fun all(): List<Token>
+    fun all(): Sequence<Token>
 
     fun moveNext(count: Int)
 

@@ -17,18 +17,18 @@ internal class TokenStreamImpl(charStream: CharStream, val lexer: Lexer) : Token
         return requireNotNull(eof)
     }
 
-    override fun all(): List<Token> {
-        val list = mutableListOf<Token>()
-        var i = 0
-        while (true) {
-            val token = peek(i)
-            list.add(token)
-            if (token.lexer == Lexer.EOF) {
-                break
+    override fun all(): Sequence<Token> {
+        return sequence {
+            var i = 0
+            while (true) {
+                val token = peek(i)
+                yield(token)
+                if (token.lexer == Lexer.EOF) {
+                    break
+                }
+                i++
             }
-            i++
         }
-        return list
     }
 
     override fun moveNext(count: Int) {
