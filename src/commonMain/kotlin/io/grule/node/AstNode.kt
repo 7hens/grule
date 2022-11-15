@@ -42,6 +42,10 @@ interface AstNode : KeyOwner, NodeStream<AstNode> {
         return children[index]
     }
 
+    fun getOrNull(index: Int): AstNode? {
+        return children.getOrNull(index)
+    }
+
     fun all(): List<AstNode> {
         return children
     }
