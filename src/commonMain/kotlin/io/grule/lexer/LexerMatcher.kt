@@ -33,6 +33,10 @@ interface LexerMatcherExt {
         return plus(LexerMatcherString(text))
     }
 
+    operator fun LexerMatcher.plus(char: Char): LexerMatcher {
+        return get(char)
+    }
+
     @Deprecated("Uses [charSet] instead", ReplaceWith("X[charSet]"))
     operator fun LexerMatcher.minus(charSet: Iterable<Char>): LexerMatcher {
         return get(charSet)
@@ -52,7 +56,7 @@ interface LexerMatcherExt {
     operator fun LexerMatcher.minus(text: String): LexerMatcher {
         return get(text)
     }
-    
+
     fun LexerMatcher.match(charStream: CharStream, offset: Int = 0): Int {
         val status = LexerStatus(charStream, charStream.charIndex + offset)
         return match(status).position - status.position

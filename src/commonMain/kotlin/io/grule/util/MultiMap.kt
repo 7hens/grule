@@ -10,11 +10,11 @@ fun <K, V> MultiMap<K, V>.getOrEmpty(key: K): List<V> {
     return get(key) ?: emptyList()
 }
 
-fun <K, V> MultiMap<K, V>.first(key: K): V = firstOrNull(key)!!
+fun <K, V> MultiMap<K, V>.first(key: K): V = requireNotNull(firstOrNull(key)) { "Key ($key) not found" }
 
 fun <K, V> MultiMap<K, V>.firstOrNull(key: K): V? = get(key)?.firstOrNull()
 
-fun <K, V> MultiMap<K, V>.last(key: K): V = lastOrNull(key)!!
+fun <K, V> MultiMap<K, V>.last(key: K): V = requireNotNull(lastOrNull(key)) { "Key ($key) not found" }
 
 fun <K, V> MultiMap<K, V>.lastOrNull(key: K): V? = get(key)?.lastOrNull()
 
