@@ -14,6 +14,7 @@ class MatcherSimpleTest {
         val charStream = CharReader.fromString(text).toStream(2)
         LexerDsl {
             assertEquals(4, (X + "0123").match(charStream, 0))
+            assertEquals(4, ((X + "0123").insteadOf(X["X"])).match(charStream, 0))
             assertEquals(10, (DIGIT).repeat().match(charStream, 0))
             assertEquals(1, (WORD).match(charStream, 0))
             assertEquals(10, (X + "01" + ANY.until(ANY + "89")).match(charStream, 0))

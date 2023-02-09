@@ -48,6 +48,26 @@ class ParserTest {
     }
 
     @Test
+    fun insteadOf() {
+        val source = "abcd"
+        Grammar {
+            val A by lexer { X + "a" }
+            val Bc by lexer { X + "bc" }
+            val D by lexer { X + "d" }
+
+            val bc by parser { X + Bc }
+            val d by parser { X + D }
+            val abcd by parser { X + A + bc.insteadOf(d) + d }
+
+            val node = abcd.parse(source)
+            println(node.toStringTree())
+            assertEquals(1, node.all(A).size)
+            assertEquals(1, node.all(bc).size)
+            assertEquals(1, node.all(d).size)
+        }
+    }
+
+    @Test
     fun repeat() {
         val source = "0123456789"
         Grammar {
