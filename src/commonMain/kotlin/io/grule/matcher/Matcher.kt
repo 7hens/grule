@@ -30,6 +30,10 @@ fun interface Matcher<T : Status<T>> {
         return plus(-step)
     }
 
+    infix fun insteadOf(matcher: Matcher<T>): Matcher<T> {
+        return matcher.not().test() + this
+    }
+
     infix fun or(matcher: Matcher<T>): Matcher<T> {
         if (matcher is ReversedMatcher<T>) {
             return matcher.reverser or this
