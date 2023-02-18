@@ -20,6 +20,14 @@ interface ParserMatcherExt {
         return plus(ParserMatcherLexer(lexer))
     }
 
+    infix fun ParserMatcher.or(text: String): ParserMatcher {
+        return or(ParserMatcherString(text))
+    }
+
+    infix fun ParserMatcher.or(lexer: Lexer): ParserMatcher {
+        return or(ParserMatcherLexer(lexer))
+    }
+
     fun ParserMatcher.parse(tokenStream: TokenStream): AstNode {
         val mainParser = this + Lexer.EOF
         val status = ParserStatus(newNode(), tokenStream)
