@@ -41,10 +41,6 @@ fun interface Matcher<T : Status<T>> {
         return MatcherOr(this, matcher)
     }
 
-    fun insteadOf(matcher: Matcher<T>): Matcher<T> {
-        return matcher.not().test() + this
-    }
-
     fun times(minTimes: Int, maxTimes: Int): Matcher<T> {
         return MatcherTimes(this, CountRange(minTimes, maxTimes))
     }

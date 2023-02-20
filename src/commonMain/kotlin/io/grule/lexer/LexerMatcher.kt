@@ -57,6 +57,10 @@ interface LexerMatcherExt {
         return get(text)
     }
 
+    infix fun LexerMatcher.or(text: String): LexerMatcher {
+        return or(LexerMatcherString(text))
+    }
+
     fun LexerMatcher.match(charStream: CharStream, offset: Int = 0): Int {
         val status = LexerStatus(charStream, charStream.charIndex + offset)
         return match(status).position - status.position
